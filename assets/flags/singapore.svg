@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="24" viewBox="0 0 36 24">
+  <defs><clipPath id="r"><rect width="36" height="24" rx="4"/></clipPath></defs>
+  <g clip-path="url(#r)">
+    <rect width="36" height="12" fill="#EF3340"/>
+    <rect y="12" width="36" height="12" fill="#fff"/>
+    <circle cx="8.2" cy="6" r="4" fill="#fff"/>
+    <circle cx="9.7" cy="6" r="3.4" fill="#EF3340"/>
+    <g fill="#fff" transform="translate(13 3.2) scale(.45)">
+      <polygon points="0,-2 0.59,-0.81 1.9,-0.62 0.95,0.31 1.18,1.62 0,1 -1.18,1.62 -0.95,0.31 -1.9,-0.62 -0.59,-0.81"/>
+      <polygon transform="translate(4,2)" points="0,-2 0.59,-0.81 1.9,-0.62 0.95,0.31 1.18,1.62 0,1 -1.18,1.62 -0.95,0.31 -1.9,-0.62 -0.59,-0.81"/>
+      <polygon transform="translate(4,7)" points="0,-2 0.59,-0.81 1.9,-0.62 0.95,0.31 1.18,1.62 0,1 -1.18,1.62 -0.95,0.31 -1.9,-0.62 -0.59,-0.81"/>
+      <polygon transform="translate(0,9)" points="0,-2 0.59,-0.81 1.9,-0.62 0.95,0.31 1.18,1.62 0,1 -1.18,1.62 -0.95,0.31 -1.9,-0.62 -0.59,-0.81"/>
+      <polygon transform="translate(-4,7)" points="0,-2 0.59,-0.81 1.9,-0.62 0.95,0.31 1.18,1.62 0,1 -1.18,1.62 -0.95,0.31 -1.9,-0.62 -0.59,-0.81"/>
+    </g>
+  </g>
+  <rect x=".5" y=".5" width="35" height="23" rx="3.5" fill="none" stroke="#D6DEE8"/>
+</svg>

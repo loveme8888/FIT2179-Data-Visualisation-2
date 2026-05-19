@@ -1,0 +1,17 @@
+State,Display_State,Foreigner_2024,Foreigner_2024_Million,Label_Lon,Label_Lat,Show_Label,Region
+WP K Lumpur,Kuala Lumpur,12129440,12.129,101.45,2.65,true,Peninsular
+WP Putrajaya,Putrajaya,221593,0.222,102.10,2.90,false,Peninsular
+Selangor,Selangor,3349909,3.350,100.72,3.65,true,Peninsular
+Pulau Pinang,Penang,3000488,3.000,99.85,5.33,true,Peninsular
+Perak,Perak,970611,0.971,101.02,4.55,true,Peninsular
+Kedah,Kedah,1985063,1.985,100.55,6.05,true,Peninsular
+Perlis,Perlis,8567,0.009,100.20,6.65,false,Peninsular
+Negeri Sembilan,Negeri Sembilan,459715,0.460,101.80,2.76,false,Peninsular
+Melaka,Melaka,1516524,1.517,102.10,2.08,true,Peninsular
+Johor,Johor,3003542,3.004,103.20,1.63,true,Peninsular
+Pahang,Pahang,2931858,2.932,102.42,3.95,true,Peninsular
+Terengganu,Terengganu,281579,0.282,103.08,4.85,true,Peninsular
+Kelantan,Kelantan,102252,0.102,102.45,5.78,true,Peninsular
+Sabah,Sabah,3135973,3.136,117.05,5.45,true,Borneo
+WP Labuan,Labuan,51978,0.052,115.10,5.85,true,Borneo
+Sarawak,Sarawak,1445113,1.445,113.18,2.78,true,Borneo
