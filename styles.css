@@ -3,9 +3,10 @@
   --accent-blue: #2E6DA4;
   --green: #2E8B57;
   --orange: #F4A261;
-  --page-bg: #EAF2F7;
+  --page-bg: #E7F4FA;
+  --panel-bg: #F8FCFF;
   --card-bg: #FFFFFF;
-  --line: #D9E5EF;
+  --line: #BFD8EA;
   --text: #152238;
   --muted: #5b6d86;
 }
@@ -23,14 +24,16 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background: var(--page-bg);
+  background:
+    linear-gradient(90deg, rgba(18, 92, 135, 0.28) 0 7%, transparent 7% 93%, rgba(18, 92, 135, 0.28) 93% 100%),
+    linear-gradient(180deg, #eff9ff 0%, #dff0f8 46%, #cce6f2 100%);
   color: var(--text);
   font-family: "Inter", "Source Sans Pro", Arial, sans-serif;
 }
 
 .hero {
   position: relative;
-  min-height: 320px;
+  min-height: 300px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -47,7 +50,7 @@ body {
 
 .hero-content {
   position: relative;
-  width: min(1280px, calc(100vw - 72px));
+  width: min(1120px, calc(100vw - 72px));
   margin: 0 auto;
   z-index: 1;
 }
@@ -112,9 +115,9 @@ h1 {
 
 .page {
   position: relative;
-  width: min(1280px, calc(100vw - 72px));
+  width: min(1120px, calc(100vw - 72px));
   margin: 0 auto;
-  padding: 42px 0 32px;
+  padding: 30px 0 32px;
 }
 
 .content-flow {
@@ -185,18 +188,19 @@ h1 {
 .story-section {
   position: relative;
   margin: 0 0 54px;
-  padding: 34px;
-  border: 1px solid rgba(217, 229, 239, 0.9);
-  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
   overflow: hidden;
+  box-shadow: 0 14px 34px rgba(32, 93, 130, 0.12);
 }
 
 .section-white {
-  background: #fff;
+  background: var(--panel-bg);
 }
 
 .section-blue {
-  background: #F7FBFF;
+  background: var(--panel-bg);
 }
 
 .section-heading {
@@ -206,7 +210,9 @@ h1 {
   grid-template-columns: 42px minmax(0, 1fr) 84px;
   gap: 14px;
   align-items: center;
-  margin-bottom: 12px;
+  margin: -8px -8px 14px;
+  padding: 0 0 10px;
+  border-bottom: 3px solid var(--navy);
 }
 
 .section-badge {
@@ -228,7 +234,7 @@ h1 {
   font-family: "Oswald", sans-serif;
   font-size: clamp(30px, 3vw, 40px);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.08;
 }
 
 .section-heading p {
@@ -240,10 +246,10 @@ h1 {
 
 .section-lede {
   max-width: 960px;
-  margin: 0 0 24px 56px;
+  margin: 0 0 22px 56px;
   color: #3f5069;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 .section-illustration {
@@ -259,7 +265,7 @@ h1 {
 .viz-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 18px;
 }
 
 .viz-card,
@@ -267,16 +273,17 @@ h1 {
 .site-footer {
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 6px;
   background: var(--card-bg);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  box-shadow: none;
 }
 
 .viz-card {
   display: flex;
   flex-direction: column;
-  min-height: 480px;
-  padding: 24px;
+  min-height: 440px;
+  padding: 22px;
+  overflow: hidden;
 }
 
 .chart-heading {
@@ -301,7 +308,9 @@ h1 {
 
 .chart {
   width: 100%;
+  max-width: 100%;
   min-height: 340px;
+  min-width: 0;
   flex: 1 1 auto;
   display: flex;
   align-items: center;
@@ -323,31 +332,40 @@ h1 {
 }
 
 .transport-viz-card {
-  min-height: 480px;
+  min-height: 440px;
 }
 
 .transport-card {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(260px, 0.78fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 0.62fr);
+  gap: 14px;
   align-items: center;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.transport-visual {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .transport-chart {
-  min-height: 370px;
+  min-height: 330px;
 }
 
 .transport-table {
+  min-width: 0;
   border-top: 1px solid #dce6ef;
+  overflow: hidden;
 }
 
 .transport-table-head,
 .transport-row {
   display: grid;
-  grid-template-columns: 24px 1fr auto;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-height: 54px;
   border-bottom: 1px solid #dce6ef;
 }
@@ -355,23 +373,25 @@ h1 {
 .transport-table-head {
   grid-template-columns: 1fr auto;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
 }
 
 .mode-dot {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
 }
 
 .transport-row strong {
   color: var(--text);
-  font-size: 18px;
+  font-size: 15px;
+  min-width: 0;
 }
 
 .transport-row b {
-  font-size: 20px;
+  justify-self: end;
+  font-size: 16px;
   background: transparent !important;
 }
 

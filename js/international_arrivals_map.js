@@ -21,9 +21,9 @@ function hideStatus() {
   statusEl.classList.remove("is-visible");
 }
 
-function chartWidth(selector, fallback = 520) {
+function chartWidth(selector, fallback = 520, min = 320) {
   const el = document.querySelector(selector);
-  return Math.max(320, Math.floor((el?.clientWidth || fallback) - 4));
+  return Math.max(min, Math.floor((el?.clientWidth || fallback) - 4));
 }
 
 function baseConfig() {
@@ -164,9 +164,9 @@ function labelLayer(region, halo) {
 
 function sourceMarketsSpec() {
   const width = chartWidth("#source-markets-chart", 390);
-  const tableWidth = Math.min(360, Math.max(310, Math.floor(width * 0.38)));
-  const growthWidth = Math.min(160, Math.max(130, Math.floor(width * 0.18)));
-  const barWidth = Math.max(360, width - tableWidth - growthWidth - 22);
+  const tableWidth = Math.min(230, Math.max(170, Math.floor(width * 0.34)));
+  const growthWidth = Math.min(110, Math.max(86, Math.floor(width * 0.18)));
+  const barWidth = Math.max(170, width - tableWidth - growthWidth - 22);
   const countrySort = [
     "Singapore",
     "Indonesia",
@@ -207,7 +207,7 @@ function sourceMarketsSpec() {
               {
                 mark: { type: "image", width: 30, height: 20, align: "center", baseline: "middle" },
                 encoding: {
-                  x: { value: 18 },
+                  x: { value: 14 },
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   url: { field: "Flag_Path", type: "nominal" }
                 }
@@ -215,7 +215,7 @@ function sourceMarketsSpec() {
               {
                 mark: { type: "text", align: "left", baseline: "middle", fontSize: 14, fontWeight: "bold", color: "#1D4E89" },
                 encoding: {
-                  x: { value: 66 },
+                  x: { value: 48 },
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   text: { field: "Flag", type: "nominal" }
                 }
@@ -223,7 +223,7 @@ function sourceMarketsSpec() {
               {
                 mark: { type: "text", align: "left", baseline: "middle", fontSize: 16, fontWeight: 500, color: "#1F2937" },
                 encoding: {
-                  x: { value: 116 },
+                  x: { value: 78 },
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   text: { field: "Country", type: "nominal" },
                   tooltip: [
@@ -303,9 +303,9 @@ function sourceMarketsSpec() {
         data: {
           values: [
             { label: "Decline", color: "#D84C4C", x: 0 },
-            { label: "Steady Growth", color: "#2F7EBB", x: 108 },
-            { label: "Fast Growth", color: "#2E9B9B", x: 260 },
-            { label: "Surging Growth", color: "#3B9B5C", x: 400 }
+            { label: "Steady Growth", color: "#2F7EBB", x: 86 },
+            { label: "Fast Growth", color: "#2E9B9B", x: 214 },
+            { label: "Surging Growth", color: "#3B9B5C", x: 328 }
           ]
         },
         title: { text: "Growth group", anchor: "start", fontSize: 12, offset: 6 },
@@ -418,8 +418,8 @@ function monthlyTrendSpec() {
 function transportSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: Math.min(520, chartWidth("#transport-chart")),
-    height: 360,
+    width: Math.min(320, chartWidth("#transport-chart", 320, 220)),
+    height: 320,
     title: {
       text: "Mode of Transport",
       subtitle: "Land dominates foreign visitor arrivals in 2024",
@@ -429,7 +429,7 @@ function transportSpec() {
     data: { url: "data/mode_of_transport_2024_2023.csv" },
     layer: [
       {
-        mark: { type: "arc", innerRadius: 82, outerRadius: 142, stroke: "#ffffff", strokeWidth: 3 },
+        mark: { type: "arc", innerRadius: 72, outerRadius: 122, stroke: "#ffffff", strokeWidth: 3 },
         encoding: {
           theta: { field: "Share_2024", type: "quantitative" },
           order: { field: "Share_2024", sort: "descending" },
@@ -451,17 +451,17 @@ function transportSpec() {
       },
       {
         data: { values: [{ label: "Dominant Mode", mode: "Land", share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: -32, fontSize: 13, fontWeight: "bold", color: "#5d6878" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: -28, fontSize: 12, fontWeight: "bold", color: "#5d6878" },
         encoding: { text: { field: "label" } }
       },
       {
         data: { values: [{ mode: "Land" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 30, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 26, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "mode" } }
       },
       {
         data: { values: [{ share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 38, fontSize: 36, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 34, fontSize: 32, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "share" } }
       }
     ],
