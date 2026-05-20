@@ -480,7 +480,7 @@ function expenditureSpec() {
     height: 330,
     title: {
       text: "Visitor Expenditure Mix",
-      subtitle: "2024 value by category; colour shows year-on-year growth",
+      subtitle: "2024 value by category; colour highlights key expenditure categories",
       fontSize: 24,
       subtitleFontSize: 14
     },
@@ -496,10 +496,12 @@ function expenditureSpec() {
           y: { field: "Item", type: "nominal", sort: "-x", title: null },
           x: { field: "Value_2024_RM_Bil", type: "quantitative", title: "RM billion" },
           color: {
-            field: "Growth_Pct",
-            type: "quantitative",
-            title: "Growth %",
-            scale: { domain: [-20, 140], range: [colors.red, "#d8c56a", colors.green] }
+            condition: [
+              { test: "datum.Item == 'Shopping'", value: "#D9A441" },
+              { test: "datum.Item == 'Accommodation'", value: "#2E6DA4" },
+              { test: "datum.Item == 'Food & Beverages'", value: "#5A8CCF" }
+            ],
+            value: "#DCE6F2"
           },
           tooltip: [
             { field: "Item", title: "Item" },
@@ -514,7 +516,7 @@ function expenditureSpec() {
         encoding: {
           y: { field: "Item", type: "nominal", sort: "-x" },
           x: { field: "Value_2024_RM_Bil", type: "quantitative" },
-          text: { field: "Share_2024", type: "quantitative", format: ".1f" },
+          text: { field: "Value_2024_RM_Bil", type: "quantitative", format: ".1f" },
           color: { value: colors.text }
         }
       }

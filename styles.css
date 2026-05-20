@@ -518,6 +518,14 @@ h1 {
   line-height: 1.45;
 }
 
+.chart-note {
+  margin: 10px 0 0;
+  color: #2f405a;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .insight-box {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
