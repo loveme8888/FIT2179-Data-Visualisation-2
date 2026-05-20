@@ -524,6 +524,8 @@ function expenditureSpec() {
 }
 
 function receiptsScatterSpec() {
+  const keyMarketFilter = "datum.Country == 'Singapore' || datum.Country == 'China' || datum.Country == 'Indonesia' || datum.Country == 'India' || datum.Country == 'Thailand'";
+
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#receipts-scatter-chart", 760, 650),
@@ -554,37 +556,51 @@ function receiptsScatterSpec() {
       {
         data: {
           values: [
-            { x: 10.5, y: 24, label: "High arrivals + high receipts" },
-            { x: 1.7, y: 24, label: "Lower arrivals + high receipts" },
-            { x: 10.5, y: 5, label: "High arrivals + lower receipts" },
-            { x: 1.7, y: 5, label: "Emerging value markets" }
+            { x: 9, y: 24, label: "High arrivals + high receipts" },
+            { x: 1.25, y: 24, label: "Lower arrivals + high receipts" },
+            { x: 9, y: 4.8, label: "High arrivals + lower receipts" },
+            { x: 1.25, y: 4.8, label: "Emerging value markets" }
           ]
         },
-        mark: { type: "text", align: "center", baseline: "middle", fontSize: 15, fontWeight: "bold", color: "#8b9bb0", opacity: 0.82 },
+        mark: { type: "text", align: "center", baseline: "middle", fontSize: 12, fontWeight: "bold", color: "#8b9bb0", opacity: 0.55 },
         encoding: {
-          x: { field: "x", type: "quantitative" },
+          x: { field: "x", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
           y: { field: "y", type: "quantitative" },
           text: { field: "label" }
         }
       },
       {
-        mark: { type: "rule", strokeDash: [5, 5], color: "#cbd8e6" },
-        encoding: { x: { datum: 3, type: "quantitative" } }
+        mark: { type: "rule", strokeDash: [6, 5], strokeWidth: 1.2, color: "#b8cbe0" },
+        encoding: { x: { datum: 3, type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } } }
       },
       {
-        mark: { type: "rule", strokeDash: [5, 5], color: "#cbd8e6" },
+        mark: { type: "rule", strokeDash: [6, 5], strokeWidth: 1.2, color: "#b8cbe0" },
         encoding: { y: { datum: 8, type: "quantitative" } }
       },
       {
         mark: { type: "circle", opacity: 0.82, stroke: "#ffffff", strokeWidth: 1.4 },
         encoding: {
-          x: { field: "Arrivals_Million", type: "quantitative", title: "Arrivals (million)", scale: { domain: [0, 20] } },
+          x: {
+            field: "Arrivals_Million",
+            type: "quantitative",
+            title: "Arrivals (million, sqrt scale)",
+            scale: { type: "sqrt", domain: [0, 20] },
+            axis: { values: [0, 0.5, 1, 2, 3, 5, 10, 15, 20] }
+          },
           y: { field: "Receipts_RM_Bil", type: "quantitative", title: "Receipts (RM billion)", scale: { domain: [0, 30] } },
           size: {
             field: "RM_Per_Visitor",
             type: "quantitative",
             title: "RM per visitor",
-            scale: { range: [320, 5200] }
+            scale: { range: [80, 1800] },
+            legend: {
+              orient: "bottom",
+              direction: "horizontal",
+              values: [1000, 3000, 5000],
+              titleFontSize: 11,
+              labelFontSize: 10,
+              symbolStrokeWidth: 0
+            }
           },
           color: {
             field: "Growth_Pct",
@@ -601,12 +617,34 @@ function receiptsScatterSpec() {
         }
       },
       {
-        transform: [{ filter: "datum.Country == 'Singapore' || datum.Country == 'China' || datum.Country == 'Indonesia' || datum.Country == 'India' || datum.Country == 'Thailand'" }],
+        transform: [{ filter: keyMarketFilter }],
         mark: { type: "text", dy: -16, fontSize: 14, fontWeight: "bold", color: colors.text },
         encoding: {
-          x: { field: "Arrivals_Million", type: "quantitative" },
+          x: { field: "Arrivals_Million", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
           y: { field: "Receipts_RM_Bil", type: "quantitative" },
           text: { field: "Country" }
+        }
+      },
+      {
+        data: {
+          values: [{ x: 18.9, y: 27.9, note: "Highest arrivals and receipts" }]
+        },
+        mark: { type: "text", align: "right", baseline: "middle", dx: -18, dy: 22, fontSize: 12, fontWeight: 700, color: "#2b405c" },
+        encoding: {
+          x: { field: "x", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
+          y: { field: "y", type: "quantitative" },
+          text: { field: "note" }
+        }
+      },
+      {
+        data: {
+          values: [{ x: 3.7, y: 20.9, note: "High-value growth market" }]
+        },
+        mark: { type: "text", align: "left", baseline: "middle", dx: 18, dy: -8, fontSize: 12, fontWeight: 700, color: "#2b405c" },
+        encoding: {
+          x: { field: "x", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
+          y: { field: "y", type: "quantitative" },
+          text: { field: "note" }
         }
       }
     ],
