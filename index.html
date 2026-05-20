@@ -3,145 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Malaysia Tourism 2024 Dashboard</title>
+  <title>Malaysia Tourism 2024 Infographic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
 <body>
-  <main class="page">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Malaysia Tourism 2024</p>
-        <h1>Insights. Trends. Growth.</h1>
-        <p class="hero-copy">
-          A data-driven dashboard of Malaysia's 2024 tourism recovery, using official Tourism Malaysia statistics.
-        </p>
-      </div>
-      <div class="hero-kpis" aria-label="Key tourism indicators">
-        <div class="kpi"><span>Foreign visitors</span><strong>37.96M</strong><em>+31.1% vs 2023</em></div>
-        <div class="kpi"><span>Visitor expenditure</span><strong>RM106.8B</strong><em>+43.7% vs 2023</em></div>
-        <div class="kpi"><span>Foreign hotel guests</span><strong>34.59M</strong><em>+19.5% vs 2023</em></div>
-        <div class="kpi"><span>Domestic visitors 2023</span><strong>213.7M</strong><em>Annual Report 2023</em></div>
-      </div>
-    </header>
-
-    <div id="chart-status" class="chart-status" role="status"></div>
-
-    <section class="section">
-      <div class="section-heading">
-        <span>1</span>
-        <div>
-          <h2>Malaysia Overview</h2>
-          <p>Where foreign hotel guests stayed, and which markets drove arrivals.</p>
-        </div>
-      </div>
-      <div class="grid two-col key-layout">
-        <article class="panel panel-large">
-          <div class="chart-heading">
-            <h3>Foreign Hotel Guests by State, 2024</h3>
-            <p>Darker states hosted more foreign hotel guests; labels highlight selected high-volume states.</p>
-          </div>
-          <div id="arrivals-map" class="chart"></div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
-        </article>
-        <article class="panel">
-          <div class="chart-heading">
-            <h3>Top Source Markets</h3>
-            <p>International arrivals in 2024 (million); square-root scale improves readability for smaller markets.</p>
-          </div>
-          <div id="source-markets-chart" class="chart compact-chart"></div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 11.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <span>2</span>
-        <div>
-          <h2>Tourism Trends</h2>
-          <p>Monthly recovery pattern and transport gateway structure.</p>
-        </div>
-      </div>
-      <div class="grid two-col">
-        <article class="panel">
-          <div id="monthly-trend-chart" class="chart"></div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 9.</p>
-        </article>
-        <article class="panel">
-          <div class="transport-card">
-            <div class="transport-visual">
-              <div id="transport-chart" class="chart transport-chart"></div>
-            </div>
-            <div class="transport-table" aria-label="Mode of transport share table">
-              <div class="transport-table-head">
-                <span>Mode of Transport</span>
-                <span>Share</span>
-              </div>
-              <div class="transport-row land"><span class="mode-dot"></span><strong>Land</strong><b>66.1%</b></div>
-              <div class="transport-row air"><span class="mode-dot"></span><strong>Air</strong><b>28.9%</b></div>
-              <div class="transport-row sea"><span class="mode-dot"></span><strong>Sea</strong><b>3.5%</b></div>
-              <div class="transport-row rail"><span class="mode-dot"></span><strong>Rail</strong><b>1.5%</b></div>
-            </div>
-            <div class="insight-note">
-              <strong>Two-thirds of foreign visitors arrived via land.</strong>
-              <span>Land continues to be the primary gateway into Malaysia in 2024.</span>
-            </div>
-          </div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 10.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <span>3</span>
-        <div>
-          <h2>Spending Behaviour</h2>
-          <p>How visitors spent money, and which source markets created the highest value.</p>
-        </div>
-      </div>
-      <div class="grid two-col">
-        <article class="panel">
-          <div id="expenditure-chart" class="chart"></div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 13.</p>
-        </article>
-        <article class="panel">
-          <div id="receipts-scatter-chart" class="chart"></div>
-          <p class="source-note">Sources: Malaysia Tourism Statistics in Brief 2024, pp. 11 and 14.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <span>4</span>
-        <div>
-          <h2>Deep Insights</h2>
-          <p>State-level hotel demand and accommodation capacity reveal different growth stories.</p>
-        </div>
-      </div>
-      <div class="grid two-col">
-        <article class="panel">
-          <div id="state-guests-chart" class="chart"></div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
-        </article>
-        <article class="panel">
-          <div id="capacity-aor-chart" class="chart"></div>
-          <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 16-17.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="data-note">
-      <h2>Data Provenance</h2>
-      <p>
-        CSV files are stored in <code>data/</code>. Each file includes source report and page fields;
-        the full index is in <code>data/data_sources.md</code>. Annual Report 2023 is used for 2023 domestic tourism and hotel guest context.
+  <header class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="eyebrow">Official Tourism Malaysia Data</p>
+      <h1>MALAYSIA TOURISM 2024</h1>
+      <p class="hero-subtitle">Insights. Trends. Growth.</p>
+      <p class="hero-copy">
+        Malaysia's tourism recovery accelerated in 2024, driven by stronger regional connectivity,
+        rising visitor expenditure, and concentrated destination demand across key states.
       </p>
-    </section>
+    </div>
+    <div class="scroll-indicator">Scroll to explore</div>
+  </header>
+
+  <main class="page">
+    <aside class="big-picture" aria-label="The big picture summary">
+      <h2>The Big Picture</h2>
+      <ul>
+        <li>International arrivals fully recovered in 2024.</li>
+        <li>Singapore remains the dominant source market.</li>
+        <li>Shopping is the largest expenditure category.</li>
+        <li>Sabah recorded the strongest state-level growth among major states.</li>
+      </ul>
+    </aside>
+
+    <div class="content-flow">
+      <div id="chart-status" class="chart-status" role="status"></div>
+
+      <section class="story-section section-white">
+        <div class="section-heading">
+          <span class="section-badge">1</span>
+          <div>
+            <h2>Malaysia Overview</h2>
+            <p>Where foreign hotel guests stayed, and which markets drove arrivals.</p>
+          </div>
+          <div class="section-illustration passport-illustration" aria-hidden="true">✈︎</div>
+        </div>
+        <div class="viz-grid">
+          <article class="viz-card">
+            <div class="chart-heading">
+              <h3>Foreign Hotel Guests by State, 2024</h3>
+              <p>Darker states hosted more foreign hotel guests; labels highlight selected high-volume states.</p>
+            </div>
+            <div id="arrivals-map" class="chart map-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
+          </article>
+          <article class="viz-card">
+            <div class="chart-heading">
+              <h3>Top Source Markets</h3>
+              <p>International arrivals in 2024 (million); square-root scale improves readability for smaller markets.</p>
+            </div>
+            <div id="source-markets-chart" class="chart source-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 11.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>✦</span>
+          <p>Kuala Lumpur and Selangor dominate international tourism, while Singapore remains Malaysia's strongest source market.</p>
+        </div>
+      </section>
+
+      <section class="story-section section-blue">
+        <div class="section-heading">
+          <span class="section-badge">2</span>
+          <div>
+            <h2>Tourism Trends</h2>
+            <p>Monthly recovery pattern and transport gateway structure.</p>
+          </div>
+          <div class="section-illustration transport-illustration" aria-hidden="true">▰✈︎</div>
+        </div>
+        <div class="viz-grid">
+          <article class="viz-card">
+            <div id="monthly-trend-chart" class="chart trend-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 9.</p>
+          </article>
+          <article class="viz-card transport-viz-card">
+            <div class="transport-card">
+              <div class="transport-visual">
+                <div id="transport-chart" class="chart transport-chart"></div>
+              </div>
+              <div class="transport-table" aria-label="Mode of transport share table">
+                <div class="transport-table-head"><span>Mode of Transport</span><span>Share</span></div>
+                <div class="transport-row land"><span class="mode-dot"></span><strong>Land</strong><b>66.1%</b></div>
+                <div class="transport-row air"><span class="mode-dot"></span><strong>Air</strong><b>28.9%</b></div>
+                <div class="transport-row sea"><span class="mode-dot"></span><strong>Sea</strong><b>3.5%</b></div>
+                <div class="transport-row rail"><span class="mode-dot"></span><strong>Rail</strong><b>1.5%</b></div>
+              </div>
+            </div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 10.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>↗</span>
+          <p>Two-thirds of foreign visitors entered Malaysia by land, highlighting strong regional connectivity.</p>
+        </div>
+      </section>
+
+      <section class="story-section section-white">
+        <div class="section-heading">
+          <span class="section-badge">3</span>
+          <div>
+            <h2>Spending Behaviour</h2>
+            <p>How visitors spent money, and which source markets created the highest value.</p>
+          </div>
+          <div class="section-illustration spending-illustration" aria-hidden="true">▣</div>
+        </div>
+        <div class="viz-grid">
+          <article class="viz-card">
+            <div id="expenditure-chart" class="chart spending-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 13.</p>
+          </article>
+          <article class="viz-card">
+            <div id="receipts-scatter-chart" class="chart scatter-chart"></div>
+            <p class="source-note">Sources: Malaysia Tourism Statistics in Brief 2024, pp. 11 and 14.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>RM</span>
+          <p>Shopping generated the largest share of expenditure, while China and Singapore anchored high-value inbound spending.</p>
+        </div>
+      </section>
+
+      <section class="story-section section-blue">
+        <div class="section-heading">
+          <span class="section-badge">4</span>
+          <div>
+            <h2>Deep Insights</h2>
+            <p>State-level growth patterns reveal where tourism momentum is strongest.</p>
+          </div>
+          <div class="section-illustration island-illustration" aria-hidden="true">◒</div>
+        </div>
+        <div class="viz-grid">
+          <article class="viz-card">
+            <div id="state-guests-chart" class="chart map-chart"></div>
+            <div class="ranking-box">
+              <div><strong>Top 3 growth</strong><span>Kelantan +72.5%</span><span>Putrajaya +46.1%</span><span>Sabah +41.2%</span></div>
+              <div><strong>Bottom 3 growth</strong><span>Labuan -32.6%</span><span>Johor -15.0%</span><span>Pahang -8.7%</span></div>
+            </div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
+          </article>
+          <article class="viz-card">
+            <div id="capacity-aor-chart" class="chart scatter-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19. Note: the supplied reports do not provide state-level tourist spending, so this chart uses verified arrivals and growth by state.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>◆</span>
+          <p>Sabah recorded the strongest high-volume state growth, while some mature markets had lower foreign hotel guest growth in 2024.</p>
+        </div>
+      </section>
+
+      <section class="data-provenance">
+        <h2>Data Provenance</h2>
+        <p>
+          All CSV files are stored in the <code>data/</code> folder and were derived from Tourism Malaysia reports,
+          including <em>Malaysia Tourism Statistics in Brief 2024</em>, <em>Tourism Malaysia Annual Report 2023</em>,
+          and DOSM domestic tourism figures cited in the annual report. The complete source index is available in
+          <code>data/data_sources.md</code>.
+        </p>
+      </section>
+
+      <footer class="site-footer">
+        <div class="tm-logo">Tourism<span>Malaysia</span></div>
+        <div>
+          <strong>Author:</strong> Zilong Li<br>
+          <strong>Date:</strong> May 2026<br>
+          <strong>Data sources:</strong> Tourism Malaysia Statistics in Brief 2024; Tourism Malaysia Annual Report 2023; DOSM figures cited by Tourism Malaysia.<br>
+          <strong>AI acknowledgement:</strong> Visual layout and implementation assistance were supported by AI; data values were transcribed from the cited reports.
+        </div>
+      </footer>
+    </div>
   </main>
 
   <script src="js/international_arrivals_map.js"></script>
