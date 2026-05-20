@@ -6,8 +6,8 @@
   <title>Malaysia Tourism 2024 Infographic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=poster-2">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=story-4">
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -29,16 +29,6 @@
 
   <main class="page">
     <div class="content-flow">
-      <aside class="big-picture" aria-label="The big picture summary">
-        <h2>The Big Picture</h2>
-        <ul>
-          <li>International arrivals fully recovered in 2024.</li>
-          <li>Singapore remains the dominant source market.</li>
-          <li>Shopping is the largest expenditure category.</li>
-          <li>Sabah recorded the strongest state-level growth among major states.</li>
-        </ul>
-      </aside>
-
       <div id="chart-status" class="chart-status" role="status"></div>
 
       <section class="story-section section-white">
@@ -48,15 +38,23 @@
             <h2>Malaysia Overview</h2>
             <p>Where foreign hotel guests stayed, and which markets drove arrivals.</p>
           </div>
-          <div class="section-illustration passport-illustration" aria-hidden="true">✈︎</div>
         </div>
-        <p class="section-lede">
-          Tourism demand in Malaysia is geographically concentrated, with capital-city hotel demand and nearby
-          state activity forming the strongest cluster. At the same time, inbound arrivals are highly regional:
-          Singapore alone contributes far more visitors than any other source market.
-        </p>
-        <div class="viz-grid">
-          <article class="viz-card">
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Background</h3>
+            <p>Malaysia's inbound tourism story is anchored by a small number of high-volume places and nearby regional markets. Hotel guest data reveals where international demand physically concentrates.</p>
+          </article>
+          <article class="text-block">
+            <h3>Key Findings</h3>
+            <p>Kuala Lumpur, Selangor, Sabah, Penang, and Pahang form the most visible visitor clusters, while Singapore remains far ahead of every other source market.</p>
+          </article>
+          <article class="text-block">
+            <h3>Interpretation</h3>
+            <p>The market is regional, connected, and spatially uneven. Malaysia's recovery depends on both gateway access and destination capacity in a handful of states.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
             <div class="chart-heading">
               <h3>Foreign Hotel Guests by State, 2024</h3>
               <p>Darker states hosted more foreign hotel guests; labels highlight selected high-volume states.</p>
@@ -64,7 +62,7 @@
             <div id="arrivals-map" class="chart map-chart"></div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
           </article>
-          <article class="viz-card">
+          <article class="viz-card chart-card-full">
             <div class="chart-heading">
               <h3>Top Source Markets</h3>
               <p>International arrivals in 2024 (million); square-root scale improves readability for smaller markets.</p>
@@ -86,19 +84,27 @@
             <h2>Tourism Trends</h2>
             <p>Monthly recovery pattern and transport gateway structure.</p>
           </div>
-          <div class="section-illustration transport-illustration" aria-hidden="true">▰✈︎</div>
         </div>
-        <p class="section-lede">
-          The recovery was not a single seasonal spike. Month-by-month arrivals remained above 2023 levels
-          throughout the year, while transport data shows that Malaysia's regional land gateways remain central
-          to inbound tourism.
-        </p>
-        <div class="viz-grid">
-          <article class="viz-card">
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Background</h3>
+            <p>Monthly arrivals show whether recovery was broad-based or tied to a single seasonal surge. Transport mode data adds the gateway story behind the visitor flow.</p>
+          </article>
+          <article class="text-block">
+            <h3>Key Findings</h3>
+            <p>Every month in 2024 exceeded its 2023 counterpart, and land transport accounted for 66.1% of foreign visitor entries.</p>
+          </article>
+          <article class="text-block">
+            <h3>Interpretation</h3>
+            <p>The rebound was sustained through the year, with regional land connectivity playing a larger role than long-haul air traffic alone.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
             <div id="monthly-trend-chart" class="chart trend-chart"></div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 9.</p>
           </article>
-          <article class="viz-card transport-viz-card">
+          <article class="viz-card transport-viz-card support-panel">
             <div class="transport-card">
               <div class="transport-visual">
                 <div id="transport-chart" class="chart transport-chart"></div>
@@ -127,19 +133,27 @@
             <h2>Spending Behaviour</h2>
             <p>How visitors spent money, and which source markets created the highest value.</p>
           </div>
-          <div class="section-illustration spending-illustration" aria-hidden="true">▣</div>
         </div>
-        <p class="section-lede">
-          Visitor value is shaped by what tourists buy and where they come from. Expenditure categories reveal
-          the activities capturing the most spending, while the market bubble chart separates high-volume origins
-          from markets that generate higher receipts per visitor.
-        </p>
-        <div class="viz-grid">
-          <article class="viz-card">
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Background</h3>
+            <p>Tourism value is not only about visitor counts. Spending categories show what tourists bought, while receipts by market reveal which origins created the most value.</p>
+          </article>
+          <article class="text-block">
+            <h3>Key Findings</h3>
+            <p>Shopping is the largest expenditure item, followed by accommodation and food. Singapore and China stand out in receipt value, but for different reasons.</p>
+          </article>
+          <article class="text-block">
+            <h3>Interpretation</h3>
+            <p>Malaysia's visitor economy combines high-volume regional movement with high-value spending from selected long-haul and regional markets.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
             <div id="expenditure-chart" class="chart spending-chart"></div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 13.</p>
           </article>
-          <article class="viz-card">
+          <article class="viz-card chart-card-full">
             <div id="receipts-scatter-chart" class="chart scatter-chart"></div>
             <p class="source-note">Sources: Malaysia Tourism Statistics in Brief 2024, pp. 11 and 14.</p>
           </article>
@@ -157,15 +171,23 @@
             <h2>Deep Insights</h2>
             <p>State-level growth patterns reveal where tourism momentum is strongest.</p>
           </div>
-          <div class="section-illustration island-illustration" aria-hidden="true">◒</div>
         </div>
-        <p class="section-lede">
-          State-level growth highlights the uneven geography of recovery. Some destinations grew rapidly from
-          smaller bases, while established high-volume states remained important even when their growth rates
-          were more moderate.
-        </p>
-        <div class="viz-grid">
-          <article class="viz-card">
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Background</h3>
+            <p>Growth rates reveal a second geography beneath the volume map. Some smaller destinations expanded quickly, while mature destinations remained large but grew more slowly.</p>
+          </article>
+          <article class="text-block">
+            <h3>Key Findings</h3>
+            <p>Kelantan, Putrajaya, and Sabah recorded the highest growth rates, while Labuan, Johor, and Pahang declined among the tracked states.</p>
+          </article>
+          <article class="text-block">
+            <h3>Interpretation</h3>
+            <p>The strongest opportunity signal is not simply the largest bubble. It is the combination of existing volume and growth momentum.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
             <div id="state-guests-chart" class="chart map-chart"></div>
             <div class="ranking-box">
               <div><strong>Top 3 growth</strong><span>Kelantan +72.5%</span><span>Putrajaya +46.1%</span><span>Sabah +41.2%</span></div>
@@ -173,7 +195,7 @@
             </div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
           </article>
-          <article class="viz-card">
+          <article class="viz-card chart-card-full">
             <div id="capacity-aor-chart" class="chart scatter-chart"></div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19. Note: the supplied reports do not provide state-level tourist spending, so this chart uses verified arrivals and growth by state.</p>
           </article>
@@ -183,6 +205,16 @@
           <p>Sabah recorded the strongest high-volume state growth, while some mature markets had lower foreign hotel guest growth in 2024.</p>
         </div>
       </section>
+
+      <aside class="big-picture final-summary" aria-label="The big picture summary">
+        <h2>The Big Picture</h2>
+        <ul>
+          <li>International arrivals fully recovered in 2024.</li>
+          <li>Singapore remains the dominant source market.</li>
+          <li>Shopping is the largest expenditure category.</li>
+          <li>Sabah recorded the strongest high-volume state growth.</li>
+        </ul>
+      </aside>
 
       <section class="data-provenance">
         <h2>Data Provenance</h2>
@@ -206,6 +238,6 @@
     </div>
   </main>
 
-  <script src="js/international_arrivals_map.js?v=poster-2"></script>
+  <script src="js/international_arrivals_map.js?v=story-4"></script>
 </body>
 </html>

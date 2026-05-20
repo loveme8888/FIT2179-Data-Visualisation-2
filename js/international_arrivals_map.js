@@ -21,9 +21,10 @@ function hideStatus() {
   statusEl.classList.remove("is-visible");
 }
 
-function chartWidth(selector, fallback = 520, min = 320) {
+function chartWidth(selector, fallback = 720, min = 650) {
   const el = document.querySelector(selector);
-  return Math.max(min, Math.floor((el?.clientWidth || fallback) - 4));
+  const responsiveMin = window.innerWidth < 760 ? 300 : min;
+  return Math.max(responsiveMin, Math.floor((el?.clientWidth || fallback) - 4));
 }
 
 function baseConfig() {
@@ -31,7 +32,7 @@ function baseConfig() {
     background: "#ffffff",
     font: "Inter",
     title: {
-      font: "Oswald",
+      font: "Bebas Neue",
       color: colors.text,
       subtitleFont: "Inter",
       subtitleColor: colors.muted,
@@ -59,9 +60,9 @@ function baseConfig() {
 }
 
 function mapSpec() {
-  const width = chartWidth("#arrivals-map", 720);
+  const width = chartWidth("#arrivals-map", 720, 700);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 370;
+  const mapHeight = 520;
 
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
@@ -105,7 +106,7 @@ function mapSpec() {
               ? {
                   orient: "bottom",
                   direction: "horizontal",
-                  gradientLength: Math.min(360, width - 80),
+                  gradientLength: Math.min(520, width - 100),
                   gradientThickness: 14,
                   format: ".1f"
                 }
@@ -163,10 +164,12 @@ function labelLayer(region, halo) {
 }
 
 function sourceMarketsSpec() {
-  const width = chartWidth("#source-markets-chart", 390);
-  const tableWidth = Math.min(230, Math.max(170, Math.floor(width * 0.34)));
-  const growthWidth = Math.min(110, Math.max(86, Math.floor(width * 0.18)));
-  const barWidth = Math.max(170, width - tableWidth - growthWidth - 22);
+  const width = chartWidth("#source-markets-chart", 720, 650);
+  const tableWidth = Math.min(300, Math.max(230, Math.floor(width * 0.28)));
+  const growthWidth = Math.min(150, Math.max(120, Math.floor(width * 0.14)));
+  const barWidth = window.innerWidth < 760
+    ? Math.max(180, width - tableWidth - growthWidth - 26)
+    : Math.max(650, width - tableWidth - growthWidth - 26);
   const countrySort = [
     "Singapore",
     "Indonesia",
@@ -180,7 +183,7 @@ function sourceMarketsSpec() {
     "Chinese Taipei"
   ];
   const rowScale = { paddingInner: 0.36, paddingOuter: 0.14 };
-  const chartHeight = 360;
+  const chartHeight = 430;
   const growthDomain = ["Decline", "Steady Growth", "Fast Growth", "Surging Growth"];
   const growthRange = ["#D84C4C", "#2F7EBB", "#2E9B9B", "#3B9B5C"];
 
@@ -241,7 +244,7 @@ function sourceMarketsSpec() {
             title: { text: "Arrivals (million)", fontSize: 12, anchor: "start", offset: 8 },
             layer: [
               {
-                mark: { type: "bar", size: 24, cornerRadiusEnd: 4 },
+                mark: { type: "bar", size: 28, cornerRadiusEnd: 4 },
                 encoding: {
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   x: {
@@ -266,7 +269,7 @@ function sourceMarketsSpec() {
                 }
               },
               {
-                mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 700, fontSize: 14, color: "#1F2937" },
+                mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 700, fontSize: 15, color: "#1F2937" },
                 encoding: {
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   x: { field: "Arrivals_Million", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
@@ -336,9 +339,10 @@ function sourceMarketsSpec() {
 }
 
 function monthlyTrendSpec() {
+  const width = chartWidth("#monthly-trend-chart", 760, 650);
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#monthly-trend-chart"),
+    width,
     title: {
       text: "Monthly Foreign Visitors",
       subtitle: "Lines compare monthly arrivals; bars below show 2024 growth vs 2023",
@@ -348,8 +352,8 @@ function monthlyTrendSpec() {
     data: { url: "data/foreign_visitors_monthly_2024_2023.csv" },
     vconcat: [
       {
-        width: chartWidth("#monthly-trend-chart"),
-        height: 250,
+        width,
+        height: 320,
         transform: [
           { fold: ["Visitors_2024", "Visitors_2023"], as: ["Year", "Visitors"] },
           { calculate: "replace(datum.Year, 'Visitors_', '')", as: "Year_Label" },
@@ -389,8 +393,8 @@ function monthlyTrendSpec() {
         }
       },
       {
-        width: chartWidth("#monthly-trend-chart"),
-        height: 90,
+        width,
+        height: 120,
         mark: { type: "bar", cornerRadiusEnd: 3, color: colors.green },
         encoding: {
           x: {
@@ -418,8 +422,8 @@ function monthlyTrendSpec() {
 function transportSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: Math.min(320, chartWidth("#transport-chart", 320, 220)),
-    height: 320,
+    width: Math.min(520, chartWidth("#transport-chart", 520, 360)),
+    height: 380,
     title: {
       text: "Mode of Transport",
       subtitle: "Land dominates foreign visitor arrivals in 2024",
@@ -429,7 +433,7 @@ function transportSpec() {
     data: { url: "data/mode_of_transport_2024_2023.csv" },
     layer: [
       {
-        mark: { type: "arc", innerRadius: 72, outerRadius: 122, stroke: "#ffffff", strokeWidth: 3 },
+        mark: { type: "arc", innerRadius: 96, outerRadius: 162, stroke: "#ffffff", strokeWidth: 3 },
         encoding: {
           theta: { field: "Share_2024", type: "quantitative" },
           order: { field: "Share_2024", sort: "descending" },
@@ -451,17 +455,17 @@ function transportSpec() {
       },
       {
         data: { values: [{ label: "Dominant Mode", mode: "Land", share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: -28, fontSize: 12, fontWeight: "bold", color: "#5d6878" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: -34, fontSize: 13, fontWeight: "bold", color: "#5d6878" },
         encoding: { text: { field: "label" } }
       },
       {
         data: { values: [{ mode: "Land" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 26, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 34, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "mode" } }
       },
       {
         data: { values: [{ share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 34, fontSize: 32, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 42, fontSize: 42, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "share" } }
       }
     ],
@@ -472,8 +476,8 @@ function transportSpec() {
 function expenditureSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#expenditure-chart"),
-    height: 360,
+    width: chartWidth("#expenditure-chart", 760, 650),
+    height: 430,
     title: {
       text: "Visitor Expenditure Mix",
       subtitle: "2024 value by category; colour shows year-on-year growth",
@@ -487,7 +491,7 @@ function expenditureSpec() {
     ],
     layer: [
       {
-        mark: { type: "bar", cornerRadiusEnd: 3 },
+        mark: { type: "bar", cornerRadiusEnd: 3, size: 26 },
         encoding: {
           y: { field: "Item", type: "nominal", sort: "-x", title: null },
           x: { field: "Value_2024_RM_Bil", type: "quantitative", title: "RM billion" },
@@ -522,8 +526,8 @@ function expenditureSpec() {
 function receiptsScatterSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#receipts-scatter-chart"),
-    height: 360,
+    width: chartWidth("#receipts-scatter-chart", 760, 650),
+    height: 460,
     title: {
       text: "Arrivals vs Receipts by Market",
       subtitle: "Bubble size indicates estimated RM per visitor",
@@ -550,13 +554,13 @@ function receiptsScatterSpec() {
       {
         data: {
           values: [
-            { x: 9, y: 24, label: "High Arrivals + High Spending" },
-            { x: 1.7, y: 24, label: "Low Arrivals + High Spending" },
-            { x: 9, y: 5, label: "High Arrivals + Low Spending" },
-            { x: 1.7, y: 5, label: "Emerging Markets" }
+            { x: 10.5, y: 24, label: "High arrivals + high receipts" },
+            { x: 1.7, y: 24, label: "Lower arrivals + high receipts" },
+            { x: 10.5, y: 5, label: "High arrivals + lower receipts" },
+            { x: 1.7, y: 5, label: "Emerging value markets" }
           ]
         },
-        mark: { type: "text", align: "center", baseline: "middle", fontSize: 12, fontWeight: "bold", color: "#8b9bb0", opacity: 0.75 },
+        mark: { type: "text", align: "center", baseline: "middle", fontSize: 15, fontWeight: "bold", color: "#8b9bb0", opacity: 0.82 },
         encoding: {
           x: { field: "x", type: "quantitative" },
           y: { field: "y", type: "quantitative" },
@@ -580,7 +584,7 @@ function receiptsScatterSpec() {
             field: "RM_Per_Visitor",
             type: "quantitative",
             title: "RM per visitor",
-            scale: { range: [180, 2600] }
+            scale: { range: [320, 5200] }
           },
           color: {
             field: "Growth_Pct",
@@ -597,8 +601,8 @@ function receiptsScatterSpec() {
         }
       },
       {
-        transform: [{ filter: "datum.Country == 'Singapore' || datum.Country == 'China' || datum.Country == 'Indonesia' || datum.Country == 'India' || datum.Country == 'Australia' || datum.Country == 'United Kingdom'" }],
-        mark: { type: "text", dy: -14, fontSize: 12, fontWeight: "bold", color: colors.text },
+        transform: [{ filter: "datum.Country == 'Singapore' || datum.Country == 'China' || datum.Country == 'Indonesia' || datum.Country == 'India' || datum.Country == 'Thailand'" }],
+        mark: { type: "text", dy: -16, fontSize: 14, fontWeight: "bold", color: colors.text },
         encoding: {
           x: { field: "Arrivals_Million", type: "quantitative" },
           y: { field: "Receipts_RM_Bil", type: "quantitative" },
@@ -611,9 +615,9 @@ function receiptsScatterSpec() {
 }
 
 function stateGuestsSpec() {
-  const width = chartWidth("#state-guests-chart", 720);
+  const width = chartWidth("#state-guests-chart", 720, 700);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 350;
+  const mapHeight = 500;
   const peninsularCodes = ["KDH", "KTN", "PRK", "PNG", "KUL", "NSN", "MLK", "PLS", "PHG", "TRG", "PJY", "SGR", "JHR"];
 
   const growthMapLayer = (region, showLegend) => ({
@@ -650,7 +654,7 @@ function stateGuestsSpec() {
         type: "quantitative",
         title: "Growth 2024/2023 (%)",
         scale: { domain: [-35, 0, 75], range: ["#D84C4C", "#F5D98B", "#2E8B57"] },
-        legend: showLegend ? { orient: "bottom", direction: "horizontal", gradientLength: Math.min(380, width - 80), format: ".0f" } : null
+        legend: showLegend ? { orient: "bottom", direction: "horizontal", gradientLength: Math.min(520, width - 100), format: ".0f" } : null
       },
       tooltip: [
         { field: "state", title: "State" },
@@ -678,8 +682,8 @@ function stateGuestsSpec() {
 function capacityAorSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#capacity-aor-chart"),
-    height: 370,
+    width: chartWidth("#capacity-aor-chart", 760, 650),
+    height: 460,
     title: {
       text: "Arrivals vs Growth by State",
       subtitle: "Verified state-level foreign hotel guests; the reports do not publish state-level spending",
@@ -701,7 +705,7 @@ function capacityAorSpec() {
             { x: 1.3, y: -22, label: "Low arrivals + low growth" }
           ]
         },
-        mark: { type: "text", align: "center", baseline: "middle", fontSize: 12, fontWeight: "bold", color: "#8b9bb0", opacity: 0.75 },
+        mark: { type: "text", align: "center", baseline: "middle", fontSize: 15, fontWeight: "bold", color: "#8b9bb0", opacity: 0.78 },
         encoding: {
           x: { field: "x", type: "quantitative" },
           y: { field: "y", type: "quantitative" },
@@ -715,7 +719,7 @@ function capacityAorSpec() {
         encoding: {
           x: { field: "Foreign_Million", type: "quantitative", title: "Foreign hotel guests (million)", scale: { domain: [0, 12.8] } },
           y: { field: "international_growth_pct", type: "quantitative", title: "Growth 2024/2023 (%)", scale: { domain: [-35, 80] } },
-          size: { field: "Total_Million", type: "quantitative", title: "Total hotel guests (million)", scale: { range: [120, 2200] } },
+          size: { field: "Total_Million", type: "quantitative", title: "Total hotel guests (million)", scale: { range: [260, 4200] } },
           color: {
             field: "international_growth_pct",
             type: "quantitative",
@@ -732,7 +736,7 @@ function capacityAorSpec() {
       },
       {
         transform: [{ filter: "datum.international_2024 >= 2500000 || datum.international_growth_pct >= 40 || datum.international_growth_pct < -10" }],
-        mark: { type: "text", dy: -14, fontSize: 12, fontWeight: "bold", color: colors.text },
+        mark: { type: "text", dy: -16, fontSize: 14, fontWeight: "bold", color: colors.text },
         encoding: {
           x: { field: "Foreign_Million", type: "quantitative" },
           y: { field: "international_growth_pct", type: "quantitative" },
