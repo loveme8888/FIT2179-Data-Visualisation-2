@@ -112,9 +112,6 @@ h1 {
 
 .page {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 28px;
   width: min(1600px, calc(100vw - 80px));
   margin: 0 auto;
   padding: 80px 0 40px;
@@ -122,17 +119,11 @@ h1 {
 
 .content-flow {
   min-width: 0;
-  grid-column: 1;
-  grid-row: 1;
 }
 
 .big-picture {
-  grid-column: 2;
-  grid-row: 1;
-  position: sticky;
-  top: 24px;
-  align-self: start;
-  padding: 24px;
+  margin: 0 0 70px;
+  padding: 30px 36px;
   border-radius: 24px;
   background: linear-gradient(180deg, var(--navy), #143d72);
   color: #fff;
@@ -140,14 +131,17 @@ h1 {
 }
 
 .big-picture h2 {
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   font-family: "Oswald", sans-serif;
-  font-size: 32px;
+  font-size: 40px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .big-picture ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -155,10 +149,10 @@ h1 {
 
 .big-picture li {
   position: relative;
-  margin: 0 0 16px;
+  margin: 0;
   padding-left: 24px;
   color: #dbe9f5;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.45;
 }
 
@@ -212,7 +206,7 @@ h1 {
   grid-template-columns: 56px minmax(0, 1fr) 120px;
   gap: 18px;
   align-items: center;
-  margin-bottom: 34px;
+  margin-bottom: 18px;
 }
 
 .section-badge {
@@ -242,6 +236,14 @@ h1 {
   color: var(--muted);
   font-size: 20px;
   line-height: 1.35;
+}
+
+.section-lede {
+  max-width: 1120px;
+  margin: 0 0 34px 74px;
+  color: #3f5069;
+  font-size: 19px;
+  line-height: 1.7;
 }
 
 .section-illustration {
@@ -278,7 +280,7 @@ h1 {
 }
 
 .chart-heading {
-  min-height: 86px;
+  min-height: 78px;
   margin-bottom: 14px;
 }
 
@@ -301,6 +303,9 @@ h1 {
   width: 100%;
   min-height: 450px;
   flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .map-chart {
@@ -519,21 +524,8 @@ code {
 }
 
 @media (max-width: 1180px) {
-  .page {
-    grid-template-columns: 1fr;
-  }
-
-  .big-picture {
-    grid-column: 1;
-    grid-row: auto;
-    position: static;
-    order: 2;
-  }
-
-  .content-flow {
-    grid-column: 1;
-    grid-row: auto;
-    order: 1;
+  .big-picture ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .viz-grid {
@@ -556,6 +548,11 @@ code {
     grid-template-columns: 56px 1fr;
   }
 
+  .section-lede {
+    margin-left: 0;
+    font-size: 17px;
+  }
+
   .section-illustration {
     display: none;
   }
@@ -567,7 +564,8 @@ code {
 
   .transport-card,
   .site-footer,
-  .ranking-box {
+  .ranking-box,
+  .big-picture ul {
     grid-template-columns: 1fr;
   }
 }
