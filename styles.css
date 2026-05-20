@@ -316,7 +316,7 @@ h1 {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: 24px;
+  padding: 18px 20px;
   overflow: hidden;
 }
 
@@ -352,17 +352,17 @@ h1 {
 }
 
 .map-chart {
-  min-height: 520px;
+  min-height: 360px;
 }
 
 .source-chart {
-  min-height: 500px;
+  min-height: 390px;
 }
 
 .trend-chart,
 .spending-chart,
 .scatter-chart {
-  min-height: 480px;
+  min-height: 380px;
 }
 
 .transport-viz-card {
@@ -385,7 +385,7 @@ h1 {
 }
 
 .transport-chart {
-  min-height: 380px;
+  min-height: 320px;
 }
 
 .transport-table {

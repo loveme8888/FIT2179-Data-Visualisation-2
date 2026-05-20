@@ -62,7 +62,7 @@ function baseConfig() {
 function mapSpec() {
   const width = chartWidth("#arrivals-map", 720, 700);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 520;
+  const mapHeight = 350;
 
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
@@ -70,7 +70,7 @@ function mapSpec() {
     projection: {
       type: "mercator",
       center: region === "Peninsular" ? [101.65, 4.05] : [115.1, 4.0],
-      scale: region === "Peninsular" ? 4300 : 2450,
+      scale: region === "Peninsular" ? 3300 : 2050,
       translate: [
         region === "Peninsular" ? halfWidth / 2 - 36 : halfWidth / 2 + 36,
         mapHeight / 2
@@ -106,7 +106,7 @@ function mapSpec() {
               ? {
                   orient: "bottom",
                   direction: "horizontal",
-                  gradientLength: Math.min(520, width - 100),
+                  gradientLength: Math.min(440, width - 100),
                   gradientThickness: 14,
                   format: ".1f"
                 }
@@ -183,7 +183,7 @@ function sourceMarketsSpec() {
     "Chinese Taipei"
   ];
   const rowScale = { paddingInner: 0.36, paddingOuter: 0.14 };
-  const chartHeight = 430;
+  const chartHeight = 330;
   const growthDomain = ["Decline", "Steady Growth", "Fast Growth", "Surging Growth"];
   const growthRange = ["#D84C4C", "#2F7EBB", "#2E9B9B", "#3B9B5C"];
 
@@ -353,7 +353,7 @@ function monthlyTrendSpec() {
     vconcat: [
       {
         width,
-        height: 320,
+        height: 250,
         transform: [
           { fold: ["Visitors_2024", "Visitors_2023"], as: ["Year", "Visitors"] },
           { calculate: "replace(datum.Year, 'Visitors_', '')", as: "Year_Label" },
@@ -394,7 +394,7 @@ function monthlyTrendSpec() {
       },
       {
         width,
-        height: 120,
+        height: 90,
         mark: { type: "bar", cornerRadiusEnd: 3, color: colors.green },
         encoding: {
           x: {
@@ -423,7 +423,7 @@ function transportSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: Math.min(520, chartWidth("#transport-chart", 520, 360)),
-    height: 380,
+    height: 300,
     title: {
       text: "Mode of Transport",
       subtitle: "Land dominates foreign visitor arrivals in 2024",
@@ -433,7 +433,7 @@ function transportSpec() {
     data: { url: "data/mode_of_transport_2024_2023.csv" },
     layer: [
       {
-        mark: { type: "arc", innerRadius: 96, outerRadius: 162, stroke: "#ffffff", strokeWidth: 3 },
+        mark: { type: "arc", innerRadius: 78, outerRadius: 132, stroke: "#ffffff", strokeWidth: 3 },
         encoding: {
           theta: { field: "Share_2024", type: "quantitative" },
           order: { field: "Share_2024", sort: "descending" },
@@ -455,17 +455,17 @@ function transportSpec() {
       },
       {
         data: { values: [{ label: "Dominant Mode", mode: "Land", share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: -34, fontSize: 13, fontWeight: "bold", color: "#5d6878" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: -28, fontSize: 12, fontWeight: "bold", color: "#5d6878" },
         encoding: { text: { field: "label" } }
       },
       {
         data: { values: [{ mode: "Land" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 34, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 28, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "mode" } }
       },
       {
         data: { values: [{ share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 42, fontSize: 42, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 34, fontSize: 34, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "share" } }
       }
     ],
@@ -477,7 +477,7 @@ function expenditureSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#expenditure-chart", 760, 650),
-    height: 430,
+    height: 330,
     title: {
       text: "Visitor Expenditure Mix",
       subtitle: "2024 value by category; colour shows year-on-year growth",
@@ -527,7 +527,7 @@ function receiptsScatterSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#receipts-scatter-chart", 760, 650),
-    height: 460,
+    height: 360,
     title: {
       text: "Arrivals vs Receipts by Market",
       subtitle: "Bubble size indicates estimated RM per visitor",
@@ -617,7 +617,7 @@ function receiptsScatterSpec() {
 function stateGuestsSpec() {
   const width = chartWidth("#state-guests-chart", 720, 700);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 500;
+  const mapHeight = 350;
   const peninsularCodes = ["KDH", "KTN", "PRK", "PNG", "KUL", "NSN", "MLK", "PLS", "PHG", "TRG", "PJY", "SGR", "JHR"];
 
   const growthMapLayer = (region, showLegend) => ({
@@ -626,7 +626,7 @@ function stateGuestsSpec() {
     projection: {
       type: "mercator",
       center: region === "Peninsular" ? [101.65, 4.05] : [115.1, 4.0],
-      scale: region === "Peninsular" ? 4300 : 2450,
+      scale: region === "Peninsular" ? 3300 : 2050,
       translate: [region === "Peninsular" ? halfWidth / 2 - 36 : halfWidth / 2 + 36, mapHeight / 2]
     },
     data: { url: "data/malaysia.state.geojson", format: { type: "json", property: "features" } },
@@ -654,7 +654,7 @@ function stateGuestsSpec() {
         type: "quantitative",
         title: "Growth 2024/2023 (%)",
         scale: { domain: [-35, 0, 75], range: ["#D84C4C", "#F5D98B", "#2E8B57"] },
-        legend: showLegend ? { orient: "bottom", direction: "horizontal", gradientLength: Math.min(520, width - 100), format: ".0f" } : null
+        legend: showLegend ? { orient: "bottom", direction: "horizontal", gradientLength: Math.min(440, width - 100), format: ".0f" } : null
       },
       tooltip: [
         { field: "state", title: "State" },
@@ -683,7 +683,7 @@ function capacityAorSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#capacity-aor-chart", 760, 650),
-    height: 460,
+    height: 360,
     title: {
       text: "Arrivals vs Growth by State",
       subtitle: "Verified state-level foreign hotel guests; the reports do not publish state-level spending",
