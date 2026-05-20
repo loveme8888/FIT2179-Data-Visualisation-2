@@ -30,7 +30,7 @@ body {
 
 .hero {
   position: relative;
-  min-height: 420px;
+  min-height: 320px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -47,7 +47,7 @@ body {
 
 .hero-content {
   position: relative;
-  width: min(1600px, calc(100vw - 80px));
+  width: min(1280px, calc(100vw - 72px));
   margin: 0 auto;
   z-index: 1;
 }
@@ -65,26 +65,26 @@ h1 {
   margin: 0;
   color: var(--navy);
   font-family: "Oswald", "Bebas Neue", sans-serif;
-  font-size: clamp(48px, 7vw, 72px);
+  font-size: clamp(38px, 4.6vw, 58px);
   font-weight: 700;
-  letter-spacing: 1px;
-  line-height: 0.98;
+  letter-spacing: 0.5px;
+  line-height: 1;
 }
 
 .hero-subtitle {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   color: var(--accent-blue);
-  font-size: 28px;
+  font-size: 22px;
   font-style: italic;
   font-weight: 700;
 }
 
 .hero-copy {
-  max-width: 700px;
-  margin: 18px 0 0;
+  max-width: 620px;
+  margin: 14px 0 0;
   color: #2b405c;
-  font-size: 22px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.55;
 }
 
 .scroll-indicator {
@@ -112,9 +112,9 @@ h1 {
 
 .page {
   position: relative;
-  width: min(1600px, calc(100vw - 80px));
+  width: min(1280px, calc(100vw - 72px));
   margin: 0 auto;
-  padding: 80px 0 40px;
+  padding: 42px 0 32px;
 }
 
 .content-flow {
@@ -122,18 +122,18 @@ h1 {
 }
 
 .big-picture {
-  margin: 0 0 70px;
-  padding: 30px 36px;
-  border-radius: 24px;
+  margin: 0 0 42px;
+  padding: 22px 28px;
+  border-radius: 18px;
   background: linear-gradient(180deg, var(--navy), #143d72);
   color: #fff;
   box-shadow: 0 18px 42px rgba(10, 42, 94, 0.2);
 }
 
 .big-picture h2 {
-  margin: 0 0 20px;
+  margin: 0 0 14px;
   font-family: "Oswald", sans-serif;
-  font-size: 40px;
+  font-size: 30px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -184,10 +184,10 @@ h1 {
 
 .story-section {
   position: relative;
-  margin: 0 0 90px;
-  padding: 52px;
+  margin: 0 0 54px;
+  padding: 34px;
   border: 1px solid rgba(217, 229, 239, 0.9);
-  border-radius: 32px;
+  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -203,21 +203,21 @@ h1 {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) 120px;
-  gap: 18px;
+  grid-template-columns: 42px minmax(0, 1fr) 84px;
+  gap: 14px;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .section-badge {
   display: grid;
-  width: 56px;
-  height: 56px;
+  width: 42px;
+  height: 42px;
   place-items: center;
   border-radius: 50%;
   background: #0B5E8E;
   color: white;
-  font-size: 28px;
+  font-size: 21px;
   font-weight: 800;
   box-shadow: 0 10px 22px rgba(11, 94, 142, 0.2);
 }
@@ -226,31 +226,31 @@ h1 {
   margin: 0;
   color: var(--navy);
   font-family: "Oswald", sans-serif;
-  font-size: clamp(40px, 4vw, 54px);
+  font-size: clamp(30px, 3vw, 40px);
   font-weight: 700;
   line-height: 1;
 }
 
 .section-heading p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1.35;
 }
 
 .section-lede {
-  max-width: 1120px;
-  margin: 0 0 34px 74px;
+  max-width: 960px;
+  margin: 0 0 24px 56px;
   color: #3f5069;
-  font-size: 19px;
-  line-height: 1.7;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .section-illustration {
   justify-self: end;
   color: rgba(46, 109, 164, 0.18);
   font-family: "Oswald", sans-serif;
-  font-size: 88px;
+  font-size: 58px;
   font-weight: 700;
   line-height: 1;
   transform: rotate(-8deg);
@@ -259,7 +259,7 @@ h1 {
 .viz-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
+  gap: 20px;
 }
 
 .viz-card,
@@ -267,7 +267,7 @@ h1 {
 .site-footer {
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: 16px;
   background: var(--card-bg);
   box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 }
@@ -275,33 +275,33 @@ h1 {
 .viz-card {
   display: flex;
   flex-direction: column;
-  min-height: 620px;
-  padding: 36px;
+  min-height: 480px;
+  padding: 24px;
 }
 
 .chart-heading {
-  min-height: 78px;
-  margin-bottom: 14px;
+  min-height: 58px;
+  margin-bottom: 10px;
 }
 
 .chart-heading h3 {
   margin: 0;
   color: var(--text);
   font-family: "Oswald", sans-serif;
-  font-size: 34px;
+  font-size: 25px;
   line-height: 1.05;
 }
 
 .chart-heading p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
 .chart {
   width: 100%;
-  min-height: 450px;
+  min-height: 340px;
   flex: 1 1 auto;
   display: flex;
   align-items: center;
@@ -309,33 +309,33 @@ h1 {
 }
 
 .map-chart {
-  min-height: 520px;
+  min-height: 380px;
 }
 
 .source-chart {
-  min-height: 520px;
+  min-height: 390px;
 }
 
 .trend-chart,
 .spending-chart,
 .scatter-chart {
-  min-height: 500px;
+  min-height: 380px;
 }
 
 .transport-viz-card {
-  min-height: 620px;
+  min-height: 480px;
 }
 
 .transport-card {
   display: grid;
   grid-template-columns: minmax(320px, 1fr) minmax(260px, 0.78fr);
-  gap: 28px;
+  gap: 20px;
   align-items: center;
   flex: 1;
 }
 
 .transport-chart {
-  min-height: 500px;
+  min-height: 370px;
 }
 
 .transport-table {
@@ -348,14 +348,14 @@ h1 {
   grid-template-columns: 24px 1fr auto;
   align-items: center;
   gap: 12px;
-  min-height: 74px;
+  min-height: 54px;
   border-bottom: 1px solid #dce6ef;
 }
 
 .transport-table-head {
   grid-template-columns: 1fr auto;
   color: var(--text);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 800;
 }
 
@@ -367,11 +367,11 @@ h1 {
 
 .transport-row strong {
   color: var(--text);
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .transport-row b {
-  font-size: 26px;
+  font-size: 20px;
   background: transparent !important;
 }
 
@@ -445,20 +445,20 @@ h1 {
 
 .insight-box {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 14px;
   align-items: center;
-  margin-top: 28px;
-  padding: 22px 26px;
+  margin-top: 20px;
+  padding: 16px 20px;
   border: 1px solid #cfe8d9;
-  border-radius: 22px;
+  border-radius: 16px;
   background: linear-gradient(90deg, #f4fbf7, #ffffff);
 }
 
 .insight-box span {
   display: grid;
-  width: 54px;
-  height: 54px;
+  width: 42px;
+  height: 42px;
   place-items: center;
   border-radius: 50%;
   border: 2px solid var(--green);
@@ -469,27 +469,27 @@ h1 {
 .insight-box p {
   margin: 0;
   color: #33445d;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1.45;
   font-weight: 700;
 }
 
 .data-provenance {
-  margin: 0 0 40px;
-  padding: 34px;
+  margin: 0 0 28px;
+  padding: 24px;
 }
 
 .data-provenance h2 {
   margin: 0 0 10px;
   color: var(--navy);
   font-family: "Oswald", sans-serif;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .data-provenance p {
   margin: 0;
   color: #52627a;
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.65;
 }
 
@@ -504,9 +504,9 @@ code {
   grid-template-columns: 220px minmax(0, 1fr);
   gap: 24px;
   align-items: center;
-  padding: 28px 34px;
+  padding: 22px 26px;
   color: #52627a;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -539,13 +539,29 @@ code {
     width: min(100vw - 28px, 720px);
   }
 
+  .hero {
+    min-height: 360px;
+  }
+
+  h1 {
+    font-size: clamp(34px, 12vw, 46px);
+  }
+
+  .hero-subtitle {
+    font-size: 20px;
+  }
+
+  .hero-copy {
+    font-size: 15px;
+  }
+
   .story-section {
     padding: 26px 18px;
     margin-bottom: 54px;
   }
 
   .section-heading {
-    grid-template-columns: 56px 1fr;
+    grid-template-columns: 42px 1fr;
   }
 
   .section-lede {
@@ -558,7 +574,7 @@ code {
   }
 
   .viz-card {
-    min-height: 560px;
+    min-height: 440px;
     padding: 22px;
   }
 

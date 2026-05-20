@@ -61,7 +61,7 @@ function baseConfig() {
 function mapSpec() {
   const width = chartWidth("#arrivals-map", 720);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 520;
+  const mapHeight = 370;
 
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
@@ -180,7 +180,7 @@ function sourceMarketsSpec() {
     "Chinese Taipei"
   ];
   const rowScale = { paddingInner: 0.36, paddingOuter: 0.14 };
-  const chartHeight = 450;
+  const chartHeight = 360;
   const growthDomain = ["Decline", "Steady Growth", "Fast Growth", "Surging Growth"];
   const growthRange = ["#D84C4C", "#2F7EBB", "#2E9B9B", "#3B9B5C"];
 
@@ -205,7 +205,7 @@ function sourceMarketsSpec() {
             title: { text: "Country", fontSize: 12, anchor: "start", offset: 8 },
             layer: [
               {
-                mark: { type: "image", width: 36, height: 24, align: "center", baseline: "middle" },
+                mark: { type: "image", width: 30, height: 20, align: "center", baseline: "middle" },
                 encoding: {
                   x: { value: 18 },
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
@@ -221,7 +221,7 @@ function sourceMarketsSpec() {
                 }
               },
               {
-                mark: { type: "text", align: "left", baseline: "middle", fontSize: 20, fontWeight: 500, color: "#1F2937" },
+                mark: { type: "text", align: "left", baseline: "middle", fontSize: 16, fontWeight: 500, color: "#1F2937" },
                 encoding: {
                   x: { value: 116 },
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
@@ -241,7 +241,7 @@ function sourceMarketsSpec() {
             title: { text: "Arrivals (million)", fontSize: 12, anchor: "start", offset: 8 },
             layer: [
               {
-                mark: { type: "bar", size: 32, cornerRadiusEnd: 4 },
+                mark: { type: "bar", size: 24, cornerRadiusEnd: 4 },
                 encoding: {
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   x: {
@@ -266,7 +266,7 @@ function sourceMarketsSpec() {
                 }
               },
               {
-                mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 700, fontSize: 17, color: "#1F2937" },
+                mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 700, fontSize: 14, color: "#1F2937" },
                 encoding: {
                   y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
                   x: { field: "Arrivals_Million", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
@@ -279,7 +279,7 @@ function sourceMarketsSpec() {
             width: growthWidth,
             height: chartHeight,
             title: { text: "Growth vs 2023", fontSize: 12, anchor: "start", offset: 8 },
-            mark: { type: "text", align: "left", baseline: "middle", fontSize: 17, fontWeight: 700 },
+            mark: { type: "text", align: "left", baseline: "middle", fontSize: 14, fontWeight: 700 },
             encoding: {
               x: { value: 4 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
@@ -342,14 +342,14 @@ function monthlyTrendSpec() {
     title: {
       text: "Monthly Foreign Visitors",
       subtitle: "Lines compare monthly arrivals; bars below show 2024 growth vs 2023",
-      fontSize: 34,
-      subtitleFontSize: 18
+      fontSize: 24,
+      subtitleFontSize: 14
     },
     data: { url: "data/foreign_visitors_monthly_2024_2023.csv" },
     vconcat: [
       {
         width: chartWidth("#monthly-trend-chart"),
-        height: 330,
+        height: 250,
         transform: [
           { fold: ["Visitors_2024", "Visitors_2023"], as: ["Year", "Visitors"] },
           { calculate: "replace(datum.Year, 'Visitors_', '')", as: "Year_Label" },
@@ -390,7 +390,7 @@ function monthlyTrendSpec() {
       },
       {
         width: chartWidth("#monthly-trend-chart"),
-        height: 120,
+        height: 90,
         mark: { type: "bar", cornerRadiusEnd: 3, color: colors.green },
         encoding: {
           x: {
@@ -419,17 +419,17 @@ function transportSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: Math.min(520, chartWidth("#transport-chart")),
-    height: 500,
+    height: 360,
     title: {
       text: "Mode of Transport",
       subtitle: "Land dominates foreign visitor arrivals in 2024",
-      fontSize: 34,
-      subtitleFontSize: 18
+      fontSize: 24,
+      subtitleFontSize: 14
     },
     data: { url: "data/mode_of_transport_2024_2023.csv" },
     layer: [
       {
-        mark: { type: "arc", innerRadius: 118, outerRadius: 198, stroke: "#ffffff", strokeWidth: 3 },
+        mark: { type: "arc", innerRadius: 82, outerRadius: 142, stroke: "#ffffff", strokeWidth: 3 },
         encoding: {
           theta: { field: "Share_2024", type: "quantitative" },
           order: { field: "Share_2024", sort: "descending" },
@@ -451,17 +451,17 @@ function transportSpec() {
       },
       {
         data: { values: [{ label: "Dominant Mode", mode: "Land", share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: -42, fontSize: 16, fontWeight: "bold", color: "#5d6878" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: -32, fontSize: 13, fontWeight: "bold", color: "#5d6878" },
         encoding: { text: { field: "label" } }
       },
       {
         data: { values: [{ mode: "Land" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 42, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 30, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "mode" } }
       },
       {
         data: { values: [{ share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 50, fontSize: 52, fontWeight: "bold", color: "#2F9559" },
+        mark: { type: "text", align: "center", baseline: "middle", dy: 38, fontSize: 36, fontWeight: "bold", color: "#2F9559" },
         encoding: { text: { field: "share" } }
       }
     ],
@@ -473,12 +473,12 @@ function expenditureSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#expenditure-chart"),
-    height: 480,
+    height: 360,
     title: {
       text: "Visitor Expenditure Mix",
       subtitle: "2024 value by category; colour shows year-on-year growth",
-      fontSize: 34,
-      subtitleFontSize: 18
+      fontSize: 24,
+      subtitleFontSize: 14
     },
     data: { url: "data/visitor_expenditure_items_2024_2023.csv" },
     transform: [
@@ -523,12 +523,12 @@ function receiptsScatterSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#receipts-scatter-chart"),
-    height: 480,
+    height: 360,
     title: {
       text: "Arrivals vs Receipts by Market",
       subtitle: "Bubble size indicates estimated RM per visitor",
-      fontSize: 34,
-      subtitleFontSize: 18
+      fontSize: 24,
+      subtitleFontSize: 14
     },
     data: { url: "data/top_source_markets_2024.csv" },
     transform: [
@@ -613,7 +613,7 @@ function receiptsScatterSpec() {
 function stateGuestsSpec() {
   const width = chartWidth("#state-guests-chart", 720);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 460;
+  const mapHeight = 350;
   const peninsularCodes = ["KDH", "KTN", "PRK", "PNG", "KUL", "NSN", "MLK", "PLS", "PHG", "TRG", "PJY", "SGR", "JHR"];
 
   const growthMapLayer = (region, showLegend) => ({
@@ -665,8 +665,8 @@ function stateGuestsSpec() {
     title: {
       text: "Tourism Growth by State",
       subtitle: "Growth in foreign hotel guests from 2023 to 2024",
-      fontSize: 34,
-      subtitleFontSize: 18
+      fontSize: 24,
+      subtitleFontSize: 14
     },
     hconcat: [growthMapLayer("Peninsular", true), growthMapLayer("Borneo", false)],
     spacing: 4,
@@ -679,12 +679,12 @@ function capacityAorSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#capacity-aor-chart"),
-    height: 500,
+    height: 370,
     title: {
       text: "Arrivals vs Growth by State",
       subtitle: "Verified state-level foreign hotel guests; the reports do not publish state-level spending",
-      fontSize: 34,
-      subtitleFontSize: 18
+      fontSize: 24,
+      subtitleFontSize: 14
     },
     data: { url: "data/international_arrivals_by_state_2024.csv" },
     transform: [
