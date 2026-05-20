@@ -122,9 +122,13 @@ h1 {
 
 .content-flow {
   min-width: 0;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .big-picture {
+  grid-column: 2;
+  grid-row: 1;
   position: sticky;
   top: 24px;
   align-self: start;
@@ -520,11 +524,15 @@ code {
   }
 
   .big-picture {
+    grid-column: 1;
+    grid-row: auto;
     position: static;
     order: 2;
   }
 
   .content-flow {
+    grid-column: 1;
+    grid-row: auto;
     order: 1;
   }
 
