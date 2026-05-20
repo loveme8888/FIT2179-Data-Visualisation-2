@@ -24,29 +24,49 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    linear-gradient(90deg, rgba(18, 92, 135, 0.28) 0 7%, transparent 7% 93%, rgba(18, 92, 135, 0.28) 93% 100%),
-    linear-gradient(180deg, #eff9ff 0%, #dff0f8 46%, #cce6f2 100%);
+  background: linear-gradient(180deg, #f4fbff 0%, #eaf5fb 48%, #edf6fb 100%);
   color: var(--text);
   font-family: "Inter", "Source Sans Pro", Arial, sans-serif;
 }
 
 .hero {
   position: relative;
-  min-height: 340px;
+  min-height: 440px;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url("assets/malaysia-skyline.svg");
+  background-image: url("assets/kuala-lumpur-skyline-hero.jpg");
   background-size: cover;
   background-position: center;
-  filter: saturate(1.08) contrast(1.08);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("assets/kuala-lumpur-skyline-hero.jpg");
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  background-position: right center;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.04) 100%);
+  background:
+    linear-gradient(180deg, rgba(5, 24, 54, 0.05) 0%, rgba(5, 24, 54, 0.14) 100%),
+    linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.72) 45%, rgba(255,255,255,0.35) 100%);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  background: linear-gradient(180deg, rgba(244,251,255,0), #f4fbff);
+  pointer-events: none;
 }
 
 .hero-content {
@@ -118,7 +138,7 @@ h1 {
   position: relative;
   width: min(1180px, calc(100vw - 72px));
   margin: 0 auto;
-  padding: 34px 0 32px;
+  padding: 28px 0 32px;
 }
 
 .content-flow {
