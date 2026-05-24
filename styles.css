@@ -42,7 +42,7 @@ body {
 
 .top-index {
   position: absolute;
-  top: 20px;
+  bottom: 28px;
   left: 50%;
   z-index: 3;
   display: flex;
@@ -156,7 +156,7 @@ body {
   position: relative;
   width: min(1120px, calc(100vw - 72px));
   margin: 0 auto;
-  padding-top: 48px;
+  padding-bottom: 80px;
   z-index: 1;
 }
 
@@ -193,29 +193,6 @@ h1 {
   color: #2b405c;
   font-size: 17px;
   line-height: 1.55;
-}
-
-.scroll-indicator {
-  position: absolute;
-  left: 50%;
-  bottom: 22px;
-  transform: translateX(-50%);
-  z-index: 1;
-  color: var(--navy);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.scroll-indicator::after {
-  content: "";
-  display: block;
-  width: 2px;
-  height: 26px;
-  margin: 8px auto 0;
-  background: var(--accent-blue);
-  border-radius: 2px;
 }
 
 .page {
@@ -706,7 +683,7 @@ code {
 
 @media (max-width: 760px) {
   .top-index {
-    top: 12px;
+    bottom: 16px;
     width: min(100vw - 28px, 720px);
     align-items: flex-start;
     flex-direction: column;
@@ -746,7 +723,7 @@ code {
   }
 
   .hero-content {
-    padding-top: 110px;
+    padding-bottom: 150px;
   }
 
   h1 {
