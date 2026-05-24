@@ -35,9 +35,9 @@ body {
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url("assets/kuala-lumpur-skyline-hero.jpg?v=hero-skyline-2");
+  background-image: url("assets/kl.png?v=kl-hero-1");
   background-size: cover;
-  background-position: center 30%;
+  background-position: center center;
 }
 
 .hero::before {
