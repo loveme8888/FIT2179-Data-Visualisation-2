@@ -7,13 +7,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=kl-hero-1">
+  <link rel="stylesheet" href="styles.css?v=top-nav-1">
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
 <body>
-  <header class="hero">
+  <header class="hero" id="top">
+    <nav class="top-index" aria-label="Page sections">
+      <a class="brand-link" href="#top" aria-label="Malaysia Tourism 2024 home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Malaysia Tourism 2024</span>
+      </a>
+      <div class="index-links">
+        <a href="#overview">Overview</a>
+        <a href="#trends">Trends</a>
+        <a href="#spending">Spending</a>
+        <a href="#insights">Insights</a>
+        <a class="index-cta" href="#data">Explore data <span aria-hidden="true">→</span></a>
+      </div>
+    </nav>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="eyebrow">Official Tourism Malaysia Data</p>
@@ -31,7 +44,7 @@
     <div class="content-flow">
       <div id="chart-status" class="chart-status" role="status"></div>
 
-      <section class="story-section section-white">
+      <section class="story-section section-white" id="overview">
         <div class="section-heading">
           <span class="section-badge">1</span>
           <div>
@@ -77,7 +90,7 @@
         </div>
       </section>
 
-      <section class="story-section section-blue">
+      <section class="story-section section-blue" id="trends">
         <div class="section-heading">
           <span class="section-badge">2</span>
           <div>
@@ -126,7 +139,7 @@
         </div>
       </section>
 
-      <section class="story-section section-white">
+      <section class="story-section section-white" id="spending">
         <div class="section-heading">
           <span class="section-badge">3</span>
           <div>
@@ -165,7 +178,7 @@
         </div>
       </section>
 
-      <section class="story-section section-blue">
+      <section class="story-section section-blue" id="insights">
         <div class="section-heading">
           <span class="section-badge">4</span>
           <div>
@@ -217,7 +230,7 @@
         </ul>
       </aside>
 
-      <section class="data-provenance">
+      <section class="data-provenance" id="data">
         <h2>Data Provenance</h2>
         <p>
           All CSV files are stored in the <code>data/</code> folder and were derived from Tourism Malaysia reports,
