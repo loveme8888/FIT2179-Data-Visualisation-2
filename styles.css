@@ -35,27 +35,21 @@ body {
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url("assets/kuala-lumpur-skyline-hero.jpg");
+  background-image: url("assets/kuala-lumpur-skyline-hero.jpg?v=hero-skyline-1");
   background-size: cover;
-  background-position: center;
+  background-position: center 46%;
 }
 
 .hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("assets/kuala-lumpur-skyline-hero.jpg");
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  background-position: right center;
+  display: none;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(5, 24, 54, 0.05) 0%, rgba(5, 24, 54, 0.14) 100%),
-    linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.72) 45%, rgba(255,255,255,0.35) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(244, 251, 255, 0.16) 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.82) 42%, rgba(255, 255, 255, 0.18) 72%, rgba(255, 255, 255, 0.04) 100%);
 }
 
 .hero::after {
