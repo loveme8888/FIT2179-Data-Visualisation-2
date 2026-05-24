@@ -31,13 +31,13 @@ body {
 
 .hero {
   position: relative;
-  min-height: 440px;
+  min-height: 520px;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url("assets/kuala-lumpur-skyline-hero.jpg?v=hero-skyline-1");
+  background-image: url("assets/kuala-lumpur-skyline-hero.jpg?v=hero-skyline-2");
   background-size: cover;
-  background-position: center 46%;
+  background-position: center 30%;
 }
 
 .hero::before {
@@ -48,8 +48,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(244, 251, 255, 0.16) 100%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.82) 42%, rgba(255, 255, 255, 0.18) 72%, rgba(255, 255, 255, 0.04) 100%);
+    linear-gradient(180deg, rgba(5, 24, 54, 0.02) 0%, rgba(5, 24, 54, 0.08) 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.88) 34%, rgba(255, 255, 255, 0.36) 56%, rgba(255, 255, 255, 0.04) 76%);
 }
 
 .hero::after {
@@ -58,8 +58,8 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 72px;
-  background: linear-gradient(180deg, rgba(244,251,255,0), #f4fbff);
+  height: 112px;
+  background: linear-gradient(180deg, rgba(244,251,255,0), rgba(244,251,255,0.88) 66%, #f4fbff);
   pointer-events: none;
 }
 
