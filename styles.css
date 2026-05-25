@@ -35,9 +35,9 @@ body {
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url("assets/kl.png?v=kl-hero-1");
+  background-image: url("assets/kl.png?v=kl-hero-2");
   background-size: cover;
-  background-position: center center;
+  background-position: center top;
 }
 
 .top-index {
@@ -391,6 +391,29 @@ h1 {
   border-radius: 6px;
   background: var(--card-bg);
   box-shadow: none;
+}
+
+.story-section,
+.viz-card,
+.text-block,
+.insight-box,
+.big-picture,
+.data-provenance,
+.site-footer {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  will-change: transform;
+}
+
+.story-section:hover,
+.viz-card:hover,
+.text-block:hover,
+.insight-box:hover,
+.big-picture:hover,
+.data-provenance:hover,
+.site-footer:hover {
+  transform: translateY(-6px);
+  border-color: rgba(46, 109, 164, 0.28);
+  box-shadow: 0 24px 54px rgba(10, 42, 94, 0.2);
 }
 
 .viz-card {
@@ -762,5 +785,27 @@ code {
   .ranking-box,
   .big-picture ul {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-section,
+  .viz-card,
+  .text-block,
+  .insight-box,
+  .big-picture,
+  .data-provenance,
+  .site-footer {
+    transition: none;
+  }
+
+  .story-section:hover,
+  .viz-card:hover,
+  .text-block:hover,
+  .insight-box:hover,
+  .big-picture:hover,
+  .data-provenance:hover,
+  .site-footer:hover {
+    transform: none;
   }
 }
