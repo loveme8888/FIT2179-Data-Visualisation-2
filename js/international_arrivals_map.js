@@ -363,9 +363,11 @@ function monthlyTrendSpec() {
         encoding: {
           x: {
             field: "Month_Num",
-            type: "ordinal",
+            type: "quantitative",
             title: null,
+            scale: { domain: [1, 12] },
             axis: {
+              values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
               labelAngle: 0,
               labelExpr: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.value - 1]"
             }
@@ -395,13 +397,15 @@ function monthlyTrendSpec() {
       {
         width,
         height: 90,
-        mark: { type: "bar", cornerRadiusEnd: 3, color: colors.green },
+        mark: { type: "bar", cornerRadiusEnd: 3, size: 24, color: colors.green },
         encoding: {
           x: {
             field: "Month_Num",
-            type: "ordinal",
+            type: "quantitative",
             title: "Month",
+            scale: { domain: [1, 12] },
             axis: {
+              values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
               labelAngle: 0,
               labelExpr: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.value - 1]"
             }
@@ -521,6 +525,363 @@ function expenditureSpec() {
         }
       }
     ],
+    config: baseConfig()
+  };
+}
+
+function domesticKeyIndicatorsSpec() {
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width: chartWidth("#domestic-key-indicators-chart", 760, 650),
+    height: 320,
+    title: {
+      text: "Domestic Tourism Key Indicators",
+      subtitle: "Indexed to 2017 = 100 to compare indicators with different units",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/domestic_tourism_key_indicators_2017_2024.csv" },
+    transform: [
+      {
+        filter: "datum.Indicator == 'Total Expenditure' || datum.Indicator == 'Number of Visitors' || datum.Indicator == 'Number of Tourism Trips' || datum.Indicator == 'Average Expenditure per Trip'"
+      },
+      {
+        calculate: "datum.Indicator == 'Total Expenditure' ? datum.Value / 83102.6097829999 * 100 : datum.Indicator == 'Number of Visitors' ? datum.Value / 205408.349313615 * 100 : datum.Indicator == 'Number of Tourism Trips' ? datum.Value / 276147.263 * 100 : datum.Value / 300.936454365051 * 100",
+        as: "Index_2017"
+      }
+    ],
+    mark: { type: "line", point: { filled: true, size: 45 }, strokeWidth: 3 },
+    encoding: {
+      x: { field: "Year", type: "ordinal", title: "Year" },
+      y: { field: "Index_2017", type: "quantitative", title: "Index (2017 = 100)" },
+      color: {
+        field: "Indicator",
+        type: "nominal",
+        title: null,
+        scale: {
+          domain: ["Total Expenditure", "Number of Visitors", "Number of Tourism Trips", "Average Expenditure per Trip"],
+          range: ["#D9A441", "#2E6DA4", "#5A8CCF", "#2E8B57"]
+        },
+        legend: { orient: "bottom", direction: "horizontal", columns: 2 }
+      },
+      tooltip: [
+        { field: "Indicator", title: "Indicator" },
+        { field: "Year", title: "Year" },
+        { field: "Value", title: "Value", format: ",.1f" },
+        { field: "Unit", title: "Unit" },
+        { field: "Index_2017", title: "Index", format: ".1f" }
+      ]
+    },
+    config: baseConfig()
+  };
+}
+
+function domesticStateVisitorsSpec() {
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width: chartWidth("#domestic-state-visitors-chart", 760, 650),
+    height: 390,
+    title: {
+      text: "Domestic Visitors by State",
+      subtitle: "Top visited states in 2024",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/domestic_visitors_by_state_2017_2024.csv" },
+    transform: [
+      { filter: "datum.Year == 2024 && datum.Is_Total == 'FALSE'" },
+      { calculate: "datum.Domestic_Visitors_000 / 1000", as: "Domestic_Visitors_Million" },
+      { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Domestic_Visitors_000", order: "descending" }] },
+      { filter: "datum.Rank <= 12" }
+    ],
+    layer: [
+      {
+        mark: { type: "bar", cornerRadiusEnd: 3, size: 22 },
+        encoding: {
+          y: { field: "State", type: "nominal", sort: "-x", title: null },
+          x: { field: "Domestic_Visitors_Million", type: "quantitative", title: "Domestic visitors (million)" },
+          color: {
+            condition: [
+              { test: "datum.State == 'Selangor'", value: "#D9A441" },
+              { test: "datum.State == 'W.P. Kuala Lumpur'", value: "#2E6DA4" },
+              { test: "datum.State == 'Perak'", value: "#5A8CCF" }
+            ],
+            value: "#DCE6F2"
+          },
+          tooltip: [
+            { field: "State", title: "State" },
+            { field: "Domestic_Visitors_000", title: "Domestic visitors ('000)", format: ",.1f" }
+          ]
+        }
+      },
+      {
+        mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+        encoding: {
+          y: { field: "State", type: "nominal", sort: "-x" },
+          x: { field: "Domestic_Visitors_Million", type: "quantitative" },
+          text: { field: "Domestic_Visitors_Million", type: "quantitative", format: ".1f" }
+        }
+      }
+    ],
+    config: baseConfig()
+  };
+}
+
+function domesticExpenditureSpec() {
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width: chartWidth("#domestic-expenditure-chart", 760, 650),
+    height: 310,
+    title: {
+      text: "Domestic Visitor Expenditure Mix",
+      subtitle: "2024 expenditure by component",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/domestic_expenditure_components_2023_2024.csv" },
+    transform: [
+      { filter: "datum.Year == 2024 && datum.Row_Type == 'Component'" },
+      { calculate: "datum.Expenditure_RM_Mil / 1000", as: "Expenditure_RM_Bil" }
+    ],
+    layer: [
+      {
+        mark: { type: "bar", cornerRadiusEnd: 3, size: 24 },
+        encoding: {
+          y: { field: "Component", type: "nominal", sort: "-x", title: null },
+          x: { field: "Expenditure_RM_Bil", type: "quantitative", title: "RM billion" },
+          color: {
+            condition: [
+              { test: "datum.Component == 'Shopping'", value: "#D9A441" },
+              { test: "datum.Component == 'Food & Beverage'", value: "#5A8CCF" },
+              { test: "datum.Component == 'Accommodation'", value: "#2E6DA4" }
+            ],
+            value: "#DCE6F2"
+          },
+          tooltip: [
+            { field: "Component", title: "Component" },
+            { field: "Expenditure_RM_Mil", title: "RM mil.", format: ",.1f" },
+            { field: "Share_Pct", title: "Share %", format: ".1f" }
+          ]
+        }
+      },
+      {
+        mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+        encoding: {
+          y: { field: "Component", type: "nominal", sort: "-x" },
+          x: { field: "Expenditure_RM_Bil", type: "quantitative" },
+          text: { field: "Expenditure_RM_Bil", type: "quantitative", format: ".1f" }
+        }
+      }
+    ],
+    config: baseConfig()
+  };
+}
+
+function domesticPurposeSpec() {
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width: chartWidth("#domestic-purpose-chart", 760, 650),
+    height: 300,
+    title: {
+      text: "Purpose of Domestic Trips",
+      subtitle: "Share of domestic tourism trips in 2024",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/domestic_trip_purpose_2024.csv" },
+    layer: [
+      {
+        mark: { type: "bar", cornerRadiusEnd: 3, size: 24 },
+        encoding: {
+          y: { field: "Purpose", type: "nominal", sort: "-x", title: null },
+          x: { field: "Share_Pct", type: "quantitative", title: "Share of trips (%)" },
+          color: {
+            condition: [
+              { test: "datum.Purpose == 'Visiting relatives & friends'", value: "#D9A441" },
+              { test: "datum.Purpose == 'Shopping'", value: "#2E6DA4" },
+              { test: "datum.Purpose == 'Holiday/ leisure/ relaxation'", value: "#5A8CCF" }
+            ],
+            value: "#DCE6F2"
+          },
+          tooltip: [
+            { field: "Purpose", title: "Purpose" },
+            { field: "Share_Pct", title: "Share %", format: ".1f" },
+            { field: "Activity_1", title: "Top activity" }
+          ]
+        }
+      },
+      {
+        mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+        encoding: {
+          y: { field: "Purpose", type: "nominal", sort: "-x" },
+          x: { field: "Share_Pct", type: "quantitative" },
+          text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
+        }
+      }
+    ],
+    config: baseConfig()
+  };
+}
+
+function domesticStructureSpec() {
+  const width = chartWidth("#domestic-structure-chart", 760, 650);
+  const halfWidth = Math.max(300, Math.floor((width - 30) / 2));
+
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    hconcat: [
+      {
+        width: halfWidth,
+        height: 280,
+        title: {
+          text: "Domestic Transport Mode",
+          subtitle: "Visitors, 2024",
+          fontSize: 22,
+          subtitleFontSize: 13
+        },
+        data: { url: "data/domestic_transport_mode_2023_2024.csv" },
+        transform: [
+          { filter: "datum.Year == 2024 && datum.Visitor_Type == 'Visitors' && datum.Mode_Type == 'Aggregate mode'" }
+        ],
+        layer: [
+          {
+            mark: { type: "bar", cornerRadiusEnd: 3, size: 24 },
+            encoding: {
+              y: { field: "Mode", type: "nominal", sort: "-x", title: null },
+              x: { field: "Share_Pct", type: "quantitative", title: "Share (%)", scale: { domain: [0, 100] } },
+              color: {
+                field: "Mode",
+                type: "nominal",
+                scale: { domain: ["Land", "Air", "Water"], range: ["#2E8B57", "#2E6DA4", "#5A8CCF"] },
+                legend: null
+              },
+              tooltip: [
+                { field: "Mode", title: "Mode" },
+                { field: "Share_Pct", title: "Share %", format: ".1f" }
+              ]
+            }
+          },
+          {
+            mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+            encoding: {
+              y: { field: "Mode", type: "nominal", sort: "-x" },
+              x: { field: "Share_Pct", type: "quantitative", scale: { domain: [0, 100] } },
+              text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
+            }
+          }
+        ]
+      },
+      {
+        width: halfWidth,
+        height: 280,
+        title: {
+          text: "Tourist Accommodation Type",
+          subtitle: "Tourists, 2024",
+          fontSize: 22,
+          subtitleFontSize: 13
+        },
+        data: { url: "data/domestic_accommodation_type_2023_2024.csv" },
+        transform: [
+          { filter: "datum.Year == 2024 && datum.Row_Type == 'Accommodation type'" }
+        ],
+        layer: [
+          {
+            mark: { type: "bar", cornerRadiusEnd: 3, size: 22 },
+            encoding: {
+              y: { field: "Accommodation_Type", type: "nominal", sort: "-x", title: null },
+              x: { field: "Share_Pct", type: "quantitative", title: "Share (%)", scale: { domain: [0, 65] } },
+              color: {
+                condition: [
+                  { test: "datum.Accommodation_Type == \"Relatives' & Friends' House\"", value: "#D9A441" },
+                  { test: "datum.Accommodation_Type == 'Hotel'", value: "#2E6DA4" }
+                ],
+                value: "#DCE6F2"
+              },
+              tooltip: [
+                { field: "Accommodation_Type", title: "Type" },
+                { field: "Share_Pct", title: "Share %", format: ".1f" }
+              ]
+            }
+          },
+          {
+            mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+            encoding: {
+              y: { field: "Accommodation_Type", type: "nominal", sort: "-x" },
+              x: { field: "Share_Pct", type: "quantitative", scale: { domain: [0, 65] } },
+              text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
+            }
+          }
+        ]
+      }
+    ],
+    spacing: 30,
+    config: baseConfig()
+  };
+}
+
+function domesticODSpec() {
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width: chartWidth("#domestic-od-chart", 760, 650),
+    height: 430,
+    title: {
+      text: "Domestic Tourist Origin-Destination Flow",
+      subtitle: "State of origin by state visited, 2024 ('000 tourists)",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/domestic_tourists_origin_destination_2024.csv" },
+    transform: [
+      { filter: "datum.Is_Origin_Total == 'FALSE' && datum.Is_Destination_Total == 'FALSE'" }
+    ],
+    mark: { type: "rect", stroke: "#ffffff", strokeWidth: 0.5 },
+    encoding: {
+      x: { field: "Destination_State", type: "nominal", title: "Destination state", axis: { labelAngle: -45, labelLimit: 95 } },
+      y: { field: "Origin_State", type: "nominal", title: "Origin state" },
+      color: {
+        field: "Tourists_000",
+        type: "quantitative",
+        title: "Tourists ('000)",
+        scale: { scheme: "blues", type: "sqrt" }
+      },
+      tooltip: [
+        { field: "Origin_State", title: "Origin" },
+        { field: "Destination_State", title: "Destination" },
+        { field: "Tourists_000", title: "Tourists ('000)", format: ",.1f" }
+      ]
+    },
+    config: baseConfig()
+  };
+}
+
+function domesticTopDestinationsSpec() {
+  const selectedStates = ["Selangor", "W.P. Kuala Lumpur", "Sabah", "Pahang", "Pulau Pinang", "Johor"];
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width: chartWidth("#domestic-top-destinations-chart", 760, 650),
+    height: 260,
+    title: {
+      text: "High-Volume Domestic Destination Appeal",
+      subtitle: "Top visited places in selected destination states",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/domestic_top_destinations_by_state_2024.csv" },
+    transform: [
+      { filter: `indexof(${JSON.stringify(selectedStates)}, datum.State) >= 0` },
+      { calculate: "datum.Rank + '. ' + datum.Destination", as: "Destination_Label" }
+    ],
+    mark: { type: "text", align: "left", baseline: "middle", fontSize: 12.5, color: colors.text },
+    encoding: {
+      y: { field: "State", type: "nominal", sort: selectedStates, title: null },
+      x: { field: "Rank", type: "ordinal", title: "Rank", axis: { labelAngle: 0 } },
+      text: { field: "Destination_Label", type: "nominal" },
+      tooltip: [
+        { field: "State", title: "State" },
+        { field: "Rank", title: "Rank" },
+        { field: "Destination", title: "Destination" }
+      ]
+    },
     config: baseConfig()
   };
 }
@@ -789,14 +1150,20 @@ function capacityAorSpec() {
 }
 
 const charts = [
-  ["#arrivals-map", mapSpec],
-  ["#source-markets-chart", sourceMarketsSpec],
   ["#monthly-trend-chart", monthlyTrendSpec],
-  ["#transport-chart", transportSpec],
-  ["#expenditure-chart", expenditureSpec],
+  ["#domestic-key-indicators-chart", domesticKeyIndicatorsSpec],
+  ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
+  ["#arrivals-map", mapSpec],
+  ["#domestic-state-visitors-chart", domesticStateVisitorsSpec],
+  ["#expenditure-chart", expenditureSpec],
+  ["#domestic-expenditure-chart", domesticExpenditureSpec],
+  ["#domestic-purpose-chart", domesticPurposeSpec],
+  ["#domestic-structure-chart", domesticStructureSpec],
+  ["#domestic-od-chart", domesticODSpec],
   ["#state-guests-chart", stateGuestsSpec],
-  ["#capacity-aor-chart", capacityAorSpec]
+  ["#capacity-aor-chart", capacityAorSpec],
+  ["#domestic-top-destinations-chart", domesticTopDestinationsSpec]
 ];
 
 async function renderAll() {

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=section-copy-1">
+  <link rel="stylesheet" href="styles.css?v=story-sections-1">
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -20,10 +20,12 @@
         <span>Malaysia Tourism</span>
       </a>
       <div class="index-links">
+        <a href="#growth-trends">Growth</a>
         <a href="#market-patterns">Market Patterns</a>
-        <a href="#growth-trends">Growth Trends</a>
+        <a href="#destination-patterns">Destinations</a>
         <a href="#spending-patterns">Spending Patterns</a>
-        <a href="#opportunity-insights">Opportunity Insights</a>
+        <a href="#domestic-patterns">Domestic Travel</a>
+        <a href="#opportunity-insights">Opportunities</a>
         <a class="index-cta" href="#data">Explore data <span aria-hidden="true">→</span></a>
       </div>
     </nav>
@@ -43,26 +45,106 @@
     <div class="content-flow">
       <div id="chart-status" class="chart-status" role="status"></div>
 
-      <section class="story-section section-white" id="market-patterns">
+      <section class="story-section section-white" id="growth-trends">
         <div class="section-heading">
           <span class="section-badge">1</span>
           <div>
-            <h2>Tourism Market Patterns</h2>
-            <p>Where inbound demand came from, and where it physically concentrated.</p>
+            <h2>Tourism Growth Trends</h2>
+            <p>Whether tourism activity expanded in 2024, and where that growth appears in the data.</p>
           </div>
         </div>
         <div class="narrative-grid">
           <article class="text-block">
-            <h3>Demand Focus</h3>
-            <p>Inbound tourism is shaped by nearby regional markets and a small group of high-volume destination states.</p>
+            <h3>Growth Lens</h3>
+            <p>Monthly foreign arrivals show short-term momentum, while domestic indicators show the wider tourism economy over time.</p>
           </article>
           <article class="text-block">
             <h3>Main Pattern</h3>
-            <p>Kuala Lumpur, Selangor, Sabah, Penang, and Pahang form the clearest visitor clusters, while Singapore leads all source markets.</p>
+            <p>Every month in 2024 exceeded its 2023 counterpart, and domestic tourism expenditure reached RM106.7 billion.</p>
           </article>
           <article class="text-block">
             <h3>Why It Matters</h3>
-            <p>The market is regional, connected, and spatially uneven, so gateway access and state capacity strongly shape visitor concentration.</p>
+            <p>The opening section establishes the scale of growth before separating the story into markets, destinations, spending, and domestic behaviour.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
+            <div id="monthly-trend-chart" class="chart trend-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 9.</p>
+          </article>
+          <article class="viz-card chart-card-full">
+            <div id="domestic-key-indicators-chart" class="chart trend-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 1.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>↗</span>
+          <p>Foreign arrivals grew consistently month by month, while domestic tourism indicators show large-scale activity across visitors, trips, and expenditure.</p>
+        </div>
+      </section>
+
+      <section class="story-section section-blue" id="market-patterns">
+        <div class="section-heading">
+          <span class="section-badge">2</span>
+          <div>
+            <h2>Tourism Market Patterns</h2>
+            <p>Which source markets drove arrivals, and which markets created higher receipt value.</p>
+          </div>
+        </div>
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Market Lens</h3>
+            <p>Arrival volume identifies the largest source markets, while receipts show how market value differs from market size.</p>
+          </article>
+          <article class="text-block">
+            <h3>Main Pattern</h3>
+            <p>Singapore remained the largest source market, while China stood out as a high-value market in visitor receipts.</p>
+          </article>
+          <article class="text-block">
+            <h3>Why It Matters</h3>
+            <p>Market strategy depends on both visitor numbers and spending value, so high-arrival and high-receipt markets should be read together.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
+            <div class="chart-heading">
+              <h3>Top Source Markets</h3>
+              <p>International arrivals in 2024 (million); square-root scale improves readability for smaller markets.</p>
+            </div>
+            <div id="source-markets-chart" class="chart source-chart"></div>
+            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 11.</p>
+          </article>
+          <article class="viz-card chart-card-full">
+            <div id="receipts-scatter-chart" class="chart scatter-chart"></div>
+            <p class="source-note">Sources: Malaysia Tourism Statistics in Brief 2024, pp. 11 and 14.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>✦</span>
+          <p>Singapore anchors arrival volume, but receipts data shows that market value is not explained by arrivals alone.</p>
+        </div>
+      </section>
+
+      <section class="story-section section-white" id="destination-patterns">
+        <div class="section-heading">
+          <span class="section-badge">3</span>
+          <div>
+            <h2>Tourism Destination Patterns</h2>
+            <p>Which states concentrated international hotel guests and domestic visitors.</p>
+          </div>
+        </div>
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Destination Lens</h3>
+            <p>State-level data shows whether demand concentrates in gateway states, mature destinations, or wider domestic travel corridors.</p>
+          </article>
+          <article class="text-block">
+            <h3>Main Pattern</h3>
+            <p>Kuala Lumpur and Selangor dominate international hotel guest geography, while Selangor leads domestic visitor volume.</p>
+          </article>
+          <article class="text-block">
+            <h3>Why It Matters</h3>
+            <p>Comparing international and domestic destination patterns clarifies which states serve inbound demand and which serve wider local travel.</p>
           </article>
         </div>
         <div class="viz-flow">
@@ -75,114 +157,103 @@
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19.</p>
           </article>
           <article class="viz-card chart-card-full">
-            <div class="chart-heading">
-              <h3>Top Source Markets</h3>
-              <p>International arrivals in 2024 (million); square-root scale improves readability for smaller markets.</p>
-            </div>
-            <div id="source-markets-chart" class="chart source-chart"></div>
-            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 11.</p>
+            <div id="domestic-state-visitors-chart" class="chart spending-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 9.</p>
           </article>
         </div>
         <div class="insight-box">
-          <span>✦</span>
-          <p>Kuala Lumpur and Selangor dominate international tourism, while Singapore remains Malaysia's strongest source market.</p>
+          <span>◆</span>
+          <p>International demand is concentrated in a smaller set of gateway states, while domestic visitors produce a broader destination pattern.</p>
         </div>
       </section>
 
-      <section class="story-section section-blue" id="growth-trends">
+      <section class="story-section section-blue" id="spending-patterns">
         <div class="section-heading">
-          <span class="section-badge">2</span>
-          <div>
-            <h2>Tourism Growth Trends</h2>
-            <p>How visitor flows changed through the year, and which entry modes supported movement.</p>
-          </div>
-        </div>
-        <div class="narrative-grid">
-          <article class="text-block">
-            <h3>Trend Signal</h3>
-            <p>Monthly arrivals show whether growth was broad-based through the year or concentrated in selected travel periods.</p>
-          </article>
-          <article class="text-block">
-            <h3>Main Pattern</h3>
-            <p>Every month in 2024 exceeded its 2023 counterpart, and land transport accounted for 66.1% of foreign visitor entries.</p>
-          </article>
-          <article class="text-block">
-            <h3>Why It Matters</h3>
-            <p>Growth was supported by year-round demand and regional land connectivity, not only by long-haul air traffic.</p>
-          </article>
-        </div>
-        <div class="viz-flow">
-          <article class="viz-card chart-card-full">
-            <div id="monthly-trend-chart" class="chart trend-chart"></div>
-            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 9.</p>
-          </article>
-          <article class="viz-card transport-viz-card support-panel">
-            <div class="transport-card">
-              <div class="transport-visual">
-                <div id="transport-chart" class="chart transport-chart"></div>
-              </div>
-              <div class="transport-table" aria-label="Mode of transport share table">
-                <div class="transport-table-head"><span>Mode of Transport</span><span>Share</span></div>
-                <div class="transport-row land"><span class="mode-dot"></span><strong>Land</strong><b>66.1%</b></div>
-                <div class="transport-row air"><span class="mode-dot"></span><strong>Air</strong><b>28.9%</b></div>
-                <div class="transport-row sea"><span class="mode-dot"></span><strong>Sea</strong><b>3.5%</b></div>
-                <div class="transport-row rail"><span class="mode-dot"></span><strong>Rail</strong><b>1.5%</b></div>
-              </div>
-            </div>
-            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 10.</p>
-          </article>
-        </div>
-        <div class="insight-box">
-          <span>↗</span>
-          <p>Two-thirds of foreign visitors entered Malaysia by land, highlighting strong regional connectivity.</p>
-        </div>
-      </section>
-
-      <section class="story-section section-white" id="spending-patterns">
-        <div class="section-heading">
-          <span class="section-badge">3</span>
+          <span class="section-badge">4</span>
           <div>
             <h2>Tourism Spending Patterns</h2>
-            <p>How visitor expenditure was distributed, and which markets created higher receipt value.</p>
+            <p>How visitor expenditure was distributed across categories for international and domestic tourism.</p>
           </div>
         </div>
         <div class="narrative-grid">
           <article class="text-block">
             <h3>Value Lens</h3>
-            <p>Tourism value is not only about visitor counts; spending categories show what visitors bought and where receipts were created.</p>
+            <p>Spending patterns reveal what visitors bought, not just how many visitors arrived or where they travelled.</p>
           </article>
           <article class="text-block">
             <h3>Main Pattern</h3>
-            <p>Shopping is the largest expenditure item, followed by accommodation and food. Growth was strongest in fuel and international airfares, while entertainment declined.</p>
+            <p>Shopping is the largest category in both international and domestic expenditure, with food, accommodation, and transport-related costs also prominent.</p>
           </article>
           <article class="text-block">
             <h3>Why It Matters</h3>
-            <p>Malaysia's visitor economy combines high-volume regional movement with higher-value spending from selected regional and long-haul markets.</p>
+            <p>Comparing international and domestic expenditure shows which parts of the visitor economy are consistently central to tourism value.</p>
           </article>
         </div>
         <div class="viz-flow">
           <article class="viz-card chart-card-full">
             <div id="expenditure-chart" class="chart spending-chart"></div>
-            <p class="chart-note">Shopping remains the largest expenditure category, accounting for more than twice the value of accommodation.</p>
+            <p class="chart-note">Shopping remains the largest international expenditure category, accounting for more than twice the value of accommodation.</p>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 13.</p>
           </article>
           <article class="viz-card chart-card-full">
-            <div id="receipts-scatter-chart" class="chart scatter-chart"></div>
-            <p class="source-note">Sources: Malaysia Tourism Statistics in Brief 2024, pp. 11 and 14.</p>
+            <div id="domestic-expenditure-chart" class="chart spending-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 6.</p>
           </article>
         </div>
         <div class="insight-box">
           <span>RM</span>
-          <p>Shopping generated the largest share of expenditure, while China and Singapore anchored high-value inbound spending.</p>
+          <p>Shopping is the clearest common spending anchor across international and domestic tourism.</p>
+        </div>
+      </section>
+
+      <section class="story-section section-white" id="domestic-patterns">
+        <div class="section-heading">
+          <span class="section-badge">5</span>
+          <div>
+            <h2>Domestic Tourism Patterns</h2>
+            <p>Why domestic visitors travelled, how they moved, where they stayed, and how states connected.</p>
+          </div>
+        </div>
+        <div class="narrative-grid">
+          <article class="text-block">
+            <h3>Behaviour Lens</h3>
+            <p>Domestic tourism needs its own view because local travel is shaped by family visits, road movement, and non-hotel accommodation.</p>
+          </article>
+          <article class="text-block">
+            <h3>Main Pattern</h3>
+            <p>Visiting relatives and friends was the top trip purpose, land transport dominated movement, and relatives' or friends' houses were the leading accommodation type.</p>
+          </article>
+          <article class="text-block">
+            <h3>Why It Matters</h3>
+            <p>Domestic travel complements inbound tourism by showing everyday travel behaviour and state-to-state movement within Malaysia.</p>
+          </article>
+        </div>
+        <div class="viz-flow">
+          <article class="viz-card chart-card-full">
+            <div id="domestic-purpose-chart" class="chart spending-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 7.</p>
+          </article>
+          <article class="viz-card chart-card-full">
+            <div id="domestic-structure-chart" class="chart scatter-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Tables 11 and 12.</p>
+          </article>
+          <article class="viz-card chart-card-full">
+            <div id="domestic-od-chart" class="chart heatmap-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 10.</p>
+          </article>
+        </div>
+        <div class="insight-box">
+          <span>MY</span>
+          <p>Domestic tourism is highly road-oriented and socially anchored, with strong flows between populous states and nearby destinations.</p>
         </div>
       </section>
 
       <section class="story-section section-blue" id="opportunity-insights">
         <div class="section-heading">
-          <span class="section-badge">4</span>
+          <span class="section-badge">6</span>
           <div>
             <h2>Tourism Opportunity Insights</h2>
-            <p>Where state-level visitor volume and growth point to stronger tourism momentum.</p>
+            <p>Where state-level volume, growth, and domestic destination appeal point to stronger tourism opportunities.</p>
           </div>
         </div>
         <div class="narrative-grid">
@@ -192,11 +263,11 @@
           </article>
           <article class="text-block">
             <h3>Main Pattern</h3>
-            <p>Kelantan, Putrajaya, and Sabah recorded the highest growth rates, while Labuan, Johor, and Pahang declined among the tracked states.</p>
+            <p>Kelantan, Putrajaya, and Sabah recorded the highest foreign hotel guest growth rates, while domestic destinations show retail, leisure, and nature appeal.</p>
           </article>
           <article class="text-block">
             <h3>Why It Matters</h3>
-            <p>The strongest opportunity signal is not simply the largest visitor base, but the combination of scale and growth momentum.</p>
+            <p>The strongest opportunity signal is not simply the largest visitor base, but the combination of scale, momentum, and destination draw.</p>
           </article>
         </div>
         <div class="viz-flow">
@@ -212,20 +283,24 @@
             <div id="capacity-aor-chart" class="chart scatter-chart"></div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, pp. 18-19. Note: the supplied reports do not provide state-level tourist spending, so this chart uses verified arrivals and growth by state.</p>
           </article>
+          <article class="viz-card chart-card-full">
+            <div id="domestic-top-destinations-chart" class="chart text-chart"></div>
+            <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 8A.</p>
+          </article>
         </div>
         <div class="insight-box">
           <span>◆</span>
-          <p>Sabah recorded the strongest high-volume state growth, while some mature markets had lower foreign hotel guest growth in 2024.</p>
+          <p>Opportunity is strongest where visitor scale, growth momentum, and recognizable domestic destination appeal overlap.</p>
         </div>
       </section>
 
       <aside class="big-picture final-summary" aria-label="The big picture summary">
         <h2>The Big Picture</h2>
         <ul>
-          <li>International arrivals expanded across 2024.</li>
+          <li>Tourism activity strengthened across international and domestic indicators.</li>
           <li>Singapore remains the dominant source market.</li>
-          <li>Shopping is the largest expenditure category.</li>
-          <li>Sabah recorded the strongest high-volume state growth.</li>
+          <li>Shopping anchors both international and domestic expenditure.</li>
+          <li>State opportunities depend on both scale and growth momentum.</li>
         </ul>
       </aside>
 
@@ -234,7 +309,7 @@
         <p>
           All CSV files are stored in the <code>data/</code> folder and were derived from Tourism Malaysia reports,
           including <em>Malaysia Tourism Statistics in Brief 2024</em>, <em>Tourism Malaysia Annual Report 2023</em>,
-          and DOSM domestic tourism figures cited in the annual report. The complete source index is available in
+          and <em>Domestic Tourism Survey 2024: Publication Tables</em>. The complete source index is available in
           <code>data/data_sources.md</code>.
         </p>
       </section>
@@ -244,13 +319,13 @@
         <div>
           <strong>Author:</strong> Zilong Li<br>
           <strong>Date:</strong> May 2026<br>
-          <strong>Data sources:</strong> Tourism Malaysia Statistics in Brief 2024; Tourism Malaysia Annual Report 2023; DOSM figures cited by Tourism Malaysia.<br>
+          <strong>Data sources:</strong> Tourism Malaysia Statistics in Brief 2024; Tourism Malaysia Annual Report 2023; Domestic Tourism Survey 2024: Publication Tables.<br>
           <strong>AI acknowledgement:</strong> Visual layout and implementation assistance were supported by AI; data values were transcribed from the cited reports.
         </div>
       </footer>
     </div>
   </main>
 
-  <script src="js/international_arrivals_map.js?v=expenditure-mix-1"></script>
+  <script src="js/international_arrivals_map.js?v=story-sections-2"></script>
 </body>
 </html>

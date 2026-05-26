@@ -99,13 +99,13 @@ body {
 .index-links {
   gap: 8px;
   justify-content: flex-end;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .index-links a {
   min-height: 38px;
-  padding: 0 14px;
+  padding: 0 11px;
   border-radius: 999px;
   color: #2f405a;
 }
@@ -467,6 +467,14 @@ h1 {
 .spending-chart,
 .scatter-chart {
   min-height: 380px;
+}
+
+.heatmap-chart {
+  min-height: 520px;
+}
+
+.text-chart {
+  min-height: 320px;
 }
 
 .transport-viz-card {
