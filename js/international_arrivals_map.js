@@ -341,7 +341,7 @@ function sourceMarketsSpec() {
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
   const size = Math.min(Math.max(320, width - 120), window.innerWidth < 760 ? 320 : 460);
-  const height = size + (window.innerWidth < 760 ? 76 : 88);
+  const height = size + (window.innerWidth < 760 ? 120 : 150);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
@@ -417,7 +417,7 @@ function monthlyTrendSpec() {
           { type: "formula", as: "x", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
           { type: "formula", as: "y", expr: "cy + (outerRadius + 34) * sin(datum.angle)" },
           { type: "formula", as: "valueX", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
-          { type: "formula", as: "valueY", expr: "cy + (outerRadius + 34) * sin(datum.angle) + (sin(datum.angle) < -0.75 ? -18 : 18)" },
+          { type: "formula", as: "valueY", expr: "cy + (outerRadius + 34) * sin(datum.angle) + (sin(datum.angle) < -0.75 ? -20 : 22)" },
           { type: "formula", as: "Visitors_2024_Million", expr: "datum.Visitors_2024 / 1000000" },
           { type: "formula", as: "Visitors_2024_Label", expr: "format(datum.Visitors_2024_Million, '.1f') + 'M'" },
           { type: "formula", as: "align", expr: "abs(cos(datum.angle)) < 0.15 ? 'center' : cos(datum.angle) > 0 ? 'left' : 'right'" },
@@ -437,16 +437,18 @@ function monthlyTrendSpec() {
       {
         name: "eventIcons",
         values: [
-          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC" },
-          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8" },
-          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC" }
+          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", iconDx: 18, iconDy: 44 },
+          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", iconDx: 22, iconDy: 54 },
+          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", iconDx: -20, iconDy: 54 }
         ],
         transform: [
           { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
-          { type: "formula", as: "x", expr: "cx + (outerRadius + 62) * cos(datum.angle)" },
-          { type: "formula", as: "y", expr: "cy + (outerRadius + 62) * sin(datum.angle)" },
+          { type: "formula", as: "labelX", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
+          { type: "formula", as: "labelY", expr: "cy + (outerRadius + 34) * sin(datum.angle)" },
+          { type: "formula", as: "x", expr: "datum.labelX + datum.iconDx" },
+          { type: "formula", as: "y", expr: "datum.labelY + datum.iconDy" },
           { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "cy + outerRadius + 66" }
+          { type: "formula", as: "legendY", expr: "cy + outerRadius + 108" }
         ]
       },
       {
@@ -599,7 +601,7 @@ function monthlyTrendSpec() {
         encode: {
           enter: {
             text: { field: "icon" },
-            fontSize: { value: 24 },
+            fontSize: { value: 20 },
             fontWeight: { value: 700 },
             fill: { field: "color" },
             align: { value: "center" },
@@ -654,14 +656,14 @@ function monthlyTrendSpec() {
         from: { data: "eventIcons" },
         encode: {
           enter: {
-            width: { value: 124 },
+            width: { value: 118 },
             height: { value: 40 },
             cornerRadius: { value: 7 },
             fill: { field: "bg" },
             fillOpacity: { value: 0.95 }
           },
           update: {
-            x: { signal: "datum.legendCenterX - 62" },
+            x: { signal: "datum.legendCenterX - 59" },
             y: { signal: "datum.legendY - 20" }
           }
         }
@@ -672,7 +674,7 @@ function monthlyTrendSpec() {
         encode: {
           enter: {
             text: { field: "icon" },
-            fontSize: { value: 20 },
+            fontSize: { value: 18 },
             align: { value: "center" },
             baseline: { value: "middle" },
             fill: { field: "color" }
