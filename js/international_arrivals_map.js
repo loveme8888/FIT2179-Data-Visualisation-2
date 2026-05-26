@@ -437,16 +437,16 @@ function monthlyTrendSpec() {
       {
         name: "eventIcons",
         values: [
-          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", iconDx: 0, iconDy: -46 },
-          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", iconDx: 0, iconDy: 48 },
-          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", iconDx: 0, iconDy: 48 }
+          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", badgeX: 0.25, badgeY: 0.17 },
+          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", badgeX: 0.34, badgeY: 1.04 },
+          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", badgeX: 0.69, badgeY: 1.04 }
         ],
         transform: [
           { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
           { type: "formula", as: "labelX", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
           { type: "formula", as: "labelY", expr: "cy + (outerRadius + 34) * sin(datum.angle)" },
-          { type: "formula", as: "x", expr: "datum.labelX + datum.iconDx" },
-          { type: "formula", as: "y", expr: "datum.labelY + datum.iconDy" },
+          { type: "formula", as: "x", expr: "width * datum.badgeX" },
+          { type: "formula", as: "y", expr: "cy - outerRadius + outerRadius * 2 * datum.badgeY" },
           { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
           { type: "formula", as: "legendY", expr: "cy + outerRadius + 128" }
         ]
@@ -588,6 +588,40 @@ function monthlyTrendSpec() {
             tooltip: {
               signal: "{'Month': datum.Month, 'Year': datum.Year_Label, 'Visitors': format(datum.Visitors, ',.0f'), 'Visitors (million)': format(datum.Visitors_Million, '.2f')}"
             }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
+          }
+        }
+      },
+      {
+        type: "symbol",
+        from: { data: "eventIcons" },
+        encode: {
+          enter: {
+            size: { value: 390 },
+            shape: { value: "circle" },
+            fill: { field: "bg" },
+            stroke: { value: "#ffffff" },
+            strokeWidth: { value: 1.4 }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "eventIcons" },
+        encode: {
+          enter: {
+            text: { field: "icon" },
+            fontSize: { value: 18 },
+            align: { value: "center" },
+            baseline: { value: "middle" },
+            fill: { field: "color" }
           },
           update: {
             x: { field: "x" },
