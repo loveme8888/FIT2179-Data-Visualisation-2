@@ -108,6 +108,18 @@ function applyFigureNarratives() {
       <span class="figure-label">${narrative.number}</span>
       <h3>${narrative.title}</h3>
       <p>${narrative.body}</p>
+      ${chartId === "monthly-trend-chart" ? `
+        <div class="figure-kpi-card" aria-label="Foreign arrivals summary">
+          <div class="figure-kpi-growth">
+            <span>+27.6%</span>
+            <small>Growth in 2024 vs 2023</small>
+          </div>
+          <div class="figure-kpi-totals">
+            <div><strong>29.0M</strong><span>2023 visitors</span></div>
+            <div><strong>37.0M</strong><span>2024 visitors</span></div>
+          </div>
+        </div>
+      ` : ""}
     `;
     card.insertBefore(copy, card.firstElementChild);
   });
@@ -435,8 +447,8 @@ function monthlyTrendSpec() {
   const isMobile = window.innerWidth < 760;
   const size = isMobile
     ? Math.min(Math.max(250, width - 78), 300)
-    : Math.min(Math.max(360, width - 210), 500);
-  const height = size + (isMobile ? 190 : 84);
+    : Math.min(Math.max(460, width - 90), 580);
+  const height = size + (isMobile ? 190 : 46);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
@@ -444,7 +456,7 @@ function monthlyTrendSpec() {
     padding: { top: 18, right: isMobile ? 18 : 28, bottom: 12, left: isMobile ? 18 : 28 },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "width / 2 + (width < 340 ? 34 : 28)" },
+      { name: "cy", update: "width / 2 + (width < 340 ? 34 : 22)" },
       { name: "innerRadius", value: 10 },
       { name: "outerRadius", update: "width * (width < 340 ? 0.31 : 0.34)" },
       { name: "legendCardWidth", update: "width < 340 ? 190 : 134" },
@@ -544,6 +556,50 @@ function monthlyTrendSpec() {
         transform: [
           { type: "formula", as: "legendCenterX", expr: "width < 340 ? width / 2 : width * datum.legendX" },
           { type: "formula", as: "legendY", expr: "width < 340 ? height - 112 + datum.legendRow * 38 : height - 26" }
+        ]
+      },
+      {
+        name: "eventCallouts",
+        values: [
+          {
+            Month_Num: 12,
+            value: 3.805306,
+            color: "#2E8B57",
+            bg: "#E8F3EC",
+            title: "DECEMBER\\nYEAR-END PEAK",
+            detail: "Highest arrivals\\nat 3.8 million",
+            anchor: "topLeft"
+          },
+          {
+            Month_Num: 8,
+            value: 3.662108,
+            color: "#F4A000",
+            bg: "#FFF3D8",
+            title: "AUGUST\\nMID-YEAR PEAK",
+            detail: "School holidays\\nlifted demand",
+            anchor: "bottomLeft"
+          },
+          {
+            Month_Num: 6,
+            value: 3.40929,
+            color: "#E85D04",
+            bg: "#FDE9DC",
+            title: "JUNE\\nSCHOOL HOLIDAY SURGE",
+            detail: "Holiday travel\\nboosted arrivals",
+            anchor: "bottomRight"
+          }
+        ],
+        transform: [
+          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
+          { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
+          { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
+          { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" },
+          { type: "formula", as: "cardW", expr: "width < 520 ? 118 : 138" },
+          { type: "formula", as: "cardH", expr: "width < 520 ? 58 : 70" },
+          { type: "formula", as: "cardX", expr: "datum.anchor === 'bottomRight' ? width - datum.cardW - 6 : (datum.anchor === 'topLeft' ? 0 : 18)" },
+          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 56 : height - datum.cardH - 14" },
+          { type: "formula", as: "leaderX", expr: "datum.anchor === 'bottomRight' ? datum.cardX : datum.cardX + datum.cardW" },
+          { type: "formula", as: "leaderY", expr: "datum.cardY + datum.cardH / 2" }
         ]
       },
       {
@@ -837,6 +893,42 @@ function monthlyTrendSpec() {
         }
       },
       {
+        type: "symbol",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            shape: { value: "circle" },
+            size: { value: 920 },
+            fill: { field: "color" },
+            fillOpacity: { value: 0.18 },
+            stroke: { value: null }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
+        type: "symbol",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            shape: { value: "circle" },
+            size: { value: 220 },
+            fill: { value: "#E85D04" },
+            stroke: { value: "#ffffff" },
+            strokeWidth: { value: 3 }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
         type: "text",
         from: { data: "monthLabels" },
         encode: {
@@ -888,7 +980,8 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { signal: "datum.legendCenterX - legendCardWidth / 2" },
-            y: { signal: "datum.legendY - (width < 340 ? 17 : 20)" }
+            y: { signal: "datum.legendY - (width < 340 ? 17 : 20)" },
+            opacity: { signal: "width < 340 ? 1 : 0" }
           }
         }
       },
@@ -904,7 +997,8 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 14" },
-            y: { signal: "datum.legendY - 12" }
+            y: { signal: "datum.legendY - 12" },
+            opacity: { signal: "width < 340 ? 1 : 0" }
           }
         }
       },
@@ -924,7 +1018,103 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 28" },
-            y: { field: "legendY" }
+            y: { field: "legendY" },
+            opacity: { signal: "width < 340 ? 1 : 0" }
+          }
+        }
+      },
+      {
+        type: "rule",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            stroke: { field: "color" },
+            strokeWidth: { value: 1.3 },
+            strokeOpacity: { value: 0.65 }
+          },
+          update: {
+            x: { field: "leaderX" },
+            y: { field: "leaderY" },
+            x2: { field: "x" },
+            y2: { field: "y" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
+        type: "rect",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            cornerRadius: { value: 8 },
+            fill: { field: "bg" },
+            stroke: { field: "color" },
+            strokeOpacity: { value: 0.18 }
+          },
+          update: {
+            x: { field: "cardX" },
+            y: { field: "cardY" },
+            width: { field: "cardW" },
+            height: { field: "cardH" },
+            opacity: { signal: "width < 340 ? 0 : 0.96" }
+          }
+        }
+      },
+      {
+        type: "rect",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            width: { value: 5 },
+            cornerRadius: { value: 3 },
+            fill: { field: "color" }
+          },
+          update: {
+            x: { signal: "datum.cardX + 12" },
+            y: { signal: "datum.cardY + 14" },
+            height: { signal: "datum.cardH - 28" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            text: { field: "title" },
+            font: { value: "Inter" },
+            fontSize: { value: 10.5 },
+            fontWeight: { value: 800 },
+            lineBreak: { value: "\\n" },
+            align: { value: "left" },
+            baseline: { value: "top" },
+            fill: { field: "color" }
+          },
+          update: {
+            x: { signal: "datum.cardX + 26" },
+            y: { signal: "datum.cardY + 12" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            text: { field: "detail" },
+            font: { value: "Inter" },
+            fontSize: { value: 10 },
+            lineBreak: { value: "\\n" },
+            align: { value: "left" },
+            baseline: { value: "top" },
+            fill: { value: colors.text }
+          },
+          update: {
+            x: { signal: "datum.cardX + 26" },
+            y: { signal: "datum.cardY + (width < 520 ? 36 : 40)" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
           }
         }
       },

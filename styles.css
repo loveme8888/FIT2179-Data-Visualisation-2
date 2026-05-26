@@ -428,7 +428,8 @@ h1 {
 }
 
 .figure-card-monthly-trend-chart {
-  grid-template-columns: minmax(230px, 0.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(250px, 0.28fr) minmax(0, 1fr);
+  column-gap: 22px;
   align-items: start;
   padding-top: 18px;
   padding-bottom: 14px;
@@ -473,6 +474,72 @@ h1 {
   color: #3f5069;
   font-size: 17px;
   line-height: 1.55;
+}
+
+.figure-kpi-card {
+  max-width: 300px;
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid #e2e2ff;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f2f0ff 0%, #ffffff 100%);
+}
+
+.figure-kpi-growth {
+  padding: 18px 18px 14px;
+}
+
+.figure-kpi-growth span {
+  display: block;
+  color: #4b39f4;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.figure-kpi-growth small,
+.figure-kpi-totals span {
+  display: block;
+  color: #2f405a;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.figure-kpi-growth small {
+  margin-top: 6px;
+  font-weight: 700;
+}
+
+.figure-kpi-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid #e6e8fb;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.figure-kpi-totals div {
+  padding: 14px 16px 16px;
+}
+
+.figure-kpi-totals div + div {
+  border-left: 1px solid #e6e8fb;
+}
+
+.figure-kpi-totals strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.figure-kpi-totals div:first-child strong {
+  color: #155ea0;
+}
+
+.figure-kpi-totals div:last-child strong {
+  color: #e85d04;
 }
 
 .chart-heading {
