@@ -435,8 +435,8 @@ function monthlyTrendSpec() {
   const isMobile = window.innerWidth < 760;
   const size = isMobile
     ? Math.min(Math.max(250, width - 78), 300)
-    : Math.min(Math.max(420, width - 40), 640);
-  const height = size + (isMobile ? 190 : 120);
+    : Math.min(Math.max(360, width - 210), 500);
+  const height = size + (isMobile ? 190 : 84);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
@@ -444,7 +444,7 @@ function monthlyTrendSpec() {
     padding: { top: 18, right: isMobile ? 18 : 28, bottom: 12, left: isMobile ? 18 : 28 },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "width / 2 + (width < 340 ? 34 : 38)" },
+      { name: "cy", update: "width / 2 + (width < 340 ? 34 : 28)" },
       { name: "innerRadius", value: 10 },
       { name: "outerRadius", update: "width * (width < 340 ? 0.31 : 0.34)" },
       { name: "legendCardWidth", update: "width < 340 ? 190 : 134" },
@@ -543,7 +543,7 @@ function monthlyTrendSpec() {
         ],
         transform: [
           { type: "formula", as: "legendCenterX", expr: "width < 340 ? width / 2 : width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "width < 340 ? height - 112 + datum.legendRow * 38 : height - 34" }
+          { type: "formula", as: "legendY", expr: "width < 340 ? height - 112 + datum.legendRow * 38 : height - 26" }
         ]
       },
       {
