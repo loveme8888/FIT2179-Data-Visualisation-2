@@ -437,9 +437,9 @@ function monthlyTrendSpec() {
       {
         name: "eventIcons",
         values: [
-          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", iconDx: 18, iconDy: 44 },
-          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", iconDx: 22, iconDy: 54 },
-          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", iconDx: -20, iconDy: 54 }
+          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", iconDx: 0, iconDy: -46 },
+          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", iconDx: 0, iconDy: 48 },
+          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", iconDx: 0, iconDy: 48 }
         ],
         transform: [
           { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
@@ -448,7 +448,7 @@ function monthlyTrendSpec() {
           { type: "formula", as: "x", expr: "datum.labelX + datum.iconDx" },
           { type: "formula", as: "y", expr: "datum.labelY + datum.iconDy" },
           { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "cy + outerRadius + 108" }
+          { type: "formula", as: "legendY", expr: "cy + outerRadius + 128" }
         ]
       },
       {
@@ -597,24 +597,6 @@ function monthlyTrendSpec() {
       },
       {
         type: "text",
-        from: { data: "eventIcons" },
-        encode: {
-          enter: {
-            text: { field: "icon" },
-            fontSize: { value: 20 },
-            fontWeight: { value: 700 },
-            fill: { field: "color" },
-            align: { value: "center" },
-            baseline: { value: "middle" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" }
-          }
-        }
-      },
-      {
-        type: "text",
         from: { data: "monthLabels" },
         encode: {
           enter: {
@@ -656,14 +638,14 @@ function monthlyTrendSpec() {
         from: { data: "eventIcons" },
         encode: {
           enter: {
-            width: { value: 118 },
+            width: { value: 136 },
             height: { value: 40 },
             cornerRadius: { value: 7 },
             fill: { field: "bg" },
             fillOpacity: { value: 0.95 }
           },
           update: {
-            x: { signal: "datum.legendCenterX - 59" },
+            x: { signal: "datum.legendCenterX - 68" },
             y: { signal: "datum.legendY - 20" }
           }
         }
@@ -680,7 +662,7 @@ function monthlyTrendSpec() {
             fill: { field: "color" }
           },
           update: {
-            x: { signal: "datum.legendCenterX - 42" },
+            x: { signal: "datum.legendCenterX - 48" },
             y: { field: "legendY" }
           }
         }
@@ -696,11 +678,11 @@ function monthlyTrendSpec() {
             fill: { value: colors.text },
             align: { value: "left" },
             baseline: { value: "middle" },
-            limit: { value: 72 },
+            limit: { value: 92 },
             lineBreak: { value: "\\n" }
           },
           update: {
-            x: { signal: "datum.legendCenterX - 20" },
+            x: { signal: "datum.legendCenterX - 26" },
             y: { field: "legendY" }
           }
         }
