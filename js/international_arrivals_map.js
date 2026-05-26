@@ -541,6 +541,17 @@ function domesticKeyIndicatorsSpec() {
       subtitleFontSize: 14
     },
     data: { url: "data/domestic_tourism_key_indicators_2017_2024.csv" },
+    params: [
+      {
+        name: "SelectedIndicator",
+        value: "Total Expenditure",
+        bind: {
+          input: "select",
+          options: ["Total Expenditure", "Number of Visitors", "Number of Tourism Trips", "Average Expenditure per Trip"],
+          name: "Highlight indicator: "
+        }
+      }
+    ],
     transform: [
       {
         filter: "datum.Indicator == 'Total Expenditure' || datum.Indicator == 'Number of Visitors' || datum.Indicator == 'Number of Tourism Trips' || datum.Indicator == 'Average Expenditure per Trip'"
@@ -550,28 +561,40 @@ function domesticKeyIndicatorsSpec() {
         as: "Index_2017"
       }
     ],
-    mark: { type: "line", point: { filled: true, size: 45 }, strokeWidth: 3 },
-    encoding: {
-      x: { field: "Year", type: "ordinal", title: "Year" },
-      y: { field: "Index_2017", type: "quantitative", title: "Index (2017 = 100)" },
-      color: {
-        field: "Indicator",
-        type: "nominal",
-        title: null,
-        scale: {
-          domain: ["Total Expenditure", "Number of Visitors", "Number of Tourism Trips", "Average Expenditure per Trip"],
-          range: ["#D9A441", "#2E6DA4", "#5A8CCF", "#2E8B57"]
-        },
-        legend: { orient: "bottom", direction: "horizontal", columns: 2 }
-      },
-      tooltip: [
-        { field: "Indicator", title: "Indicator" },
-        { field: "Year", title: "Year" },
-        { field: "Value", title: "Value", format: ",.1f" },
-        { field: "Unit", title: "Unit" },
-        { field: "Index_2017", title: "Index", format: ".1f" }
-      ]
-    },
+    layer: [
+      {
+        mark: { type: "line", point: { filled: true, size: 45 } },
+        encoding: {
+          x: { field: "Year", type: "ordinal", title: "Year", axis: { labelAngle: 45 } },
+          y: { field: "Index_2017", type: "quantitative", title: "Index (2017 = 100)" },
+          color: {
+            field: "Indicator",
+            type: "nominal",
+            title: "Select indicator",
+            scale: {
+              domain: ["Total Expenditure", "Number of Visitors", "Number of Tourism Trips", "Average Expenditure per Trip"],
+              range: ["#D9A441", "#2E6DA4", "#5A8CCF", "#2E8B57"]
+            },
+            legend: { orient: "bottom", direction: "horizontal", columns: 2 }
+          },
+          opacity: {
+            condition: { test: "datum.Indicator == SelectedIndicator", value: 1 },
+            value: 0.18
+          },
+          strokeWidth: {
+            condition: { test: "datum.Indicator == SelectedIndicator", value: 4 },
+            value: 1.8
+          },
+          tooltip: [
+            { field: "Indicator", title: "Indicator" },
+            { field: "Year", title: "Year" },
+            { field: "Value", title: "Value", format: ",.1f" },
+            { field: "Unit", title: "Unit" },
+            { field: "Index_2017", title: "Index", format: ".1f" }
+          ]
+        }
+      }
+    ],
     config: baseConfig()
   };
 }
