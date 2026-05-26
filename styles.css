@@ -341,7 +341,7 @@ h1 {
 }
 
 .narrative-grid {
-  display: grid;
+  display: none;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin: 0 0 16px;
@@ -417,14 +417,55 @@ h1 {
 }
 
 .viz-card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr);
+  column-gap: 28px;
+  row-gap: 12px;
+  align-items: center;
   min-height: 0;
-  padding: 18px 20px;
+  padding: 34px 42px;
   overflow: hidden;
 }
 
+.figure-copy {
+  min-width: 0;
+}
+
+.figure-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 28px;
+  margin-bottom: 18px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #c9c6ff;
+  color: #3d42bf;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.figure-copy h3 {
+  max-width: 520px;
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(24px, 2.2vw, 34px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.figure-copy p {
+  max-width: 540px;
+  margin: 18px 0 0;
+  color: #3f5069;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
 .chart-heading {
+  display: none;
   min-height: 0;
   margin-bottom: 8px;
 }
@@ -445,6 +486,7 @@ h1 {
 }
 
 .chart {
+  grid-column: 2;
   width: 100%;
   max-width: 100%;
   min-height: 0;
@@ -566,6 +608,7 @@ h1 {
 }
 
 .ranking-box {
+  grid-column: 2;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -602,6 +645,7 @@ h1 {
 }
 
 .source-note {
+  grid-column: 1 / -1;
   margin: 8px 0 0;
   padding-top: 8px;
   border-top: 1px solid #e3edf5;
@@ -611,6 +655,7 @@ h1 {
 }
 
 .chart-note {
+  grid-column: 1 / -1;
   margin: 10px 0 0;
   color: #2f405a;
   font-size: 13px;
@@ -619,7 +664,7 @@ h1 {
 }
 
 .insight-box {
-  display: grid;
+  display: none;
   grid-template-columns: 42px minmax(0, 1fr);
   gap: 14px;
   align-items: center;
@@ -703,12 +748,21 @@ code {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .narrative-grid {
+  .transport-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1000px) {
+  .viz-card {
     grid-template-columns: 1fr;
   }
 
-  .transport-card {
-    grid-template-columns: 1fr;
+  .chart,
+  .ranking-box,
+  .source-note,
+  .chart-note {
+    grid-column: 1;
   }
 }
 
@@ -784,8 +838,29 @@ code {
   }
 
   .viz-card {
+    grid-template-columns: 1fr;
     min-height: 0;
     padding: 18px;
+  }
+
+  .chart,
+  .ranking-box,
+  .source-note,
+  .chart-note {
+    grid-column: 1;
+  }
+
+  .figure-label {
+    margin-bottom: 12px;
+  }
+
+  .figure-copy h3 {
+    font-size: 25px;
+  }
+
+  .figure-copy p {
+    margin-top: 12px;
+    font-size: 15px;
   }
 
   .transport-card,

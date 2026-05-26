@@ -21,6 +21,96 @@ function hideStatus() {
   statusEl.classList.remove("is-visible");
 }
 
+const figureNarratives = {
+  "monthly-trend-chart": {
+    number: "FIGURE 01",
+    title: "Monthly foreign arrivals rose across the full 2024 cycle",
+    body: "The radial profile shows 2024 sitting outside 2023 in every month, with stronger mid-year and year-end demand."
+  },
+  "domestic-key-indicators-chart": {
+    number: "FIGURE 02",
+    title: "Domestic tourism recovered into a higher-spending pattern",
+    body: "Indexed indicators make trips, visitors, average spending, and total expenditure comparable across time."
+  },
+  "source-markets-chart": {
+    number: "FIGURE 03",
+    title: "Regional source markets anchor Malaysia's inbound volume",
+    body: "Singapore dominates arrivals, while growth colours show which smaller markets expanded fastest in 2024."
+  },
+  "receipts-scatter-chart": {
+    number: "FIGURE 04",
+    title: "Market value does not move in perfect proportion to arrivals",
+    body: "The bubble chart compares arrival scale with receipts, highlighting markets that deliver higher value per visitor."
+  },
+  "arrivals-map": {
+    number: "FIGURE 05",
+    title: "Foreign hotel guests concentrate in gateway states",
+    body: "The state map separates Peninsular Malaysia and Borneo so high-volume inbound destinations remain legible."
+  },
+  "domestic-state-visitors-chart": {
+    number: "FIGURE 06",
+    title: "Domestic visitors spread across a broader set of states",
+    body: "Selangor leads domestic visitor volume, with Kuala Lumpur, Perak, and other large states forming the next tier."
+  },
+  "expenditure-chart": {
+    number: "FIGURE 07",
+    title: "Shopping is the largest international visitor spend category",
+    body: "The expenditure mix shows how visitor value is distributed across retail, accommodation, food, and other items."
+  },
+  "domestic-expenditure-chart": {
+    number: "FIGURE 08",
+    title: "Domestic expenditure has a similar retail-led structure",
+    body: "Domestic spending is led by shopping and food, showing where local travel feeds the tourism economy."
+  },
+  "domestic-purpose-chart": {
+    number: "FIGURE 09",
+    title: "Domestic trips are strongly social and everyday in nature",
+    body: "Visiting relatives and friends leads the purpose mix, ahead of shopping and leisure travel."
+  },
+  "domestic-structure-chart": {
+    number: "FIGURE 10",
+    title: "Domestic travel relies on land movement and informal stays",
+    body: "Transport and accommodation charts show road-oriented movement and heavy use of relatives' and friends' homes."
+  },
+  "domestic-od-chart": {
+    number: "FIGURE 11",
+    title: "Origin-destination flows reveal state-to-state travel corridors",
+    body: "The heatmap shows where domestic tourists came from and which destination states they visited in 2024."
+  },
+  "state-guests-chart": {
+    number: "FIGURE 12",
+    title: "Growth opportunities appear beyond the largest bases",
+    body: "State growth rates identify where foreign hotel guest momentum strengthened most sharply year on year."
+  },
+  "capacity-aor-chart": {
+    number: "FIGURE 13",
+    title: "Scale and growth together separate mature and emerging states",
+    body: "The quadrant view compares foreign hotel guest volume with growth to distinguish established demand from momentum."
+  },
+  "domestic-top-destinations-chart": {
+    number: "FIGURE 14",
+    title: "Recognizable attractions support domestic destination appeal",
+    body: "Selected high-volume states are paired with their top visited places to connect demand with actual destinations."
+  }
+};
+
+function applyFigureNarratives() {
+  Object.entries(figureNarratives).forEach(([chartId, narrative]) => {
+    const chart = document.getElementById(chartId);
+    const card = chart?.closest(".viz-card");
+    if (!chart || !card || card.querySelector(".figure-copy")) return;
+
+    const copy = document.createElement("div");
+    copy.className = "figure-copy";
+    copy.innerHTML = `
+      <span class="figure-label">${narrative.number}</span>
+      <h3>${narrative.title}</h3>
+      <p>${narrative.body}</p>
+    `;
+    card.insertBefore(copy, card.firstElementChild);
+  });
+}
+
 function chartWidth(selector, fallback = 720, min = 650) {
   const el = document.querySelector(selector);
   const responsiveMin = window.innerWidth < 760 ? 300 : min;
@@ -340,8 +430,8 @@ function sourceMarketsSpec() {
 
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
-  const size = Math.min(Math.max(320, width - 120), window.innerWidth < 760 ? 320 : 460);
-  const height = size + (window.innerWidth < 760 ? 120 : 150);
+  const size = Math.min(Math.max(320, width - 90), window.innerWidth < 760 ? 320 : 440);
+  const height = size + (window.innerWidth < 760 ? 110 : 128);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
@@ -361,19 +451,17 @@ function monthlyTrendSpec() {
     },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "width / 2 + 18" },
-      { name: "innerRadius", value: 36 },
-      { name: "outerRadius", update: "min(width, height) * 0.38" },
+      { name: "cy", update: "width / 2 + 14" },
+      { name: "innerRadius", value: 10 },
+      { name: "outerRadius", update: "min(width, height) * 0.36" },
       { name: "maxVisitors", value: 4 },
       {
-        name: "show2023",
-        value: true,
-        on: [{ events: "@legend2023:click", update: "show2024 ? !show2023 : true" }]
-      },
-      {
-        name: "show2024",
-        value: true,
-        on: [{ events: "@legend2024:click", update: "show2023 ? !show2024 : true" }]
+        name: "selectedYear",
+        value: null,
+        on: [
+          { events: "@legend2023:click, @area2023:click, @hit2023:click, @line2023:click, @points2023:click", update: "selectedYear === '2023' ? null : '2023'" },
+          { events: "@legend2024:click, @area2024:click, @hit2024:click, @line2024:click, @points2024:click", update: "selectedYear === '2024' ? null : '2024'" }
+        ]
       }
     ],
     data: [
@@ -454,18 +542,18 @@ function monthlyTrendSpec() {
       {
         name: "eventIcons",
         values: [
-          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", badgeX: 0.25, badgeY: 0.17 },
-          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", badgeX: 0.34, badgeY: 1.04 },
-          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", badgeX: 0.69, badgeY: 1.04 }
+          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC", iconDx: 20, iconDy: 38 },
+          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8", iconDx: -12, iconDy: 34 },
+          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC", iconDx: -26, iconDy: 8 }
         ],
         transform: [
           { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
           { type: "formula", as: "labelX", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
           { type: "formula", as: "labelY", expr: "cy + (outerRadius + 34) * sin(datum.angle)" },
-          { type: "formula", as: "x", expr: "width * datum.badgeX" },
-          { type: "formula", as: "y", expr: "cy - outerRadius + outerRadius * 2 * datum.badgeY" },
+          { type: "formula", as: "x", expr: "datum.labelX + datum.iconDx" },
+          { type: "formula", as: "y", expr: "datum.labelY + datum.iconDy" },
           { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "cy + outerRadius + 128" }
+          { type: "formula", as: "legendY", expr: "cy + outerRadius + 116" }
         ]
       },
       {
@@ -495,7 +583,8 @@ function monthlyTrendSpec() {
             cursor: { value: "pointer" }
           },
           update: {
-            opacity: { signal: "datum.year === '2023' ? (show2023 ? 1 : 0.28) : (show2024 ? 1 : 0.28)" }
+            strokeWidth: { signal: "selectedYear === datum.year ? 4 : 3" },
+            opacity: { signal: "!selectedYear || selectedYear === datum.year ? 1 : 0.25" }
           }
         }
       },
@@ -515,7 +604,8 @@ function monthlyTrendSpec() {
             cursor: { value: "pointer" }
           },
           update: {
-            opacity: { signal: "datum.year === '2023' ? (show2023 ? 1 : 0.35) : (show2024 ? 1 : 0.35)" }
+            fontWeight: { signal: "selectedYear === datum.year ? 800 : 400" },
+            opacity: { signal: "!selectedYear || selectedYear === datum.year ? 1 : 0.35" }
           }
         }
       },
@@ -585,6 +675,7 @@ function monthlyTrendSpec() {
         }
       },
       {
+        name: "area2023",
         type: "line",
         from: { data: "visitors2023" },
         sort: { field: "Month_Num" },
@@ -593,16 +684,18 @@ function monthlyTrendSpec() {
             interpolate: { value: "linear-closed" },
             fill: { value: colors.blue },
             fillOpacity: { value: 0.1 },
-            stroke: { value: null }
+            stroke: { value: null },
+            cursor: { value: "pointer" }
           },
           update: {
             x: { field: "x" },
             y: { field: "y" },
-            opacity: { signal: "show2023 ? 1 : 0" }
+            fillOpacity: { signal: "selectedYear === '2023' ? 0.2 : (!selectedYear ? 0.1 : 0.03)" }
           }
         }
       },
       {
+        name: "area2024",
         type: "line",
         from: { data: "visitors2024" },
         sort: { field: "Month_Num" },
@@ -611,16 +704,18 @@ function monthlyTrendSpec() {
             interpolate: { value: "linear-closed" },
             fill: { value: "#E85D04" },
             fillOpacity: { value: 0.1 },
-            stroke: { value: null }
+            stroke: { value: null },
+            cursor: { value: "pointer" }
           },
           update: {
             x: { field: "x" },
             y: { field: "y" },
-            opacity: { signal: "show2024 ? 1 : 0" }
+            fillOpacity: { signal: "selectedYear === '2024' ? 0.2 : (!selectedYear ? 0.1 : 0.03)" }
           }
         }
       },
       {
+        name: "line2023",
         type: "line",
         from: { data: "visitors2023" },
         sort: { field: "Month_Num" },
@@ -630,16 +725,40 @@ function monthlyTrendSpec() {
             stroke: { value: colors.blue },
             strokeWidth: { value: 4 },
             strokeJoin: { value: "round" },
-            fill: { value: null }
+            fill: { value: null },
+            cursor: { value: "pointer" }
           },
           update: {
             x: { field: "x" },
             y: { field: "y" },
-            opacity: { signal: "show2023 ? 1 : 0" }
+            strokeWidth: { signal: "selectedYear === '2023' ? 6 : 4" },
+            opacity: { signal: "!selectedYear || selectedYear === '2023' ? 1 : 0.25" }
           }
         }
       },
       {
+        name: "hit2023",
+        type: "line",
+        from: { data: "visitors2023" },
+        sort: { field: "Month_Num" },
+        encode: {
+          enter: {
+            interpolate: { value: "linear-closed" },
+            stroke: { value: colors.blue },
+            strokeOpacity: { value: 0.001 },
+            strokeWidth: { value: 22 },
+            strokeJoin: { value: "round" },
+            fill: { value: null },
+            cursor: { value: "pointer" }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
+          }
+        }
+      },
+      {
+        name: "line2024",
         type: "line",
         from: { data: "visitors2024" },
         sort: { field: "Month_Num" },
@@ -649,24 +768,49 @@ function monthlyTrendSpec() {
             stroke: { value: "#E85D04" },
             strokeWidth: { value: 4 },
             strokeJoin: { value: "round" },
-            fill: { value: null }
+            fill: { value: null },
+            cursor: { value: "pointer" }
           },
           update: {
             x: { field: "x" },
             y: { field: "y" },
-            opacity: { signal: "show2024 ? 1 : 0" }
+            strokeWidth: { signal: "selectedYear === '2024' ? 6 : 4" },
+            opacity: { signal: "!selectedYear || selectedYear === '2024' ? 1 : 0.25" }
           }
         }
       },
       {
+        name: "hit2024",
+        type: "line",
+        from: { data: "visitors2024" },
+        sort: { field: "Month_Num" },
+        encode: {
+          enter: {
+            interpolate: { value: "linear-closed" },
+            stroke: { value: "#E85D04" },
+            strokeOpacity: { value: 0.001 },
+            strokeWidth: { value: 22 },
+            strokeJoin: { value: "round" },
+            fill: { value: null },
+            cursor: { value: "pointer" }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
+          }
+        }
+      },
+      {
+        name: "points2023",
         type: "symbol",
-        from: { data: "visitors" },
+        from: { data: "visitors2023" },
         encode: {
           enter: {
             size: { value: 105 },
-            fill: { scale: "yearColor", field: "Year_Label" },
+            fill: { value: colors.blue },
             stroke: { value: "#ffffff" },
             strokeWidth: { value: 1.5 },
+            cursor: { value: "pointer" },
             tooltip: {
               signal: "{'Month': datum.Month, 'Year': datum.Year_Label, 'Visitors': format(datum.Visitors, ',.0f'), 'Visitors (million)': format(datum.Visitors_Million, '.2f')}"
             }
@@ -674,7 +818,31 @@ function monthlyTrendSpec() {
           update: {
             x: { field: "x" },
             y: { field: "y" },
-            opacity: { signal: "datum.Year_Label === '2023' ? (show2023 ? 1 : 0) : (show2024 ? 1 : 0)" }
+            size: { signal: "selectedYear === '2023' ? 155 : 105" },
+            opacity: { signal: "!selectedYear || selectedYear === '2023' ? 1 : 0.25" }
+          }
+        }
+      },
+      {
+        name: "points2024",
+        type: "symbol",
+        from: { data: "visitors2024" },
+        encode: {
+          enter: {
+            size: { value: 105 },
+            fill: { value: "#E85D04" },
+            stroke: { value: "#ffffff" },
+            strokeWidth: { value: 1.5 },
+            cursor: { value: "pointer" },
+            tooltip: {
+              signal: "{'Month': datum.Month, 'Year': datum.Year_Label, 'Visitors': format(datum.Visitors, ',.0f'), 'Visitors (million)': format(datum.Visitors_Million, '.2f')}"
+            }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" },
+            size: { signal: "selectedYear === '2024' ? 155 : 105" },
+            opacity: { signal: "!selectedYear || selectedYear === '2024' ? 1 : 0.25" }
           }
         }
       },
@@ -747,7 +915,7 @@ function monthlyTrendSpec() {
             y: { field: "valueY" },
             align: { field: "align" },
             baseline: { field: "baseline" },
-            opacity: { signal: "show2024 ? 1 : 0" }
+            opacity: { signal: "!selectedYear || selectedYear === '2024' ? 1 : 0.25" }
           }
         }
       },
@@ -834,7 +1002,7 @@ function monthlyTrendSpec() {
             align: { value: "center" },
             baseline: { value: "middle" },
             font: { value: "Inter" },
-            fontSize: { value: 16 },
+            fontSize: { value: 13 },
             fontWeight: { value: 700 },
             fill: { value: colors.text }
           }
@@ -1615,6 +1783,8 @@ const charts = [
 
 async function renderAll() {
   try {
+    applyFigureNarratives();
+
     if (!window.vega || !window.vegaLite || !window.vegaEmbed) {
       showStatus("Vega libraries did not load. Please check the internet connection and refresh the page.");
       return;
