@@ -364,9 +364,26 @@ function monthlyTrendSpec() {
       { name: "cy", update: "width / 2 + 18" },
       { name: "innerRadius", value: 36 },
       { name: "outerRadius", update: "min(width, height) * 0.38" },
-      { name: "maxVisitors", value: 4 }
+      { name: "maxVisitors", value: 4 },
+      {
+        name: "show2023",
+        value: true,
+        on: [{ events: "@legend2023:click", update: "show2024 ? !show2023 : true" }]
+      },
+      {
+        name: "show2024",
+        value: true,
+        on: [{ events: "@legend2024:click", update: "show2023 ? !show2024 : true" }]
+      }
     ],
     data: [
+      {
+        name: "legendControls",
+        values: [
+          { year: "2023", x: 16, color: "#2E6DA4" },
+          { year: "2024", x: 90, color: "#E85D04" }
+        ]
+      },
       {
         name: "monthly",
         url: "data/foreign_visitors_monthly_2024_2023.csv",
@@ -464,19 +481,74 @@ function monthlyTrendSpec() {
     scales: [
       { name: "yearColor", type: "ordinal", domain: ["2023", "2024"], range: [colors.blue, "#E85D04"] }
     ],
-    legends: [
-      {
-        stroke: "yearColor",
-        orient: "top",
-        direction: "horizontal",
-        title: null,
-        symbolType: "stroke",
-        labelFont: "Inter",
-        labelColor: "#34445c",
-        offset: 0
-      }
-    ],
     marks: [
+      {
+        type: "rule",
+        from: { data: "legendControls" },
+        encode: {
+          enter: {
+            y: { value: 22 },
+            x: { field: "x" },
+            x2: { signal: "datum.x + 18" },
+            stroke: { field: "color" },
+            strokeWidth: { value: 3 },
+            cursor: { value: "pointer" }
+          },
+          update: {
+            opacity: { signal: "datum.year === '2023' ? (show2023 ? 1 : 0.28) : (show2024 ? 1 : 0.28)" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "legendControls" },
+        encode: {
+          enter: {
+            y: { value: 23 },
+            x: { signal: "datum.x + 28" },
+            text: { field: "year" },
+            font: { value: "Inter" },
+            fontSize: { value: 13 },
+            fill: { value: "#34445c" },
+            align: { value: "left" },
+            baseline: { value: "middle" },
+            cursor: { value: "pointer" }
+          },
+          update: {
+            opacity: { signal: "datum.year === '2023' ? (show2023 ? 1 : 0.35) : (show2024 ? 1 : 0.35)" }
+          }
+        }
+      },
+      {
+        name: "legend2023",
+        type: "rect",
+        encode: {
+          enter: {
+            x: { value: 12 },
+            y: { value: 10 },
+            width: { value: 66 },
+            height: { value: 24 },
+            fill: { value: "#ffffff" },
+            fillOpacity: { value: 0.001 },
+            cursor: { value: "pointer" }
+          }
+        }
+      },
+      {
+        name: "legend2024",
+        type: "rect",
+        encode: {
+          enter: {
+            x: { value: 86 },
+            y: { value: 10 },
+            width: { value: 66 },
+            height: { value: 24 },
+            fill: { value: "#ffffff" },
+            fillOpacity: { value: 0.001 },
+            cursor: { value: "pointer" }
+          }
+        }
+      },
       {
         type: "arc",
         from: { data: "rings" },
@@ -525,7 +597,8 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { field: "x" },
-            y: { field: "y" }
+            y: { field: "y" },
+            opacity: { signal: "show2023 ? 1 : 0" }
           }
         }
       },
@@ -542,39 +615,48 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { field: "x" },
-            y: { field: "y" }
+            y: { field: "y" },
+            opacity: { signal: "show2024 ? 1 : 0" }
           }
         }
       },
       {
-        type: "group",
-        from: {
-          facet: {
-            name: "series",
-            data: "visitors",
-            groupby: "Year_Label"
+        type: "line",
+        from: { data: "visitors2023" },
+        sort: { field: "Month_Num" },
+        encode: {
+          enter: {
+            interpolate: { value: "linear-closed" },
+            stroke: { value: colors.blue },
+            strokeWidth: { value: 4 },
+            strokeJoin: { value: "round" },
+            fill: { value: null }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" },
+            opacity: { signal: "show2023 ? 1 : 0" }
           }
-        },
-        marks: [
-          {
-            type: "line",
-            from: { data: "series" },
-            sort: { field: "Month_Num" },
-            encode: {
-              enter: {
-                interpolate: { value: "linear-closed" },
-                stroke: { scale: "yearColor", field: "Year_Label" },
-                strokeWidth: { value: 4 },
-                strokeJoin: { value: "round" },
-                fill: { value: null }
-              },
-              update: {
-                x: { field: "x" },
-                y: { field: "y" }
-              }
-            }
+        }
+      },
+      {
+        type: "line",
+        from: { data: "visitors2024" },
+        sort: { field: "Month_Num" },
+        encode: {
+          enter: {
+            interpolate: { value: "linear-closed" },
+            stroke: { value: "#E85D04" },
+            strokeWidth: { value: 4 },
+            strokeJoin: { value: "round" },
+            fill: { value: null }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" },
+            opacity: { signal: "show2024 ? 1 : 0" }
           }
-        ]
+        }
       },
       {
         type: "symbol",
@@ -591,7 +673,8 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { field: "x" },
-            y: { field: "y" }
+            y: { field: "y" },
+            opacity: { signal: "datum.Year_Label === '2023' ? (show2023 ? 1 : 0) : (show2024 ? 1 : 0)" }
           }
         }
       },
@@ -663,7 +746,8 @@ function monthlyTrendSpec() {
             x: { field: "valueX" },
             y: { field: "valueY" },
             align: { field: "align" },
-            baseline: { field: "baseline" }
+            baseline: { field: "baseline" },
+            opacity: { signal: "show2024 ? 1 : 0" }
           }
         }
       },
