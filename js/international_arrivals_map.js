@@ -341,11 +341,12 @@ function sourceMarketsSpec() {
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
   const size = Math.min(Math.max(320, width - 120), window.innerWidth < 760 ? 320 : 460);
+  const height = size + (window.innerWidth < 760 ? 76 : 88);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
-    height: size,
-    padding: { top: 72, right: 64, bottom: 42, left: 64 },
+    height,
+    padding: { top: 72, right: 64, bottom: 36, left: 64 },
     title: {
       text: "Monthly Foreign Visitor Cycle",
       subtitle: "Radial line chart compares the seasonal pattern of 2023 and 2024 arrivals",
@@ -360,7 +361,7 @@ function monthlyTrendSpec() {
     },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "height / 2 + 18" },
+      { name: "cy", update: "width / 2 + 18" },
       { name: "innerRadius", value: 36 },
       { name: "outerRadius", update: "min(width, height) * 0.38" },
       { name: "maxVisitors", value: 4 }
@@ -396,6 +397,13 @@ function monthlyTrendSpec() {
         ]
       },
       {
+        name: "visitors2023",
+        source: "visitors",
+        transform: [
+          { type: "filter", expr: "datum.Year_Label === '2023'" }
+        ]
+      },
+      {
         name: "visitors2024",
         source: "visitors",
         transform: [
@@ -424,6 +432,21 @@ function monthlyTrendSpec() {
           { type: "formula", as: "y1", expr: "cy + 8 * sin(datum.angle)" },
           { type: "formula", as: "x2", expr: "cx + outerRadius * cos(datum.angle)" },
           { type: "formula", as: "y2", expr: "cy + outerRadius * sin(datum.angle)" }
+        ]
+      },
+      {
+        name: "eventIcons",
+        values: [
+          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.16, bg: "#E8F3EC" },
+          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8" },
+          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.84, bg: "#FDE9DC" }
+        ],
+        transform: [
+          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
+          { type: "formula", as: "x", expr: "cx + (outerRadius + 62) * cos(datum.angle)" },
+          { type: "formula", as: "y", expr: "cy + (outerRadius + 62) * sin(datum.angle)" },
+          { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
+          { type: "formula", as: "legendY", expr: "cy + outerRadius + 66" }
         ]
       },
       {
@@ -484,6 +507,23 @@ function monthlyTrendSpec() {
             y: { field: "y1" },
             x2: { field: "x2" },
             y2: { field: "y2" }
+          }
+        }
+      },
+      {
+        type: "line",
+        from: { data: "visitors2023" },
+        sort: { field: "Month_Num" },
+        encode: {
+          enter: {
+            interpolate: { value: "linear-closed" },
+            fill: { value: colors.blue },
+            fillOpacity: { value: 0.1 },
+            stroke: { value: null }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
           }
         }
       },
@@ -555,6 +595,24 @@ function monthlyTrendSpec() {
       },
       {
         type: "text",
+        from: { data: "eventIcons" },
+        encode: {
+          enter: {
+            text: { field: "icon" },
+            fontSize: { value: 24 },
+            fontWeight: { value: 700 },
+            fill: { field: "color" },
+            align: { value: "center" },
+            baseline: { value: "middle" }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
+          }
+        }
+      },
+      {
+        type: "text",
         from: { data: "monthLabels" },
         encode: {
           enter: {
@@ -588,6 +646,60 @@ function monthlyTrendSpec() {
             y: { field: "valueY" },
             align: { field: "align" },
             baseline: { field: "baseline" }
+          }
+        }
+      },
+      {
+        type: "rect",
+        from: { data: "eventIcons" },
+        encode: {
+          enter: {
+            width: { value: 124 },
+            height: { value: 40 },
+            cornerRadius: { value: 7 },
+            fill: { field: "bg" },
+            fillOpacity: { value: 0.95 }
+          },
+          update: {
+            x: { signal: "datum.legendCenterX - 62" },
+            y: { signal: "datum.legendY - 20" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "eventIcons" },
+        encode: {
+          enter: {
+            text: { field: "icon" },
+            fontSize: { value: 20 },
+            align: { value: "center" },
+            baseline: { value: "middle" },
+            fill: { field: "color" }
+          },
+          update: {
+            x: { signal: "datum.legendCenterX - 42" },
+            y: { field: "legendY" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "eventIcons" },
+        encode: {
+          enter: {
+            text: { field: "label" },
+            font: { value: "Inter" },
+            fontSize: { value: 10 },
+            fill: { value: colors.text },
+            align: { value: "left" },
+            baseline: { value: "middle" },
+            limit: { value: 72 },
+            lineBreak: { value: "\\n" }
+          },
+          update: {
+            x: { signal: "datum.legendCenterX - 20" },
+            y: { field: "legendY" }
           }
         }
       },
