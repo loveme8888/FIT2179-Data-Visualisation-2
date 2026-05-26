@@ -340,12 +340,12 @@ function sourceMarketsSpec() {
 
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
-  const size = Math.min(Math.max(300, width - 92), window.innerWidth < 760 ? 300 : 420);
+  const size = Math.min(Math.max(320, width - 120), window.innerWidth < 760 ? 320 : 460);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
     height: size,
-    padding: { top: 70, right: 46, bottom: 26, left: 46 },
+    padding: { top: 72, right: 64, bottom: 42, left: 64 },
     title: {
       text: "Monthly Foreign Visitor Cycle",
       subtitle: "Radial line chart compares the seasonal pattern of 2023 and 2024 arrivals",
@@ -360,10 +360,10 @@ function monthlyTrendSpec() {
     },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "height / 2 + 16" },
-      { name: "innerRadius", value: 28 },
-      { name: "outerRadius", update: "min(width, height) * 0.36" },
-      { name: "maxVisitors", value: 4.2 }
+      { name: "cy", update: "height / 2 + 18" },
+      { name: "innerRadius", value: 36 },
+      { name: "outerRadius", update: "min(width, height) * 0.38" },
+      { name: "maxVisitors", value: 4 }
     ],
     data: [
       {
@@ -390,17 +390,28 @@ function monthlyTrendSpec() {
           { type: "fold", fields: ["Visitors_2023", "Visitors_2024"], as: ["Year_Field", "Visitors"] },
           { type: "formula", as: "Year_Label", expr: "datum.Year_Field === 'Visitors_2024' ? '2024' : '2023'" },
           { type: "formula", as: "Visitors_Million", expr: "datum.Visitors / 1000000" },
-          { type: "formula", as: "r", expr: "innerRadius + datum.Visitors_Million / maxVisitors * (outerRadius - innerRadius)" },
+          { type: "formula", as: "r", expr: "innerRadius + min(datum.Visitors_Million, maxVisitors) / maxVisitors * (outerRadius - innerRadius)" },
           { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
           { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" }
+        ]
+      },
+      {
+        name: "visitors2024",
+        source: "visitors",
+        transform: [
+          { type: "filter", expr: "datum.Year_Label === '2024'" }
         ]
       },
       {
         name: "monthLabels",
         source: "monthly",
         transform: [
-          { type: "formula", as: "x", expr: "cx + (outerRadius + 25) * cos(datum.angle)" },
-          { type: "formula", as: "y", expr: "cy + (outerRadius + 25) * sin(datum.angle)" },
+          { type: "formula", as: "x", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
+          { type: "formula", as: "y", expr: "cy + (outerRadius + 34) * sin(datum.angle)" },
+          { type: "formula", as: "valueX", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
+          { type: "formula", as: "valueY", expr: "cy + (outerRadius + 34) * sin(datum.angle) + (sin(datum.angle) < -0.75 ? -18 : 18)" },
+          { type: "formula", as: "Visitors_2024_Million", expr: "datum.Visitors_2024 / 1000000" },
+          { type: "formula", as: "Visitors_2024_Label", expr: "format(datum.Visitors_2024_Million, '.1f') + 'M'" },
           { type: "formula", as: "align", expr: "abs(cos(datum.angle)) < 0.15 ? 'center' : cos(datum.angle) > 0 ? 'left' : 'right'" },
           { type: "formula", as: "baseline", expr: "abs(sin(datum.angle)) < 0.15 ? 'middle' : sin(datum.angle) > 0 ? 'top' : 'bottom'" }
         ]
@@ -409,8 +420,8 @@ function monthlyTrendSpec() {
         name: "spokes",
         source: "monthly",
         transform: [
-          { type: "formula", as: "x1", expr: "cx + innerRadius * cos(datum.angle)" },
-          { type: "formula", as: "y1", expr: "cy + innerRadius * sin(datum.angle)" },
+          { type: "formula", as: "x1", expr: "cx + 8 * cos(datum.angle)" },
+          { type: "formula", as: "y1", expr: "cy + 8 * sin(datum.angle)" },
           { type: "formula", as: "x2", expr: "cx + outerRadius * cos(datum.angle)" },
           { type: "formula", as: "y2", expr: "cy + outerRadius * sin(datum.angle)" }
         ]
@@ -420,8 +431,8 @@ function monthlyTrendSpec() {
         values: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
         transform: [
           { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
-          { type: "formula", as: "labelX", expr: "cx + 4" },
-          { type: "formula", as: "labelY", expr: "cy - datum.r - 4" }
+          { type: "formula", as: "labelX", expr: "cx + 7" },
+          { type: "formula", as: "labelY", expr: "cy - datum.r + 1" }
         ]
       }
     ],
@@ -451,8 +462,8 @@ function monthlyTrendSpec() {
             startAngle: { value: 0 },
             endAngle: { signal: "2 * PI" },
             fill: { value: null },
-            stroke: { value: "#dfe8f2" },
-            strokeWidth: { value: 1 }
+            stroke: { value: "#dbe6f2" },
+            strokeWidth: { value: 1.5 }
           },
           update: {
             innerRadius: { field: "r" },
@@ -465,14 +476,31 @@ function monthlyTrendSpec() {
         from: { data: "spokes" },
         encode: {
           enter: {
-            stroke: { value: "#edf2f7" },
-            strokeWidth: { value: 1 }
+            stroke: { value: "#e8f0f8" },
+            strokeWidth: { value: 1.2 }
           },
           update: {
             x: { field: "x1" },
             y: { field: "y1" },
             x2: { field: "x2" },
             y2: { field: "y2" }
+          }
+        }
+      },
+      {
+        type: "line",
+        from: { data: "visitors2024" },
+        sort: { field: "Month_Num" },
+        encode: {
+          enter: {
+            interpolate: { value: "linear-closed" },
+            fill: { value: "#E85D04" },
+            fillOpacity: { value: 0.1 },
+            stroke: { value: null }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
           }
         }
       },
@@ -494,7 +522,7 @@ function monthlyTrendSpec() {
               enter: {
                 interpolate: { value: "linear-closed" },
                 stroke: { scale: "yearColor", field: "Year_Label" },
-                strokeWidth: { value: 3 },
+                strokeWidth: { value: 4 },
                 strokeJoin: { value: "round" },
                 fill: { value: null }
               },
@@ -511,7 +539,7 @@ function monthlyTrendSpec() {
         from: { data: "visitors" },
         encode: {
           enter: {
-            size: { value: 70 },
+            size: { value: 105 },
             fill: { scale: "yearColor", field: "Year_Label" },
             stroke: { value: "#ffffff" },
             strokeWidth: { value: 1.5 },
@@ -532,7 +560,7 @@ function monthlyTrendSpec() {
           enter: {
             text: { field: "Month_Abbr" },
             font: { value: "Inter" },
-            fontSize: { value: 12 },
+            fontSize: { value: 15 },
             fontWeight: { value: 700 },
             fill: { value: colors.text }
           },
@@ -546,15 +574,34 @@ function monthlyTrendSpec() {
       },
       {
         type: "text",
+        from: { data: "monthLabels" },
+        encode: {
+          enter: {
+            text: { field: "Visitors_2024_Label" },
+            font: { value: "Inter" },
+            fontSize: { value: 12 },
+            fontWeight: { value: 700 },
+            fill: { value: "#E85D04" }
+          },
+          update: {
+            x: { field: "valueX" },
+            y: { field: "valueY" },
+            align: { field: "align" },
+            baseline: { field: "baseline" }
+          }
+        }
+      },
+      {
+        type: "text",
         from: { data: "rings" },
         encode: {
           enter: {
             text: { field: "value" },
             font: { value: "Inter" },
-            fontSize: { value: 10 },
-            fill: { value: "#64748b" },
-            align: { value: "left" },
-            baseline: { value: "bottom" }
+            fontSize: { value: 13 },
+            fill: { value: "#5b6d86" },
+            align: { value: "center" },
+            baseline: { value: "middle" }
           },
           update: {
             x: { field: "labelX" },
@@ -573,7 +620,7 @@ function monthlyTrendSpec() {
             align: { value: "center" },
             baseline: { value: "middle" },
             font: { value: "Inter" },
-            fontSize: { value: 13 },
+            fontSize: { value: 16 },
             fontWeight: { value: 700 },
             fill: { value: colors.text }
           }
