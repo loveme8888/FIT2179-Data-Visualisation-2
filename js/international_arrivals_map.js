@@ -340,176 +340,249 @@ function sourceMarketsSpec() {
 
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
-  const size = Math.min(width, 620);
+  const size = Math.min(Math.max(300, width - 92), window.innerWidth < 760 ? 300 : 420);
   return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
     height: size,
+    padding: { top: 70, right: 46, bottom: 26, left: 46 },
     title: {
       text: "Monthly Foreign Visitor Cycle",
-      subtitle: "Radial area-line chart shows 2024 above 2023 through every month",
+      subtitle: "Radial line chart compares the seasonal pattern of 2023 and 2024 arrivals",
       fontSize: 24,
-      subtitleFontSize: 14
+      font: "Bebas Neue",
+      color: colors.text,
+      anchor: "start",
+      subtitleFont: "Inter",
+      subtitleFontSize: 14,
+      subtitleColor: colors.muted,
+      offset: 12
     },
-    data: { url: "data/foreign_visitors_monthly_2024_2023.csv" },
-    transform: [
-      { fold: ["Visitors_2024", "Visitors_2023"], as: ["Year", "Visitors"] },
-      { calculate: "replace(datum.Year, 'Visitors_', '')", as: "Year_Label" },
-      { calculate: "datum.Visitors / 1000000", as: "Visitors_Million" },
-      { calculate: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.Month_Num - 1]", as: "Month_Abbr" },
-      { calculate: "datum.Month_Num - 1", as: "Month_Index" }
+    signals: [
+      { name: "cx", update: "width / 2" },
+      { name: "cy", update: "height / 2 + 16" },
+      { name: "innerRadius", value: 28 },
+      { name: "outerRadius", update: "min(width, height) * 0.36" },
+      { name: "maxVisitors", value: 4.2 }
     ],
-    layer: [
+    data: [
       {
-        transform: [{ filter: "datum.Year_Label === '2024'" }],
-        mark: {
-          type: "area",
-          interpolate: "linear-closed",
-          opacity: 0.22,
-          color: colors.orange
+        name: "monthly",
+        url: "data/foreign_visitors_monthly_2024_2023.csv",
+        format: {
+          type: "csv",
+          parse: {
+            Month_Num: "number",
+            Visitors_2023: "number",
+            Visitors_2024: "number",
+            Growth_Pct: "number"
+          }
         },
-        encoding: {
-          theta: {
-            field: "Month_Index",
-            type: "quantitative",
-            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
-            axis: null
-          },
-          radius: {
-            field: "Visitors_Million",
-            type: "quantitative",
-            scale: { domain: [0, 4.2], rangeMin: 34 },
-            axis: {
-              title: "Visitors (million)",
-              values: [1, 2, 3, 4],
-              grid: true,
-              labelColor: "#46566e",
-              titleColor: "#34445c"
-            }
-          },
-          tooltip: [
-            { field: "Month", title: "Month" },
-            { field: "Year_Label", title: "Year" },
-            { field: "Visitors", title: "Visitors", format: "," },
-            { field: "Visitors_Million", title: "Visitors (million)", format: ".2f" }
-          ]
-        }
+        transform: [
+          { type: "formula", as: "Month_Abbr", expr: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.Month_Num - 1]" },
+          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" }
+        ]
       },
       {
-        mark: {
-          type: "line",
-          interpolate: "linear-closed",
-          strokeWidth: 3.2
-        },
-        encoding: {
-          theta: {
-            field: "Month_Index",
-            type: "quantitative",
-            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
-            axis: null
-          },
-          radius: {
-            field: "Visitors_Million",
-            type: "quantitative",
-            scale: { domain: [0, 4.2], rangeMin: 34 }
-          },
-          color: {
-            field: "Year_Label",
-            type: "nominal",
-            title: "Year",
-            scale: {
-              domain: ["2023", "2024"],
-              range: [colors.blue, "#E85D04"]
-            },
-            legend: { orient: "top", direction: "horizontal", title: null, symbolType: "stroke" }
-          },
-          order: { field: "Month_Num", type: "quantitative" },
-          tooltip: [
-            { field: "Month", title: "Month" },
-            { field: "Year_Label", title: "Year" },
-            { field: "Visitors", title: "Visitors", format: "," },
-            { field: "Visitors_Million", title: "Visitors (million)", format: ".2f" }
-          ]
-        }
+        name: "visitors",
+        source: "monthly",
+        transform: [
+          { type: "fold", fields: ["Visitors_2023", "Visitors_2024"], as: ["Year_Field", "Visitors"] },
+          { type: "formula", as: "Year_Label", expr: "datum.Year_Field === 'Visitors_2024' ? '2024' : '2023'" },
+          { type: "formula", as: "Visitors_Million", expr: "datum.Visitors / 1000000" },
+          { type: "formula", as: "r", expr: "innerRadius + datum.Visitors_Million / maxVisitors * (outerRadius - innerRadius)" },
+          { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
+          { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" }
+        ]
       },
       {
-        mark: {
-          type: "point",
-          filled: true,
-          size: 58,
-          stroke: "#ffffff",
-          strokeWidth: 1.4
-        },
-        encoding: {
-          theta: {
-            field: "Month_Index",
-            type: "quantitative",
-            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
-            axis: null
-          },
-          radius: {
-            field: "Visitors_Million",
-            type: "quantitative",
-            scale: { domain: [0, 4.2], rangeMin: 34 }
-          },
-          color: {
-            field: "Year_Label",
-            type: "nominal",
-            scale: {
-              domain: ["2023", "2024"],
-              range: [colors.blue, "#E85D04"]
-            },
-            legend: null
-          },
-          order: { field: "Month_Num", type: "quantitative" },
-          tooltip: [
-            { field: "Month", title: "Month" },
-            { field: "Year_Label", title: "Year" },
-            { field: "Visitors", title: "Visitors", format: "," },
-            { field: "Visitors_Million", title: "Visitors (million)", format: ".2f" }
-          ]
-        }
+        name: "monthLabels",
+        source: "monthly",
+        transform: [
+          { type: "formula", as: "x", expr: "cx + (outerRadius + 25) * cos(datum.angle)" },
+          { type: "formula", as: "y", expr: "cy + (outerRadius + 25) * sin(datum.angle)" },
+          { type: "formula", as: "align", expr: "abs(cos(datum.angle)) < 0.15 ? 'center' : cos(datum.angle) > 0 ? 'left' : 'right'" },
+          { type: "formula", as: "baseline", expr: "abs(sin(datum.angle)) < 0.15 ? 'middle' : sin(datum.angle) > 0 ? 'top' : 'bottom'" }
+        ]
       },
       {
-        transform: [{ filter: "datum.Year_Label === '2024'" }],
-        mark: {
-          type: "text",
-          radiusOffset: 22,
-          font: "Inter",
-          fontSize: 12,
-          fontWeight: 700,
-          color: colors.text
-        },
-        encoding: {
-          theta: {
-            field: "Month_Index",
-            type: "quantitative",
-            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
-            axis: null
-          },
-          radius: {
-            field: "Visitors_Million",
-            type: "quantitative",
-            scale: { domain: [0, 4.2], rangeMin: 34 }
-          },
-          text: { field: "Month_Abbr" }
-        }
+        name: "spokes",
+        source: "monthly",
+        transform: [
+          { type: "formula", as: "x1", expr: "cx + innerRadius * cos(datum.angle)" },
+          { type: "formula", as: "y1", expr: "cy + innerRadius * sin(datum.angle)" },
+          { type: "formula", as: "x2", expr: "cx + outerRadius * cos(datum.angle)" },
+          { type: "formula", as: "y2", expr: "cy + outerRadius * sin(datum.angle)" }
+        ]
       },
       {
-        data: { values: [{ label: "Visitors\\n(million)" }] },
-        mark: {
-          type: "text",
-          align: "center",
-          baseline: "middle",
-          lineBreak: "\\n",
-          fontSize: 14,
-          fontWeight: 700,
-          color: colors.text
-        },
-        encoding: { text: { field: "label" } }
+        name: "rings",
+        values: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
+        transform: [
+          { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
+          { type: "formula", as: "labelX", expr: "cx + 4" },
+          { type: "formula", as: "labelY", expr: "cy - datum.r - 4" }
+        ]
       }
     ],
-    config: baseConfig()
+    scales: [
+      { name: "yearColor", type: "ordinal", domain: ["2023", "2024"], range: [colors.blue, "#E85D04"] }
+    ],
+    legends: [
+      {
+        stroke: "yearColor",
+        orient: "top",
+        direction: "horizontal",
+        title: null,
+        symbolType: "stroke",
+        labelFont: "Inter",
+        labelColor: "#34445c",
+        offset: 0
+      }
+    ],
+    marks: [
+      {
+        type: "arc",
+        from: { data: "rings" },
+        encode: {
+          enter: {
+            x: { signal: "cx" },
+            y: { signal: "cy" },
+            startAngle: { value: 0 },
+            endAngle: { signal: "2 * PI" },
+            fill: { value: null },
+            stroke: { value: "#dfe8f2" },
+            strokeWidth: { value: 1 }
+          },
+          update: {
+            innerRadius: { field: "r" },
+            outerRadius: { signal: "datum.r + 0.6" }
+          }
+        }
+      },
+      {
+        type: "rule",
+        from: { data: "spokes" },
+        encode: {
+          enter: {
+            stroke: { value: "#edf2f7" },
+            strokeWidth: { value: 1 }
+          },
+          update: {
+            x: { field: "x1" },
+            y: { field: "y1" },
+            x2: { field: "x2" },
+            y2: { field: "y2" }
+          }
+        }
+      },
+      {
+        type: "group",
+        from: {
+          facet: {
+            name: "series",
+            data: "visitors",
+            groupby: "Year_Label"
+          }
+        },
+        marks: [
+          {
+            type: "line",
+            from: { data: "series" },
+            sort: { field: "Month_Num" },
+            encode: {
+              enter: {
+                interpolate: { value: "linear-closed" },
+                stroke: { scale: "yearColor", field: "Year_Label" },
+                strokeWidth: { value: 3 },
+                strokeJoin: { value: "round" },
+                fill: { value: null }
+              },
+              update: {
+                x: { field: "x" },
+                y: { field: "y" }
+              }
+            }
+          }
+        ]
+      },
+      {
+        type: "symbol",
+        from: { data: "visitors" },
+        encode: {
+          enter: {
+            size: { value: 70 },
+            fill: { scale: "yearColor", field: "Year_Label" },
+            stroke: { value: "#ffffff" },
+            strokeWidth: { value: 1.5 },
+            tooltip: {
+              signal: "{'Month': datum.Month, 'Year': datum.Year_Label, 'Visitors': format(datum.Visitors, ',.0f'), 'Visitors (million)': format(datum.Visitors_Million, '.2f')}"
+            }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "monthLabels" },
+        encode: {
+          enter: {
+            text: { field: "Month_Abbr" },
+            font: { value: "Inter" },
+            fontSize: { value: 12 },
+            fontWeight: { value: 700 },
+            fill: { value: colors.text }
+          },
+          update: {
+            x: { field: "x" },
+            y: { field: "y" },
+            align: { field: "align" },
+            baseline: { field: "baseline" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "rings" },
+        encode: {
+          enter: {
+            text: { field: "value" },
+            font: { value: "Inter" },
+            fontSize: { value: 10 },
+            fill: { value: "#64748b" },
+            align: { value: "left" },
+            baseline: { value: "bottom" }
+          },
+          update: {
+            x: { field: "labelX" },
+            y: { field: "labelY" }
+          }
+        }
+      },
+      {
+        type: "text",
+        encode: {
+          enter: {
+            x: { signal: "cx" },
+            y: { signal: "cy" },
+            text: { value: "Visitors\n(million)" },
+            lineBreak: { value: "\n" },
+            align: { value: "center" },
+            baseline: { value: "middle" },
+            font: { value: "Inter" },
+            fontSize: { value: 13 },
+            fontWeight: { value: 700 },
+            fill: { value: colors.text }
+          }
+        }
+      }
+    ],
+    config: {
+      background: "#ffffff"
+    }
   };
 }
 
