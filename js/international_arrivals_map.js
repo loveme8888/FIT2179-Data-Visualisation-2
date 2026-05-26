@@ -537,9 +537,9 @@ function monthlyTrendSpec() {
       {
         name: "eventLegend",
         values: [
-          { color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.17, legendRow: 0, bg: "#E8F3EC" },
-          { color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, legendRow: 1, bg: "#FFF3D8" },
-          { color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.83, legendRow: 2, bg: "#FDE9DC" }
+          { color: "#2E8B57", label: "Dec: year-end\\nholiday peak", legendX: 0.17, legendRow: 0, bg: "#E8F3EC" },
+          { color: "#F4A000", label: "Aug: mid-year\\nschool holidays", legendX: 0.50, legendRow: 1, bg: "#FFF3D8" },
+          { color: "#E85D04", label: "Jun: school holidays\\ntravel boost", legendX: 0.83, legendRow: 2, bg: "#FDE9DC" }
         ],
         transform: [
           { type: "formula", as: "legendCenterX", expr: "width < 340 ? width / 2 : width * datum.legendX" },
