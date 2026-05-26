@@ -429,8 +429,13 @@ h1 {
 
 .figure-card-monthly-trend-chart {
   grid-template-columns: minmax(230px, 0.3fr) minmax(0, 1fr);
+  align-items: start;
   padding-top: 24px;
   padding-bottom: 20px;
+}
+
+.figure-card-monthly-trend-chart .chart {
+  align-items: flex-start;
 }
 
 .figure-copy {

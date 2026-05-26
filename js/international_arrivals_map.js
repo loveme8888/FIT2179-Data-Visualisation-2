@@ -433,8 +433,10 @@ function sourceMarketsSpec() {
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
   const isMobile = window.innerWidth < 760;
-  const size = Math.min(Math.max(isMobile ? 280 : 420, width - (isMobile ? 12 : 120)), isMobile ? 360 : 520);
-  const height = size + (isMobile ? 136 : 150);
+  const size = isMobile
+    ? Math.min(Math.max(250, width - 78), 300)
+    : Math.min(Math.max(420, width - 40), 640);
+  const height = size + (isMobile ? 190 : 120);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
@@ -442,10 +444,10 @@ function monthlyTrendSpec() {
     padding: { top: 18, right: isMobile ? 18 : 28, bottom: 12, left: isMobile ? 18 : 28 },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "width / 2 + 52" },
+      { name: "cy", update: "width / 2 + (width < 340 ? 34 : 38)" },
       { name: "innerRadius", value: 10 },
-      { name: "outerRadius", update: "width * 0.34" },
-      { name: "legendCardWidth", update: "width < 380 ? 106 : 138" },
+      { name: "outerRadius", update: "width * (width < 340 ? 0.31 : 0.34)" },
+      { name: "legendCardWidth", update: "width < 340 ? 190 : 134" },
       { name: "maxVisitors", value: 4 },
       {
         name: "selectedYear",
@@ -533,16 +535,15 @@ function monthlyTrendSpec() {
         ]
       },
       {
-        name: "eventIcons",
+        name: "eventLegend",
         values: [
-          { Month_Num: 12, icon: "🎄", color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.18, bg: "#E8F3EC" },
-          { Month_Num: 8, icon: "☀", color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, bg: "#FFF3D8" },
-          { Month_Num: 6, icon: "🚌", color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.82, bg: "#FDE9DC" }
+          { color: "#2E8B57", label: "Year-end\\nholiday peak", legendX: 0.17, legendRow: 0, bg: "#E8F3EC" },
+          { color: "#F4A000", label: "Mid-year school\\nholidays", legendX: 0.50, legendRow: 1, bg: "#FFF3D8" },
+          { color: "#E85D04", label: "School holidays\\ntravel boost", legendX: 0.83, legendRow: 2, bg: "#FDE9DC" }
         ],
         transform: [
-          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
-          { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "height - 36" }
+          { type: "formula", as: "legendCenterX", expr: "width < 340 ? width / 2 : width * datum.legendX" },
+          { type: "formula", as: "legendY", expr: "width < 340 ? height - 112 + datum.legendRow * 38 : height - 34" }
         ]
       },
       {
@@ -876,54 +877,53 @@ function monthlyTrendSpec() {
       },
       {
         type: "rect",
-        from: { data: "eventIcons" },
+        from: { data: "eventLegend" },
         encode: {
           enter: {
             width: { signal: "legendCardWidth" },
-            height: { value: 42 },
+            height: { signal: "width < 340 ? 34 : 40" },
             cornerRadius: { value: 7 },
             fill: { field: "bg" },
             fillOpacity: { value: 0.95 }
           },
           update: {
             x: { signal: "datum.legendCenterX - legendCardWidth / 2" },
-            y: { signal: "datum.legendY - 21" }
+            y: { signal: "datum.legendY - (width < 340 ? 17 : 20)" }
           }
         }
       },
       {
-        type: "text",
-        from: { data: "eventIcons" },
+        type: "rect",
+        from: { data: "eventLegend" },
         encode: {
           enter: {
-            text: { field: "icon" },
-            fontSize: { value: 18 },
-            align: { value: "center" },
-            baseline: { value: "middle" },
+            width: { value: 5 },
+            height: { signal: "width < 340 ? 24 : 24" },
+            cornerRadius: { value: 3 },
             fill: { field: "color" }
           },
           update: {
-            x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 20" },
-            y: { field: "legendY" }
+            x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 14" },
+            y: { signal: "datum.legendY - 12" }
           }
         }
       },
       {
         type: "text",
-        from: { data: "eventIcons" },
+        from: { data: "eventLegend" },
         encode: {
           enter: {
             text: { field: "label" },
             font: { value: "Inter" },
-            fontSize: { value: 10 },
+            fontSize: { value: 10.5 },
             fill: { value: colors.text },
             align: { value: "left" },
             baseline: { value: "middle" },
-            limit: { signal: "legendCardWidth - 44" },
+            limit: { signal: "legendCardWidth - 34" },
             lineBreak: { value: "\\n" }
           },
           update: {
-            x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 42" },
+            x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 28" },
             y: { field: "legendY" }
           }
         }
