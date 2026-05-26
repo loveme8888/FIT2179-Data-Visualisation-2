@@ -423,8 +423,14 @@ h1 {
   row-gap: 12px;
   align-items: center;
   min-height: 0;
-  padding: 34px 42px;
+  padding: 28px 34px;
   overflow: hidden;
+}
+
+.figure-card-monthly-trend-chart {
+  grid-template-columns: minmax(230px, 0.3fr) minmax(0, 1fr);
+  padding-top: 24px;
+  padding-bottom: 20px;
 }
 
 .figure-copy {
@@ -509,6 +515,10 @@ h1 {
 .spending-chart,
 .scatter-chart {
   min-height: 380px;
+}
+
+#monthly-trend-chart {
+  min-height: 460px;
 }
 
 .heatmap-chart {

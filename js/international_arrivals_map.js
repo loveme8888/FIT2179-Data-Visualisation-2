@@ -100,6 +100,8 @@ function applyFigureNarratives() {
     const card = chart?.closest(".viz-card");
     if (!chart || !card || card.querySelector(".figure-copy")) return;
 
+    card.classList.add("figure-card", `figure-card-${chartId}`);
+
     const copy = document.createElement("div");
     copy.className = "figure-copy";
     copy.innerHTML = `
@@ -430,30 +432,18 @@ function sourceMarketsSpec() {
 
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
-  const size = Math.min(Math.max(320, width - 90), window.innerWidth < 760 ? 320 : 440);
-  const height = size + (window.innerWidth < 760 ? 110 : 128);
+  const size = Math.min(Math.max(300, width - 220), window.innerWidth < 760 ? 300 : 380);
+  const height = size + (window.innerWidth < 760 ? 84 : 96);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
     height,
-    padding: { top: 72, right: 64, bottom: 36, left: 64 },
-    title: {
-      text: "Monthly Foreign Visitor Cycle",
-      subtitle: "Radial line chart compares the seasonal pattern of 2023 and 2024 arrivals",
-      fontSize: 24,
-      font: "Bebas Neue",
-      color: colors.text,
-      anchor: "start",
-      subtitleFont: "Inter",
-      subtitleFontSize: 14,
-      subtitleColor: colors.muted,
-      offset: 12
-    },
+    padding: { top: 28, right: 52, bottom: 18, left: 52 },
     signals: [
       { name: "cx", update: "width / 2" },
-      { name: "cy", update: "width / 2 + 14" },
+      { name: "cy", update: "width / 2 + 44" },
       { name: "innerRadius", value: 10 },
-      { name: "outerRadius", update: "min(width, height) * 0.36" },
+      { name: "outerRadius", update: "min(width, height) * 0.34" },
       { name: "maxVisitors", value: 4 },
       {
         name: "selectedYear",
@@ -553,7 +543,7 @@ function monthlyTrendSpec() {
           { type: "formula", as: "x", expr: "datum.labelX + datum.iconDx" },
           { type: "formula", as: "y", expr: "datum.labelY + datum.iconDy" },
           { type: "formula", as: "legendCenterX", expr: "width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "cy + outerRadius + 116" }
+          { type: "formula", as: "legendY", expr: "cy + outerRadius + 82" }
         ]
       },
       {
