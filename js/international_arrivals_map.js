@@ -340,12 +340,14 @@ function sourceMarketsSpec() {
 
 function monthlyTrendSpec() {
   const width = chartWidth("#monthly-trend-chart", 760, 650);
+  const size = Math.min(width, 620);
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width,
+    width: size,
+    height: size,
     title: {
-      text: "Monthly Foreign Visitors",
-      subtitle: "Ridgeline view highlights seasonal peaks in 2023 and 2024 arrivals",
+      text: "Monthly Foreign Visitor Cycle",
+      subtitle: "Radial area-line chart shows 2024 above 2023 through every month",
       fontSize: 24,
       subtitleFontSize: 14
     },
@@ -353,101 +355,160 @@ function monthlyTrendSpec() {
     transform: [
       { fold: ["Visitors_2024", "Visitors_2023"], as: ["Year", "Visitors"] },
       { calculate: "replace(datum.Year, 'Visitors_', '')", as: "Year_Label" },
-      { calculate: "datum.Visitors / 1000000", as: "Visitors_Million" }
+      { calculate: "datum.Visitors / 1000000", as: "Visitors_Million" },
+      { calculate: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.Month_Num - 1]", as: "Month_Abbr" },
+      { calculate: "datum.Month_Num - 1", as: "Month_Index" }
     ],
-    facet: {
-      row: {
-        field: "Year_Label",
-        type: "nominal",
-        title: null,
-        sort: ["2024", "2023"],
-        header: {
-          labelFontSize: 15,
-          labelFontWeight: 700,
-          labelColor: colors.navy,
-          labelAngle: 0,
-          labelAlign: "left",
-          labelPadding: 8
-        }
-      }
-    },
-    spec: {
-      width,
-      height: 135,
-      layer: [
-        {
-          mark: { type: "area", interpolate: "monotone", opacity: 0.28, line: false },
-          encoding: {
-            x: {
-              field: "Month_Num",
-              type: "quantitative",
-              title: "Month",
-              scale: { domain: [1, 12] },
-              axis: {
-                values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                labelAngle: 0,
-                labelExpr: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.value - 1]"
-              }
-            },
-            y: {
-              field: "Visitors_Million",
-              type: "quantitative",
+    layer: [
+      {
+        transform: [{ filter: "datum.Year_Label === '2024'" }],
+        mark: {
+          type: "area",
+          interpolate: "linear-closed",
+          opacity: 0.22,
+          color: colors.orange
+        },
+        encoding: {
+          theta: {
+            field: "Month_Index",
+            type: "quantitative",
+            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
+            axis: null
+          },
+          radius: {
+            field: "Visitors_Million",
+            type: "quantitative",
+            scale: { domain: [0, 4.2], rangeMin: 34 },
+            axis: {
               title: "Visitors (million)",
-              scale: { domain: [0, 4] }
-            },
-            color: {
-              field: "Year_Label",
-              type: "nominal",
-              title: "Year",
-              scale: {
-                domain: ["2023", "2024"],
-                range: [colors.blue, colors.orange]
-              },
-              legend: null
-            },
-            tooltip: [
-              { field: "Month", title: "Month" },
-              { field: "Year_Label", title: "Year" },
-              { field: "Visitors", title: "Visitors", format: "," },
-              { field: "Growth_Pct", title: "2024 growth %", format: ".1f" }
-            ]
-          }
-        },
-        {
-          mark: { type: "line", interpolate: "monotone", strokeWidth: 3 },
-          encoding: {
-            x: { field: "Month_Num", type: "quantitative" },
-            y: { field: "Visitors_Million", type: "quantitative" },
-            color: {
-              field: "Year_Label",
-              type: "nominal",
-              scale: {
-                domain: ["2023", "2024"],
-                range: [colors.blue, colors.orange]
-              },
-              legend: null
+              values: [1, 2, 3, 4],
+              grid: true,
+              labelColor: "#46566e",
+              titleColor: "#34445c"
             }
-          }
-        },
-        {
-          mark: { type: "point", filled: true, size: 44 },
-          encoding: {
-            x: { field: "Month_Num", type: "quantitative" },
-            y: { field: "Visitors_Million", type: "quantitative" },
-            color: {
-              field: "Year_Label",
-              type: "nominal",
-              scale: {
-                domain: ["2023", "2024"],
-                range: [colors.blue, colors.orange]
-              },
-              legend: null
-            }
-          }
+          },
+          tooltip: [
+            { field: "Month", title: "Month" },
+            { field: "Year_Label", title: "Year" },
+            { field: "Visitors", title: "Visitors", format: "," },
+            { field: "Visitors_Million", title: "Visitors (million)", format: ".2f" }
+          ]
         }
-      ]
-    },
-    spacing: 2,
+      },
+      {
+        mark: {
+          type: "line",
+          interpolate: "linear-closed",
+          strokeWidth: 3.2
+        },
+        encoding: {
+          theta: {
+            field: "Month_Index",
+            type: "quantitative",
+            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
+            axis: null
+          },
+          radius: {
+            field: "Visitors_Million",
+            type: "quantitative",
+            scale: { domain: [0, 4.2], rangeMin: 34 }
+          },
+          color: {
+            field: "Year_Label",
+            type: "nominal",
+            title: "Year",
+            scale: {
+              domain: ["2023", "2024"],
+              range: [colors.blue, "#E85D04"]
+            },
+            legend: { orient: "top", direction: "horizontal", title: null, symbolType: "stroke" }
+          },
+          order: { field: "Month_Num", type: "quantitative" },
+          tooltip: [
+            { field: "Month", title: "Month" },
+            { field: "Year_Label", title: "Year" },
+            { field: "Visitors", title: "Visitors", format: "," },
+            { field: "Visitors_Million", title: "Visitors (million)", format: ".2f" }
+          ]
+        }
+      },
+      {
+        mark: {
+          type: "point",
+          filled: true,
+          size: 58,
+          stroke: "#ffffff",
+          strokeWidth: 1.4
+        },
+        encoding: {
+          theta: {
+            field: "Month_Index",
+            type: "quantitative",
+            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
+            axis: null
+          },
+          radius: {
+            field: "Visitors_Million",
+            type: "quantitative",
+            scale: { domain: [0, 4.2], rangeMin: 34 }
+          },
+          color: {
+            field: "Year_Label",
+            type: "nominal",
+            scale: {
+              domain: ["2023", "2024"],
+              range: [colors.blue, "#E85D04"]
+            },
+            legend: null
+          },
+          order: { field: "Month_Num", type: "quantitative" },
+          tooltip: [
+            { field: "Month", title: "Month" },
+            { field: "Year_Label", title: "Year" },
+            { field: "Visitors", title: "Visitors", format: "," },
+            { field: "Visitors_Million", title: "Visitors (million)", format: ".2f" }
+          ]
+        }
+      },
+      {
+        transform: [{ filter: "datum.Year_Label === '2024'" }],
+        mark: {
+          type: "text",
+          radiusOffset: 22,
+          font: "Inter",
+          fontSize: 12,
+          fontWeight: 700,
+          color: colors.text
+        },
+        encoding: {
+          theta: {
+            field: "Month_Index",
+            type: "quantitative",
+            scale: { domain: [0, 12], range: [0, 6.283185307179586] },
+            axis: null
+          },
+          radius: {
+            field: "Visitors_Million",
+            type: "quantitative",
+            scale: { domain: [0, 4.2], rangeMin: 34 }
+          },
+          text: { field: "Month_Abbr" }
+        }
+      },
+      {
+        data: { values: [{ label: "Visitors\\n(million)" }] },
+        mark: {
+          type: "text",
+          align: "center",
+          baseline: "middle",
+          lineBreak: "\\n",
+          fontSize: 14,
+          fontWeight: 700,
+          color: colors.text
+        },
+        encoding: { text: { field: "label" } }
+      }
+    ],
     config: baseConfig()
   };
 }
