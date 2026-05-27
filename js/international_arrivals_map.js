@@ -443,23 +443,27 @@ function sourceMarketsSpec() {
 }
 
 function monthlyTrendSpec() {
-  const width = chartWidth("#monthly-trend-chart", 760, 650);
+  const availableWidth = chartWidth("#monthly-trend-chart", 760, 650);
   const isMobile = window.innerWidth < 760;
   const size = isMobile
-    ? Math.min(Math.max(250, width - 78), 300)
-    : Math.min(Math.max(460, width - 90), 580);
-  const height = size + (isMobile ? 190 : 136);
+    ? Math.min(Math.max(250, availableWidth - 78), 300)
+    : Math.min(Math.max(390, availableWidth - 300), 500);
+  const calloutRail = isMobile ? 0 : 224;
+  const width = size + calloutRail;
+  const height = size + (isMobile ? 190 : 68);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
-    width: size,
+    width,
     height,
     padding: { top: 18, right: isMobile ? 18 : 28, bottom: 12, left: isMobile ? 18 : 28 },
     signals: [
-      { name: "cx", update: "width / 2" },
-      { name: "cy", update: "width / 2 + (width < 340 ? 34 : 22)" },
+      { name: "plotSize", value: size },
+      { name: "hasCalloutRail", value: !isMobile },
+      { name: "cx", update: "plotSize / 2 + (hasCalloutRail ? 8 : 0)" },
+      { name: "cy", update: "plotSize / 2 + (plotSize < 340 ? 34 : 42)" },
       { name: "innerRadius", value: 10 },
-      { name: "outerRadius", update: "width * (width < 340 ? 0.31 : 0.34)" },
-      { name: "legendCardWidth", update: "width < 340 ? 190 : 134" },
+      { name: "outerRadius", update: "plotSize * (plotSize < 340 ? 0.31 : 0.34)" },
+      { name: "legendCardWidth", update: "plotSize < 340 ? 190 : 134" },
       { name: "maxVisitors", value: 4 },
       {
         name: "selectedYear",
@@ -554,8 +558,8 @@ function monthlyTrendSpec() {
           { color: "#E85D04", label: "Jun: school holidays\\ntravel boost", legendX: 0.83, legendRow: 2, bg: "#FDE9DC" }
         ],
         transform: [
-          { type: "formula", as: "legendCenterX", expr: "width < 340 ? width / 2 : width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "width < 340 ? height - 112 + datum.legendRow * 38 : height - 26" }
+          { type: "formula", as: "legendCenterX", expr: "plotSize < 340 ? width / 2 : width * datum.legendX" },
+          { type: "formula", as: "legendY", expr: "plotSize < 340 ? height - 112 + datum.legendRow * 38 : height - 26" }
         ]
       },
       {
@@ -579,7 +583,7 @@ function monthlyTrendSpec() {
             icon: "☀",
             title: "AUGUST\\nMID-YEAR PEAK",
             detail: "School holidays\\nlifted demand",
-            anchor: "bottomLeft"
+            anchor: "rightMiddle"
           },
           {
             Month_Num: 6,
@@ -589,7 +593,7 @@ function monthlyTrendSpec() {
             icon: "🚌",
             title: "JUNE\\nSCHOOL HOLIDAY\\nSURGE",
             detail: "Holiday travel\\nboosted arrivals",
-            anchor: "bottomRight"
+            anchor: "rightBottom"
           }
         ],
         transform: [
@@ -597,12 +601,12 @@ function monthlyTrendSpec() {
           { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
           { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
           { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" },
-          { type: "formula", as: "cardW", expr: "datum.anchor === 'bottomRight' ? 206 : (datum.anchor === 'topLeft' ? 146 : (width < 520 ? 150 : 174))" },
-          { type: "formula", as: "cardH", expr: "datum.anchor === 'bottomRight' ? 98 : (datum.anchor === 'topLeft' ? 58 : 82)" },
-          { type: "formula", as: "cardX", expr: "datum.anchor === 'bottomRight' ? width - datum.cardW - 2 : (datum.anchor === 'topLeft' ? 2 : 10)" },
-          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 4 : height - datum.cardH - 4" },
-          { type: "formula", as: "leaderX", expr: "datum.anchor === 'bottomRight' ? datum.cardX + 8 : (datum.anchor === 'topLeft' ? datum.cardX + datum.cardW - 8 : datum.cardX + datum.cardW / 2)" },
-          { type: "formula", as: "leaderY", expr: "datum.anchor === 'topLeft' ? datum.cardY + datum.cardH / 2 : datum.cardY + 2" }
+          { type: "formula", as: "cardW", expr: "datum.anchor === 'topLeft' ? 146 : 190" },
+          { type: "formula", as: "cardH", expr: "datum.anchor === 'topLeft' ? 58 : 80" },
+          { type: "formula", as: "cardX", expr: "datum.anchor === 'topLeft' ? 2 : width - datum.cardW - 2" },
+          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 4 : (datum.anchor === 'rightMiddle' ? cy + 46 : cy + 136)" },
+          { type: "formula", as: "leaderX", expr: "datum.anchor === 'topLeft' ? datum.cardX + datum.cardW - 8 : datum.cardX + 2" },
+          { type: "formula", as: "leaderY", expr: "datum.anchor === 'rightMiddle' ? datum.cardY + datum.cardH - 12 : datum.cardY + datum.cardH / 2" }
         ]
       },
       {
