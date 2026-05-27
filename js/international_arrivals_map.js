@@ -566,6 +566,7 @@ function monthlyTrendSpec() {
             value: 3.805306,
             color: "#2E8B57",
             bg: "#E8F3EC",
+            icon: "🎄",
             title: "DECEMBER\\nYEAR-END PEAK",
             detail: "Highest arrivals\\nat 3.8 million",
             anchor: "topLeft"
@@ -575,6 +576,7 @@ function monthlyTrendSpec() {
             value: 3.662108,
             color: "#F4A000",
             bg: "#FFF3D8",
+            icon: "☀",
             title: "AUGUST\\nMID-YEAR PEAK",
             detail: "School holidays\\nlifted demand",
             anchor: "bottomLeft"
@@ -584,7 +586,8 @@ function monthlyTrendSpec() {
             value: 3.40929,
             color: "#E85D04",
             bg: "#FDE9DC",
-            title: "JUNE\\nSCHOOL HOLIDAY SURGE",
+            icon: "🚌",
+            title: "JUNE\\nSCHOOL HOLIDAY\\nSURGE",
             detail: "Holiday travel\\nboosted arrivals",
             anchor: "bottomRight"
           }
@@ -594,10 +597,10 @@ function monthlyTrendSpec() {
           { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
           { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
           { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" },
-          { type: "formula", as: "cardW", expr: "width < 520 ? 118 : 138" },
-          { type: "formula", as: "cardH", expr: "width < 520 ? 58 : 70" },
-          { type: "formula", as: "cardX", expr: "datum.anchor === 'bottomRight' ? width - datum.cardW - 6 : (datum.anchor === 'topLeft' ? 0 : 18)" },
-          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 56 : height - datum.cardH - 14" },
+          { type: "formula", as: "cardW", expr: "width < 520 ? 146 : 166" },
+          { type: "formula", as: "cardH", expr: "width < 520 ? 72 : 82" },
+          { type: "formula", as: "cardX", expr: "datum.anchor === 'bottomRight' ? width - datum.cardW : (datum.anchor === 'topLeft' ? 0 : 8)" },
+          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 0 : height - datum.cardH - 2" },
           { type: "formula", as: "leaderX", expr: "datum.anchor === 'bottomRight' ? datum.cardX : datum.cardX + datum.cardW" },
           { type: "formula", as: "leaderY", expr: "datum.cardY + datum.cardH / 2" }
         ]
@@ -1037,7 +1040,7 @@ function monthlyTrendSpec() {
             y: { field: "leaderY" },
             x2: { field: "x" },
             y2: { field: "y" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
+            opacity: { value: 0 }
           }
         }
       },
@@ -1061,18 +1064,38 @@ function monthlyTrendSpec() {
         }
       },
       {
-        type: "rect",
+        type: "symbol",
         from: { data: "eventCallouts" },
         encode: {
           enter: {
-            width: { value: 5 },
-            cornerRadius: { value: 3 },
+            shape: { value: "circle" },
+            size: { value: 650 },
+            fill: { value: "#ffffff" },
+            fillOpacity: { value: 0.68 },
+            stroke: { field: "color" },
+            strokeOpacity: { value: 0.18 }
+          },
+          update: {
+            x: { signal: "datum.cardX + 24" },
+            y: { signal: "datum.cardY + 24" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
+        type: "text",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            text: { field: "icon" },
+            fontSize: { value: 18 },
+            align: { value: "center" },
+            baseline: { value: "middle" },
             fill: { field: "color" }
           },
           update: {
-            x: { signal: "datum.cardX + 12" },
-            y: { signal: "datum.cardY + 14" },
-            height: { signal: "datum.cardH - 28" },
+            x: { signal: "datum.cardX + 24" },
+            y: { signal: "datum.cardY + 24" },
             opacity: { signal: "width < 340 ? 0 : 1" }
           }
         }
@@ -1084,15 +1107,16 @@ function monthlyTrendSpec() {
           enter: {
             text: { field: "title" },
             font: { value: "Inter" },
-            fontSize: { value: 10.5 },
+            fontSize: { value: 9.4 },
             fontWeight: { value: 800 },
             lineBreak: { value: "\\n" },
+            limit: { signal: "datum.cardW - 56" },
             align: { value: "left" },
             baseline: { value: "top" },
             fill: { field: "color" }
           },
           update: {
-            x: { signal: "datum.cardX + 26" },
+            x: { signal: "datum.cardX + 48" },
             y: { signal: "datum.cardY + 12" },
             opacity: { signal: "width < 340 ? 0 : 1" }
           }
@@ -1105,15 +1129,16 @@ function monthlyTrendSpec() {
           enter: {
             text: { field: "detail" },
             font: { value: "Inter" },
-            fontSize: { value: 10 },
+            fontSize: { value: 9.4 },
             lineBreak: { value: "\\n" },
+            limit: { signal: "datum.cardW - 56" },
             align: { value: "left" },
             baseline: { value: "top" },
             fill: { value: colors.text }
           },
           update: {
-            x: { signal: "datum.cardX + 26" },
-            y: { signal: "datum.cardY + (width < 520 ? 36 : 40)" },
+            x: { signal: "datum.cardX + 48" },
+            y: { signal: "datum.cardY + (datum.title === 'JUNE\\nSCHOOL HOLIDAY\\nSURGE' ? 48 : 42)" },
             opacity: { signal: "width < 340 ? 0 : 1" }
           }
         }
