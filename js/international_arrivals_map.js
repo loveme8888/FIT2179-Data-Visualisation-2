@@ -1296,31 +1296,32 @@ function expenditureSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#expenditure-chart", 760, 650),
-    height: 330,
+    height: 360,
     title: {
       text: "Visitor Expenditure Mix",
-      subtitle: "2024 value by category; colour highlights key expenditure categories",
+      subtitle: "Share of 2024 international visitor expenditure",
       fontSize: 24,
       subtitleFontSize: 14
     },
     data: { url: "data/visitor_expenditure_items_2024_2023.csv" },
     transform: [
       { calculate: "datum.Value_2024_RM_Mil / 1000", as: "Value_2024_RM_Bil" },
-      { filter: "datum.Share_2024 >= 1" }
+      { filter: "datum.Share_2024 >= 1" },
+      { calculate: "datum.Item + '  ' + format(datum.Share_2024, '.1f') + '%'", as: "Share_Label" }
     ],
     layer: [
       {
-        mark: { type: "bar", cornerRadiusEnd: 3, size: 26 },
+        mark: { type: "arc", innerRadius: 78, outerRadius: 148, stroke: "#ffffff", strokeWidth: 2 },
         encoding: {
-          y: { field: "Item", type: "nominal", sort: "-x", title: null },
-          x: { field: "Value_2024_RM_Bil", type: "quantitative", title: "RM billion" },
+          theta: { field: "Share_2024", type: "quantitative", stack: true },
           color: {
-            condition: [
-              { test: "datum.Item == 'Shopping'", value: "#D9A441" },
-              { test: "datum.Item == 'Accommodation'", value: "#2E6DA4" },
-              { test: "datum.Item == 'Food & Beverages'", value: "#5A8CCF" }
-            ],
-            value: "#DCE6F2"
+            field: "Item",
+            type: "nominal",
+            scale: {
+              domain: ["Shopping", "Accommodation", "Food & Beverages", "International Airfares", "Local Transportation", "Medical", "Organised Tour", "Domestic Airfares", "Entertainment", "Fuel"],
+              range: ["#D9A441", "#0B2A6F", "#5A8CCF", "#8FB6D9", "#9BC5BF", "#7BAE7F", "#C7D5F0", "#B8C4D8", "#D9B06F", "#E2D7B5"]
+            },
+            legend: { orient: "right", title: null, labelLimit: 180 }
           },
           tooltip: [
             { field: "Item", title: "Item" },
@@ -1331,12 +1332,17 @@ function expenditureSpec() {
         }
       },
       {
-        mark: { type: "text", align: "left", dx: 5, baseline: "middle", fontWeight: "bold" },
+        transform: [{ filter: "datum.Item == 'Shopping'" }],
+        mark: { type: "text", align: "center", baseline: "middle", fontSize: 28, fontWeight: 900, color: "#0B2A6F" },
         encoding: {
-          y: { field: "Item", type: "nominal", sort: "-x" },
-          x: { field: "Value_2024_RM_Bil", type: "quantitative" },
-          text: { field: "Value_2024_RM_Bil", type: "quantitative", format: ".1f" },
-          color: { value: colors.text }
+          text: { value: "37.4%" }
+        }
+      },
+      {
+        transform: [{ filter: "datum.Item == 'Shopping'" }],
+        mark: { type: "text", align: "center", baseline: "middle", dy: 28, fontSize: 13, fontWeight: 800, color: "#5b6d86" },
+        encoding: {
+          text: { value: "shopping share" }
         }
       }
     ],
@@ -1434,10 +1440,11 @@ function domesticStateVisitorsSpec() {
     ],
     layer: [
       {
-        mark: { type: "bar", cornerRadiusEnd: 3, size: 22 },
+        mark: { type: "rule", strokeWidth: 2, opacity: 0.55 },
         encoding: {
           y: { field: "State", type: "nominal", sort: "-x", title: null },
           x: { field: "Domestic_Visitors_Million", type: "quantitative", title: "Domestic visitors (million)" },
+          x2: { datum: 0 },
           color: {
             condition: [
               { test: "datum.State == 'Selangor'", value: "#D9A441" },
@@ -1450,6 +1457,21 @@ function domesticStateVisitorsSpec() {
             { field: "State", title: "State" },
             { field: "Domestic_Visitors_000", title: "Domestic visitors ('000)", format: ",.1f" }
           ]
+        }
+      },
+      {
+        mark: { type: "circle", size: 155, opacity: 0.95, stroke: "#ffffff", strokeWidth: 2 },
+        encoding: {
+          y: { field: "State", type: "nominal", sort: "-x", title: null },
+          x: { field: "Domestic_Visitors_Million", type: "quantitative", title: "Domestic visitors (million)" },
+          color: {
+            condition: [
+              { test: "datum.State == 'Selangor'", value: "#D9A441" },
+              { test: "datum.State == 'W.P. Kuala Lumpur'", value: "#2E6DA4" },
+              { test: "datum.State == 'Perak'", value: "#5A8CCF" }
+            ],
+            value: "#AFC3DF"
+          }
         }
       },
       {
@@ -1469,10 +1491,10 @@ function domesticExpenditureSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#domestic-expenditure-chart", 760, 650),
-    height: 310,
+    height: 340,
     title: {
       text: "Domestic Visitor Expenditure Mix",
-      subtitle: "2024 expenditure by component",
+      subtitle: "Bubble size shows 2024 expenditure value",
       fontSize: 24,
       subtitleFontSize: 14
     },
@@ -1483,10 +1505,11 @@ function domesticExpenditureSpec() {
     ],
     layer: [
       {
-        mark: { type: "bar", cornerRadiusEnd: 3, size: 24 },
+        mark: { type: "circle", opacity: 0.82, stroke: "#ffffff", strokeWidth: 2 },
         encoding: {
-          y: { field: "Component", type: "nominal", sort: "-x", title: null },
-          x: { field: "Expenditure_RM_Bil", type: "quantitative", title: "RM billion" },
+          x: { field: "Share_Pct", type: "quantitative", title: "Share of domestic expenditure (%)", scale: { domain: [0, 42] }, axis: { grid: true, gridColor: "rgba(120,150,190,0.16)" } },
+          y: { field: "Component", type: "nominal", sort: "-x", title: null, axis: { labelFontSize: 13, labelFontWeight: 750 } },
+          size: { field: "Expenditure_RM_Bil", type: "quantitative", title: "RM billion", scale: { range: [260, 4400] }, legend: { orient: "bottom", direction: "horizontal" } },
           color: {
             condition: [
               { test: "datum.Component == 'Shopping'", value: "#D9A441" },
@@ -1503,10 +1526,10 @@ function domesticExpenditureSpec() {
         }
       },
       {
-        mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+        mark: { type: "text", align: "center", baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
         encoding: {
+          x: { field: "Share_Pct", type: "quantitative", scale: { domain: [0, 42] } },
           y: { field: "Component", type: "nominal", sort: "-x" },
-          x: { field: "Expenditure_RM_Bil", type: "quantitative" },
           text: { field: "Expenditure_RM_Bil", type: "quantitative", format: ".1f" }
         }
       }
@@ -1519,20 +1542,27 @@ function domesticPurposeSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#domestic-purpose-chart", 760, 650),
-    height: 300,
+    height: 330,
     title: {
       text: "Purpose of Domestic Trips",
-      subtitle: "Share of domestic tourism trips in 2024",
+      subtitle: "Bubble grid; circle size represents share of trips in 2024",
       fontSize: 24,
       subtitleFontSize: 14
     },
     data: { url: "data/domestic_trip_purpose_2024.csv" },
+    transform: [
+      { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
+      { calculate: "(datum.Rank - 1) % 4", as: "Grid_X" },
+      { calculate: "floor((datum.Rank - 1) / 4)", as: "Grid_Y" },
+      { calculate: "datum.Share_Pct + '%'", as: "Share_Label" }
+    ],
     layer: [
       {
-        mark: { type: "bar", cornerRadiusEnd: 3, size: 24 },
+        mark: { type: "circle", opacity: 0.86, stroke: "#ffffff", strokeWidth: 2 },
         encoding: {
-          y: { field: "Purpose", type: "nominal", sort: "-x", title: null },
-          x: { field: "Share_Pct", type: "quantitative", title: "Share of trips (%)" },
+          x: { field: "Grid_X", type: "ordinal", title: null, axis: null },
+          y: { field: "Grid_Y", type: "ordinal", title: null, axis: null, sort: "ascending" },
+          size: { field: "Share_Pct", type: "quantitative", legend: null, scale: { range: [450, 8200] } },
           color: {
             condition: [
               { test: "datum.Purpose == 'Visiting relatives & friends'", value: "#D9A441" },
@@ -1549,11 +1579,19 @@ function domesticPurposeSpec() {
         }
       },
       {
-        mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+        mark: { type: "text", align: "center", baseline: "middle", dy: -5, fontSize: 16, fontWeight: 900, color: "#152238" },
         encoding: {
-          y: { field: "Purpose", type: "nominal", sort: "-x" },
-          x: { field: "Share_Pct", type: "quantitative" },
-          text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
+          x: { field: "Grid_X", type: "ordinal" },
+          y: { field: "Grid_Y", type: "ordinal", sort: "ascending" },
+          text: { field: "Share_Label" }
+        }
+      },
+      {
+        mark: { type: "text", align: "center", baseline: "top", dy: 16, fontSize: 12, fontWeight: 800, color: "#34445c", limit: 145 },
+        encoding: {
+          x: { field: "Grid_X", type: "ordinal" },
+          y: { field: "Grid_Y", type: "ordinal", sort: "ascending" },
+          text: { field: "Purpose" }
         }
       }
     ],
@@ -1583,15 +1621,14 @@ function domesticStructureSpec() {
         ],
         layer: [
           {
-            mark: { type: "bar", cornerRadiusEnd: 3, size: 24 },
+            mark: { type: "arc", innerRadius: 62, outerRadius: 118, stroke: "#ffffff", strokeWidth: 2 },
             encoding: {
-              y: { field: "Mode", type: "nominal", sort: "-x", title: null },
-              x: { field: "Share_Pct", type: "quantitative", title: "Share (%)", scale: { domain: [0, 100] } },
+              theta: { field: "Share_Pct", type: "quantitative", stack: true },
               color: {
                 field: "Mode",
                 type: "nominal",
                 scale: { domain: ["Land", "Air", "Water"], range: ["#2E8B57", "#2E6DA4", "#5A8CCF"] },
-                legend: null
+                legend: { orient: "bottom", title: null }
               },
               tooltip: [
                 { field: "Mode", title: "Mode" },
@@ -1600,11 +1637,17 @@ function domesticStructureSpec() {
             }
           },
           {
-            mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+            transform: [{ filter: "datum.Mode == 'Land'" }],
+            mark: { type: "text", align: "center", baseline: "middle", fontSize: 28, fontWeight: 900, color: "#2E8B57" },
             encoding: {
-              y: { field: "Mode", type: "nominal", sort: "-x" },
-              x: { field: "Share_Pct", type: "quantitative", scale: { domain: [0, 100] } },
               text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
+            }
+          },
+          {
+            transform: [{ filter: "datum.Mode == 'Land'" }],
+            mark: { type: "text", align: "center", baseline: "middle", dy: 28, fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+            encoding: {
+              text: { value: "land" }
             }
           }
         ]
@@ -1624,16 +1667,16 @@ function domesticStructureSpec() {
         ],
         layer: [
           {
-            mark: { type: "bar", cornerRadiusEnd: 3, size: 22 },
+            mark: { type: "arc", innerRadius: 62, outerRadius: 118, stroke: "#ffffff", strokeWidth: 2 },
             encoding: {
-              y: { field: "Accommodation_Type", type: "nominal", sort: "-x", title: null },
-              x: { field: "Share_Pct", type: "quantitative", title: "Share (%)", scale: { domain: [0, 65] } },
+              theta: { field: "Share_Pct", type: "quantitative", stack: true },
               color: {
                 condition: [
                   { test: "datum.Accommodation_Type == \"Relatives' & Friends' House\"", value: "#D9A441" },
                   { test: "datum.Accommodation_Type == 'Hotel'", value: "#2E6DA4" }
                 ],
-                value: "#DCE6F2"
+                value: "#C7D5F0",
+                legend: { orient: "bottom", title: null, labelLimit: 150 }
               },
               tooltip: [
                 { field: "Accommodation_Type", title: "Type" },
@@ -1642,11 +1685,17 @@ function domesticStructureSpec() {
             }
           },
           {
-            mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
+            transform: [{ filter: "datum.Accommodation_Type == \"Relatives' & Friends' House\"" }],
+            mark: { type: "text", align: "center", baseline: "middle", fontSize: 28, fontWeight: 900, color: "#D9A441" },
             encoding: {
-              y: { field: "Accommodation_Type", type: "nominal", sort: "-x" },
-              x: { field: "Share_Pct", type: "quantitative", scale: { domain: [0, 65] } },
               text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
+            }
+          },
+          {
+            transform: [{ filter: "datum.Accommodation_Type == \"Relatives' & Friends' House\"" }],
+            mark: { type: "text", align: "center", baseline: "middle", dy: 28, fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+            encoding: {
+              text: { value: "friends/family" }
             }
           }
         ]
