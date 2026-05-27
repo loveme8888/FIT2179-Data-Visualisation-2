@@ -607,14 +607,7 @@ h1 {
   padding: 16px;
   border: 1px solid rgba(7, 23, 95, 0.08);
   border-radius: 8px;
-}
-
-.source-market-kpi-blue {
   background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
-}
-
-.source-market-kpi-green {
-  background: linear-gradient(135deg, #eaf8ef 0%, #ffffff 100%);
 }
 
 .source-market-kpi-icon {
@@ -623,15 +616,10 @@ h1 {
   height: 54px;
   place-items: center;
   border-radius: 50%;
-  background: rgba(16, 68, 255, 0.1);
-  color: #1044ff;
-  font-size: 26px;
+  background: rgba(11, 42, 111, 0.1);
+  color: #0B2A6F;
+  font-size: 18px;
   font-weight: 900;
-}
-
-.source-market-kpi-green .source-market-kpi-icon {
-  background: rgba(46, 139, 87, 0.12);
-  color: #17964e;
 }
 
 .source-market-kpi strong,
@@ -641,14 +629,10 @@ h1 {
 }
 
 .source-market-kpi strong {
-  color: #1044ff;
+  color: #0B2A6F;
   font-size: 31px;
   font-weight: 900;
   line-height: 1;
-}
-
-.source-market-kpi-green strong {
-  color: #17964e;
 }
 
 .source-market-kpi strong small {
@@ -659,7 +643,7 @@ h1 {
 
 .source-market-kpi span {
   margin-top: 8px;
-  color: #07175f;
+  color: #0B2A6F;
   font-size: 13px;
   font-weight: 900;
   line-height: 1.3;
