@@ -40,7 +40,7 @@ const figureNarratives = {
   "receipts-scatter-chart": {
     number: "FIGURE 04",
     title: "Market value does not move in perfect proportion to arrivals",
-    body: "The bubble chart compares arrival scale with receipts, highlighting markets that deliver higher value per visitor."
+    body: "The rank ladder compares arrival rank with receipt rank, revealing markets whose spending value outranks their visitor volume."
   },
   "arrivals-map": {
     number: "FIGURE 05",
@@ -1725,127 +1725,128 @@ function domesticTopDestinationsSpec() {
 }
 
 function receiptsScatterSpec() {
-  const keyMarketFilter = "datum.Country == 'Singapore' || datum.Country == 'China' || datum.Country == 'Indonesia' || datum.Country == 'India' || datum.Country == 'Thailand'";
+  const width = chartWidth("#receipts-scatter-chart", 800, 650);
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#receipts-scatter-chart", 760, 650),
-    height: 360,
+    width,
+    height: 420,
+    padding: { left: 170, right: 210, top: 18, bottom: 42 },
     title: {
-      text: "Arrivals vs Receipts by Market",
-      subtitle: "Bubble size indicates estimated RM per visitor",
+      text: "Arrival Rank vs Receipt Rank",
+      subtitle: "Lines moving upward show markets whose receipt value outranks visitor volume",
       fontSize: 24,
       subtitleFontSize: 14
     },
     data: { url: "data/top_source_markets_2024.csv" },
     transform: [
+      { calculate: "toNumber(datum.Rank)", as: "Arrival_Rank" },
       {
         lookup: "Country",
         from: {
           data: { url: "data/visitor_receipts_by_country_2024_2023.csv" },
           key: "Country",
-          fields: ["Receipts_2024_RM_Mil"]
+          fields: ["Rank", "Receipts_2024_RM_Mil"]
         }
       },
       { filter: "isValid(datum.Receipts_2024_RM_Mil)" },
-      { calculate: "datum.Arrivals_2024 / 1000000", as: "Arrivals_Million" },
+      { calculate: "toNumber(datum.Rank)", as: "Receipt_Rank" },
+      { filter: "datum.Arrival_Rank <= 12 || datum.Receipt_Rank <= 12" },
       { calculate: "datum.Receipts_2024_RM_Mil / 1000", as: "Receipts_RM_Bil" },
       { calculate: "datum.Receipts_2024_RM_Mil * 1000000 / datum.Arrivals_2024", as: "RM_Per_Visitor" },
-      { filter: "datum.Rank <= 14" }
+      { calculate: "datum.Arrival_Rank - datum.Receipt_Rank", as: "Rank_Shift" },
+      { calculate: "datum.Rank_Shift > 0 ? 'Value outranks volume' : datum.Rank_Shift < 0 ? 'Volume outranks value' : 'Same rank'", as: "Shift_Group" },
+      { calculate: "datum.Flag + '  ' + datum.Country", as: "Arrival_Label" },
+      { calculate: "datum.Country + '  RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
+      { fold: ["Arrival_Rank", "Receipt_Rank"], as: ["Rank_Type", "Rank_Value"] },
+      { calculate: "datum.Rank_Type === 'Arrival_Rank' ? 'Arrival rank' : 'Receipt rank'", as: "Rank_Axis" }
     ],
     layer: [
       {
-        data: {
-          values: [
-            { x: 9, y: 24, label: "High arrivals + high receipts" },
-            { x: 1.25, y: 24, label: "Lower arrivals + high receipts" },
-            { x: 9, y: 4.8, label: "High arrivals + lower receipts" },
-            { x: 1.25, y: 4.8, label: "Emerging value markets" }
-          ]
-        },
-        mark: { type: "text", align: "center", baseline: "middle", fontSize: 12, fontWeight: "bold", color: "#8b9bb0", opacity: 0.55 },
-        encoding: {
-          x: { field: "x", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "label" }
-        }
-      },
-      {
-        mark: { type: "rule", strokeDash: [6, 5], strokeWidth: 1.2, color: "#b8cbe0" },
-        encoding: { x: { datum: 3, type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } } }
-      },
-      {
-        mark: { type: "rule", strokeDash: [6, 5], strokeWidth: 1.2, color: "#b8cbe0" },
-        encoding: { y: { datum: 8, type: "quantitative" } }
-      },
-      {
-        mark: { type: "circle", opacity: 0.82, stroke: "#ffffff", strokeWidth: 1.4 },
+        mark: { type: "line", strokeWidth: 3, opacity: 0.78 },
         encoding: {
           x: {
-            field: "Arrivals_Million",
-            type: "quantitative",
-            title: "Arrivals (million, sqrt scale)",
-            scale: { type: "sqrt", domain: [0, 20] },
-            axis: { values: [0, 0.5, 1, 2, 3, 5, 10, 15, 20] }
+            field: "Rank_Axis",
+            type: "nominal",
+            scale: { domain: ["Arrival rank", "Receipt rank"] },
+            axis: {
+              orient: "top",
+              title: null,
+              labelAngle: 0,
+              labelColor: "#0B2A6F",
+              labelFontWeight: 900,
+              labelFontSize: 13,
+              domain: false,
+              ticks: false
+            }
           },
-          y: { field: "Receipts_RM_Bil", type: "quantitative", title: "Receipts (RM billion)", scale: { domain: [0, 30] } },
-          size: {
-            field: "RM_Per_Visitor",
-            type: "quantitative",
-            title: "RM per visitor",
-            scale: { range: [80, 1800] },
+          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] }, axis: { title: null, values: [1, 3, 5, 7, 9, 11], grid: true, gridColor: "#edf2f8", domain: false, ticks: false } },
+          detail: { field: "Country", type: "nominal" },
+          color: {
+            field: "Shift_Group",
+            type: "nominal",
+            scale: {
+              domain: ["Value outranks volume", "Same rank", "Volume outranks value"],
+              range: ["#1A36D6", "#8da0c3", "#D9A441"]
+            },
             legend: {
               orient: "bottom",
               direction: "horizontal",
-              values: [1000, 3000, 5000],
-              titleFontSize: 11,
-              labelFontSize: 10,
-              symbolStrokeWidth: 0
+              title: null,
+              labelFontSize: 12,
+              symbolStrokeWidth: 4
             }
-          },
-          color: {
-            field: "Growth_Pct",
-            type: "quantitative",
-            title: "Arrival growth %",
-            scale: { domain: [-5, 135], range: [colors.red, "#d8c56a", colors.green] }
           },
           tooltip: [
             { field: "Country", title: "Country" },
-            { field: "Arrivals_2024", title: "Arrivals_2024", format: "," },
-            { field: "Receipts_2024_RM_Mil", title: "Receipts RM mil.", format: ",.2f" },
+            { field: "Arrival_Rank", title: "Arrival rank" },
+            { field: "Receipt_Rank", title: "Receipt rank" },
+            { field: "Receipts_RM_Bil", title: "Receipts RM bil.", format: ".1f" },
             { field: "RM_Per_Visitor", title: "RM per visitor", format: ",.0f" }
           ]
         }
       },
       {
-        transform: [{ filter: keyMarketFilter }],
-        mark: { type: "text", dy: -16, fontSize: 14, fontWeight: "bold", color: colors.text },
+        mark: { type: "point", filled: true, size: 120, stroke: "#ffffff", strokeWidth: 1.8 },
         encoding: {
-          x: { field: "Arrivals_Million", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
-          y: { field: "Receipts_RM_Bil", type: "quantitative" },
-          text: { field: "Country" }
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
+          color: {
+            field: "Shift_Group",
+            type: "nominal",
+            scale: {
+              domain: ["Value outranks volume", "Same rank", "Volume outranks value"],
+              range: ["#1A36D6", "#8da0c3", "#D9A441"]
+            },
+            legend: null
+          }
         }
       },
       {
-        data: {
-          values: [{ x: 18.9, y: 27.9, note: "Highest arrivals and receipts" }]
-        },
-        mark: { type: "text", align: "right", baseline: "middle", dx: -18, dy: 22, fontSize: 12, fontWeight: 700, color: "#2b405c" },
+        transform: [{ filter: "datum.Rank_Type === 'Arrival_Rank'" }],
+        mark: { type: "text", align: "right", baseline: "middle", dx: -16, fontSize: 13, fontWeight: 800, color: "#152238" },
         encoding: {
-          x: { field: "x", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "note" }
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
+          text: { field: "Arrival_Label", type: "nominal" }
         }
       },
       {
-        data: {
-          values: [{ x: 3.7, y: 20.9, note: "High-value growth market" }]
-        },
-        mark: { type: "text", align: "left", baseline: "middle", dx: 18, dy: -8, fontSize: 12, fontWeight: 700, color: "#2b405c" },
+        transform: [{ filter: "datum.Rank_Type === 'Receipt_Rank'" }],
+        mark: { type: "text", align: "left", baseline: "middle", dx: 16, fontSize: 13, fontWeight: 800, color: "#152238" },
         encoding: {
-          x: { field: "x", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "note" }
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
+          text: { field: "Receipt_Label", type: "nominal" }
+        }
+      },
+      {
+        transform: [{ filter: "datum.Country === 'China' && datum.Rank_Type === 'Receipt_Rank'" }],
+        mark: { type: "text", align: "left", baseline: "middle", dx: 16, dy: -18, fontSize: 12, fontWeight: 800, color: "#1A36D6" },
+        encoding: {
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
+          text: { value: "value rank rises" }
         }
       }
     ],
