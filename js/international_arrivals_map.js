@@ -39,8 +39,8 @@ const figureNarratives = {
   },
   "receipts-scatter-chart": {
     number: "FIGURE 04",
-    title: "Market value does not move in perfect proportion to arrivals",
-    body: "The rank ladder compares arrival rank with receipt rank, revealing markets whose spending value outranks their visitor volume."
+    title: "2024 receipts rank differs from arrival rank",
+    body: "The ladder compares each market's 2024 visitor-arrival rank with its 2024 total tourism receipts rank. RM values on the right are total receipts in billions, not per-visitor spending."
   },
   "arrivals-map": {
     number: "FIGURE 05",
@@ -1725,16 +1725,16 @@ function domesticTopDestinationsSpec() {
 }
 
 function receiptsScatterSpec() {
-  const width = chartWidth("#receipts-scatter-chart", 800, 650);
+  const width = chartWidth("#receipts-scatter-chart", 860, 640);
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
-    height: 420,
-    padding: { left: 170, right: 210, top: 18, bottom: 42 },
+    height: 330,
+    padding: { left: 150, right: 250, top: 8, bottom: 34 },
     title: {
-      text: "Arrival Rank vs Receipt Rank",
-      subtitle: "Lines moving upward show markets whose receipt value outranks visitor volume",
+      text: "2024 Arrival Rank vs Total Receipt Rank",
+      subtitle: "Right-side RM labels are total tourism receipts in RM billion, not per-visitor spending",
       fontSize: 24,
       subtitleFontSize: 14
     },
@@ -1753,13 +1753,12 @@ function receiptsScatterSpec() {
       { calculate: "toNumber(datum.Rank)", as: "Receipt_Rank" },
       { filter: "datum.Arrival_Rank <= 12 || datum.Receipt_Rank <= 12" },
       { calculate: "datum.Receipts_2024_RM_Mil / 1000", as: "Receipts_RM_Bil" },
-      { calculate: "datum.Receipts_2024_RM_Mil * 1000000 / datum.Arrivals_2024", as: "RM_Per_Visitor" },
       { calculate: "datum.Arrival_Rank - datum.Receipt_Rank", as: "Rank_Shift" },
       { calculate: "datum.Rank_Shift > 0 ? 'Value outranks volume' : datum.Rank_Shift < 0 ? 'Volume outranks value' : 'Same rank'", as: "Shift_Group" },
       { calculate: "datum.Flag + '  ' + datum.Country", as: "Arrival_Label" },
-      { calculate: "datum.Country + '  RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
+      { calculate: "datum.Country + '  total receipts: RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
       { fold: ["Arrival_Rank", "Receipt_Rank"], as: ["Rank_Type", "Rank_Value"] },
-      { calculate: "datum.Rank_Type === 'Arrival_Rank' ? 'Arrival rank' : 'Receipt rank'", as: "Rank_Axis" }
+      { calculate: "datum.Rank_Type === 'Arrival_Rank' ? '2024 arrivals rank' : '2024 total receipts rank'", as: "Rank_Axis" }
     ],
     layer: [
       {
@@ -1768,7 +1767,7 @@ function receiptsScatterSpec() {
           x: {
             field: "Rank_Axis",
             type: "nominal",
-            scale: { domain: ["Arrival rank", "Receipt rank"] },
+            scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] },
             axis: {
               orient: "top",
               title: null,
@@ -1799,17 +1798,16 @@ function receiptsScatterSpec() {
           },
           tooltip: [
             { field: "Country", title: "Country" },
-            { field: "Arrival_Rank", title: "Arrival rank" },
-            { field: "Receipt_Rank", title: "Receipt rank" },
-            { field: "Receipts_RM_Bil", title: "Receipts RM bil.", format: ".1f" },
-            { field: "RM_Per_Visitor", title: "RM per visitor", format: ",.0f" }
+            { field: "Arrival_Rank", title: "2024 arrivals rank" },
+            { field: "Receipt_Rank", title: "2024 total receipts rank" },
+            { field: "Receipts_RM_Bil", title: "2024 total receipts (RM bil.)", format: ".1f" }
           ]
         }
       },
       {
         mark: { type: "point", filled: true, size: 120, stroke: "#ffffff", strokeWidth: 1.8 },
         encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
           y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
           color: {
             field: "Shift_Group",
@@ -1826,7 +1824,7 @@ function receiptsScatterSpec() {
         transform: [{ filter: "datum.Rank_Type === 'Arrival_Rank'" }],
         mark: { type: "text", align: "right", baseline: "middle", dx: -16, fontSize: 13, fontWeight: 800, color: "#152238" },
         encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
           y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
           text: { field: "Arrival_Label", type: "nominal" }
         }
@@ -1835,7 +1833,7 @@ function receiptsScatterSpec() {
         transform: [{ filter: "datum.Rank_Type === 'Receipt_Rank'" }],
         mark: { type: "text", align: "left", baseline: "middle", dx: 16, fontSize: 13, fontWeight: 800, color: "#152238" },
         encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
           y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
           text: { field: "Receipt_Label", type: "nominal" }
         }
@@ -1844,9 +1842,9 @@ function receiptsScatterSpec() {
         transform: [{ filter: "datum.Country === 'China' && datum.Rank_Type === 'Receipt_Rank'" }],
         mark: { type: "text", align: "left", baseline: "middle", dx: 16, dy: -18, fontSize: 12, fontWeight: 800, color: "#1A36D6" },
         encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["Arrival rank", "Receipt rank"] }, axis: null },
+          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
           y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.8, 0] } },
-          text: { value: "value rank rises" }
+          text: { value: "higher receipts rank than arrivals rank" }
         }
       }
     ],

@@ -488,6 +488,22 @@ h1 {
   padding: 4px 0 0 10px;
 }
 
+.figure-card-receipts-scatter-chart {
+  align-items: start;
+  row-gap: 8px;
+  padding: 18px 26px 12px;
+}
+
+.figure-card-receipts-scatter-chart .figure-copy {
+  padding-top: 12px;
+}
+
+.figure-card-receipts-scatter-chart .chart {
+  min-height: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
 .figure-copy {
   position: relative;
   z-index: 2;
@@ -711,6 +727,10 @@ h1 {
 .spending-chart,
 .scatter-chart {
   min-height: 330px;
+}
+
+#receipts-scatter-chart {
+  min-height: 0;
 }
 
 #monthly-trend-chart {
