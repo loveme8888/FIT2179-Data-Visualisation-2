@@ -618,21 +618,18 @@ h1 {
   height: 68px;
   place-items: center;
   border-radius: 50%;
-  background: rgba(11, 42, 111, 0.12);
+  background: #E8ECFF;
 }
 
-.source-market-kpi-icon::before {
-  content: "";
+.source-market-kpi-icon svg {
   display: block;
-  width: 38px;
-  height: 34px;
-  background:
-    radial-gradient(circle at 50% 8px, #0B2A6F 0 5px, transparent 5.5px),
-    radial-gradient(circle at 24% 12px, #0B2A6F 0 4px, transparent 4.5px),
-    radial-gradient(circle at 76% 12px, #0B2A6F 0 4px, transparent 4.5px),
-    radial-gradient(ellipse at 50% 29px, #0B2A6F 0 12px, transparent 12.5px),
-    radial-gradient(ellipse at 23% 31px, #0B2A6F 0 9px, transparent 9.5px),
-    radial-gradient(ellipse at 77% 31px, #0B2A6F 0 9px, transparent 9.5px);
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: #1A36D6;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .source-market-kpi strong,
