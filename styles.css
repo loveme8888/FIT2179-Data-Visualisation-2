@@ -490,18 +490,28 @@ h1 {
 
 .figure-card-receipts-scatter-chart {
   align-items: start;
-  row-gap: 8px;
-  padding: 18px 26px 12px;
+  row-gap: 6px;
+  padding: 18px 26px 10px;
 }
 
 .figure-card-receipts-scatter-chart .figure-copy {
-  padding-top: 12px;
+  padding-top: 6px;
 }
 
 .figure-card-receipts-scatter-chart .chart {
   min-height: 0;
+  height: 330px;
   align-items: flex-start;
   justify-content: flex-start;
+  overflow: hidden;
+}
+
+.figure-card-receipts-scatter-chart .vega-embed {
+  line-height: 0;
+}
+
+.figure-card-receipts-scatter-chart .source-note {
+  margin-top: 0;
 }
 
 .figure-copy {

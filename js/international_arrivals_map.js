@@ -1730,14 +1730,8 @@ function receiptsScatterSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
-    height: 330,
-    padding: { left: 150, right: 250, top: 8, bottom: 34 },
-    title: {
-      text: "2024 Arrival Rank vs Total Receipt Rank",
-      subtitle: "Right-side RM labels are total tourism receipts in RM billion, not per-visitor spending",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    height: 285,
+    padding: { left: 145, right: 250, top: 8, bottom: 8 },
     data: { url: "data/top_source_markets_2024.csv" },
     transform: [
       { calculate: "toNumber(datum.Rank)", as: "Arrival_Rank" },
@@ -1788,13 +1782,7 @@ function receiptsScatterSpec() {
               domain: ["Value outranks volume", "Same rank", "Volume outranks value"],
               range: ["#1A36D6", "#8da0c3", "#D9A441"]
             },
-            legend: {
-              orient: "bottom",
-              direction: "horizontal",
-              title: null,
-              labelFontSize: 12,
-              symbolStrokeWidth: 4
-            }
+            legend: null
           },
           tooltip: [
             { field: "Country", title: "Country" },
