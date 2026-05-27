@@ -35,7 +35,7 @@ const figureNarratives = {
   "source-markets-chart": {
     number: "FIGURE 03",
     title: "Regional source markets anchor Malaysia's inbound volume",
-    body: "Singapore dominates arrivals, while growth colours show which smaller markets expanded fastest in 2024."
+    body: "Singapore remains Malaysia's largest source market by arrivals, contributing nearly half of total inbound visitors in 2024."
   },
   "receipts-scatter-chart": {
     number: "FIGURE 04",
@@ -117,6 +117,26 @@ function applyFigureNarratives() {
           <div class="figure-kpi-totals">
             <div><strong>29.0M</strong><span>2023 visitors</span></div>
             <div><strong>37.0M</strong><span>2024 visitors</span></div>
+          </div>
+        </div>
+      ` : ""}
+      ${chartId === "source-markets-chart" ? `
+        <div class="source-market-kpis" aria-label="Source market highlights">
+          <div class="source-market-kpi source-market-kpi-blue">
+            <span class="source-market-kpi-icon">👥</span>
+            <div>
+              <strong>18.9<small>M</small></strong>
+              <span>arrivals from Singapore</span>
+              <small>49.7% of total arrivals in 2024</small>
+            </div>
+          </div>
+          <div class="source-market-kpi source-market-kpi-green">
+            <span class="source-market-kpi-icon">↗</span>
+            <div>
+              <strong>+130.9%</strong>
+              <span>China recorded the fastest recovery</span>
+              <small>growth vs 2023</small>
+            </div>
           </div>
         </div>
       ` : ""}
@@ -268,12 +288,11 @@ function labelLayer(region, halo) {
 }
 
 function sourceMarketsSpec() {
-  const width = chartWidth("#source-markets-chart", 720, 650);
-  const tableWidth = Math.min(300, Math.max(230, Math.floor(width * 0.28)));
-  const growthWidth = Math.min(150, Math.max(120, Math.floor(width * 0.14)));
-  const barWidth = window.innerWidth < 760
-    ? Math.max(180, width - tableWidth - growthWidth - 26)
-    : Math.max(650, width - tableWidth - growthWidth - 26);
+  const width = chartWidth("#source-markets-chart", 820, 520);
+  const isMobile = window.innerWidth < 760;
+  const rankWidth = isMobile ? 34 : 44;
+  const countryWidth = isMobile ? 210 : 230;
+  const barWidth = Math.max(isMobile ? 240 : 480, width - rankWidth - countryWidth - 48);
   const countrySort = [
     "Singapore",
     "Indonesia",
@@ -286,10 +305,8 @@ function sourceMarketsSpec() {
     "Australia",
     "Chinese Taipei"
   ];
-  const rowScale = { paddingInner: 0.36, paddingOuter: 0.14 };
-  const chartHeight = 330;
-  const growthDomain = ["Decline", "Steady Growth", "Fast Growth", "Surging Growth"];
-  const growthRange = ["#D84C4C", "#2F7EBB", "#2E9B9B", "#3B9B5C"];
+  const rowScale = { paddingInner: 0.42, paddingOuter: 0.22 };
+  const chartHeight = 380;
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -297,146 +314,145 @@ function sourceMarketsSpec() {
     transform: [
       { filter: "datum.Rank <= 10" },
       { calculate: "datum.Arrivals_2024 / 1000000", as: "Arrivals_Million" },
-      {
-        calculate: "datum.Growth_Pct < 0 ? 'Decline' : datum.Growth_Pct > 80 ? 'Surging Growth' : datum.Growth_Pct > 30 ? 'Fast Growth' : 'Steady Growth'",
-        as: "Growth_Group"
-      },
-      { calculate: "datum.Growth_Pct > 0 ? '+' + format(datum.Growth_Pct, '.1f') + '%' : format(datum.Growth_Pct, '.1f') + '%'", as: "Growth_Label" }
+      { calculate: "format(datum.Arrivals_Million, '.1f')", as: "Arrivals_Label" }
     ],
-    vconcat: [
+    title: {
+      text: "TOP 10 SOURCE MARKETS BY ARRIVALS IN 2024",
+      subtitle: "(million)",
+      anchor: "start",
+      font: "Inter",
+      fontSize: 17,
+      fontWeight: 900,
+      color: "#07175f",
+      subtitleFont: "Inter",
+      subtitleFontSize: 13,
+      subtitleFontWeight: 700,
+      subtitleColor: "#3d4966",
+      offset: 16
+    },
+    hconcat: [
       {
-        hconcat: [
+        width: rankWidth,
+        height: chartHeight,
+        layer: [
           {
-            width: tableWidth,
-            height: chartHeight,
-            title: { text: "Country", fontSize: 12, anchor: "start", offset: 8 },
-            layer: [
-              {
-                mark: { type: "image", width: 30, height: 20, align: "center", baseline: "middle" },
-                encoding: {
-                  x: { value: 14 },
-                  y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
-                  url: { field: "Flag_Path", type: "nominal" }
-                }
-              },
-              {
-                mark: { type: "text", align: "left", baseline: "middle", fontSize: 14, fontWeight: "bold", color: "#1D4E89" },
-                encoding: {
-                  x: { value: 48 },
-                  y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
-                  text: { field: "Flag", type: "nominal" }
-                }
-              },
-              {
-                mark: { type: "text", align: "left", baseline: "middle", fontSize: 16, fontWeight: 500, color: "#1F2937" },
-                encoding: {
-                  x: { value: 78 },
-                  y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
-                  text: { field: "Country", type: "nominal" },
-                  tooltip: [
-                    { field: "Country", title: "Country" },
-                    { field: "Arrivals_2024", title: "Arrivals_2024", format: "," },
-                    { field: "Growth_Pct", title: "Growth %", format: ".1f" }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            width: barWidth,
-            height: chartHeight,
-            title: { text: "Arrivals (million)", fontSize: 12, anchor: "start", offset: 8 },
-            layer: [
-              {
-                mark: { type: "bar", size: 28, cornerRadiusEnd: 4 },
-                encoding: {
-                  y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
-                  x: {
-                    field: "Arrivals_Million",
-                    type: "quantitative",
-                    title: "Arrivals (million, sqrt scale)",
-                    scale: { type: "sqrt", domain: [0, 20] },
-                    axis: { grid: true, values: [0, 0.5, 1, 2, 5, 10, 15, 20] }
-                  },
-                  color: {
-                    field: "Growth_Group",
-                    type: "nominal",
-                    title: null,
-                    scale: { domain: growthDomain, range: growthRange },
-                    legend: null
-                  },
-                  tooltip: [
-                    { field: "Country", title: "Country" },
-                    { field: "Arrivals_2024", title: "Arrivals_2024", format: "," },
-                    { field: "Growth_Pct", title: "Growth %", format: ".1f" }
-                  ]
-                }
-              },
-              {
-                mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 700, fontSize: 15, color: "#1F2937" },
-                encoding: {
-                  y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
-                  x: { field: "Arrivals_Million", type: "quantitative", scale: { type: "sqrt", domain: [0, 20] } },
-                  text: { field: "Arrivals_Million", type: "quantitative", format: ".1f" }
-                }
-              }
-            ]
-          },
-          {
-            width: growthWidth,
-            height: chartHeight,
-            title: { text: "Growth vs 2023", fontSize: 12, anchor: "start", offset: 8 },
-            mark: { type: "text", align: "left", baseline: "middle", fontSize: 14, fontWeight: 700 },
+            mark: { type: "point", filled: true, size: 640, opacity: 1 },
             encoding: {
-              x: { value: 4 },
+              x: { value: 18 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
-              text: { field: "Growth_Label", type: "nominal" },
               color: {
-                condition: { test: "datum.Growth_Pct < 0", value: "#D84C4C" },
-                value: "#2E8B57"
-              },
+                condition: { test: "datum.Rank == 1", value: "#07175f" },
+                value: "#e4eaf8"
+              }
+            }
+          },
+          {
+            mark: { type: "text", align: "center", baseline: "middle", fontSize: 12, fontWeight: 900 },
+            encoding: {
+              x: { value: 18 },
+              y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
+              text: { field: "Rank", type: "quantitative" },
+              color: {
+                condition: { test: "datum.Rank == 1", value: "#ffffff" },
+                value: "#07175f"
+              }
+            }
+          }
+        ]
+      },
+      {
+        width: countryWidth,
+        height: chartHeight,
+        layer: [
+          {
+            mark: { type: "image", width: 30, height: 20, align: "center", baseline: "middle" },
+            encoding: {
+              x: { value: 18 },
+              y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
+              url: { field: "Flag_Path", type: "nominal" }
+            }
+          },
+          {
+            mark: { type: "text", align: "left", baseline: "middle", fontSize: 13, fontWeight: 900, color: "#0646d8" },
+            encoding: {
+              x: { value: 58 },
+              y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
+              text: { field: "Flag", type: "nominal" }
+            }
+          },
+          {
+            mark: { type: "text", align: "left", baseline: "middle", fontSize: 14, fontWeight: 800, color: "#07133f" },
+            encoding: {
+              x: { value: 102 },
+              y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
+              text: { field: "Country", type: "nominal" },
               tooltip: [
                 { field: "Country", title: "Country" },
+                { field: "Arrivals_2024", title: "Arrivals", format: "," },
                 { field: "Growth_Pct", title: "Growth %", format: ".1f" }
               ]
             }
           }
-        ],
-        spacing: 10
+        ]
       },
       {
-        width,
-        height: 38,
-        data: {
-          values: [
-            { label: "Decline", color: "#D84C4C", x: 0 },
-            { label: "Steady Growth", color: "#2F7EBB", x: 86 },
-            { label: "Fast Growth", color: "#2E9B9B", x: 214 },
-            { label: "Surging Growth", color: "#3B9B5C", x: 328 }
-          ]
+        width: barWidth,
+        height: chartHeight,
+        title: {
+          text: "ARRIVALS (MILLION)",
+          anchor: "end",
+          fontSize: 11,
+          fontWeight: 800,
+          color: "#3d4966",
+          offset: 8
         },
-        title: { text: "Growth group", anchor: "start", fontSize: 12, offset: 6 },
         layer: [
           {
-            mark: { type: "rect", width: 16, height: 12, cornerRadius: 3 },
+            mark: { type: "bar", size: 24, cornerRadiusEnd: 4 },
             encoding: {
-              x: { field: "x", type: "quantitative", axis: null },
-              y: { value: 18 },
-              color: { field: "color", type: "nominal", scale: null, legend: null }
+              y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
+              x: {
+                field: "Arrivals_Million",
+                type: "quantitative",
+                title: "Arrivals (million)",
+                scale: { domain: [0, 20] },
+                axis: {
+                  orient: "bottom",
+                  grid: true,
+                  gridDash: [5, 5],
+                  gridColor: "#d9e0ef",
+                  domainColor: "#07175f",
+                  tickColor: "#07175f",
+                  labelColor: "#07175f",
+                  labelFontWeight: 800,
+                  titleColor: "#3d4966",
+                  titleFontWeight: 800,
+                  values: [0, 5, 10, 15, 20]
+                }
+              },
+              color: {
+                condition: { test: "datum.Rank == 1", value: "#07175f" },
+                value: "#c8d4f8"
+              },
+              tooltip: [
+                { field: "Country", title: "Country" },
+                { field: "Arrivals_2024", title: "Arrivals", format: "," },
+                { field: "Growth_Pct", title: "Growth %", format: ".1f" }
+              ]
             }
           },
           {
-            mark: { type: "text", align: "left", baseline: "middle", dx: 16, fontSize: 12, color: "#34445c" },
+            mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 900, fontSize: 14, color: "#07133f" },
             encoding: {
-              x: { field: "x", type: "quantitative", axis: null },
-              y: { value: 18 },
-              text: { field: "label", type: "nominal" }
+              y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
+              x: { field: "Arrivals_Million", type: "quantitative", scale: { domain: [0, 20] } },
+              text: { field: "Arrivals_Label", type: "nominal" }
             }
           }
         ]
       }
     ],
-    spacing: 10,
+    spacing: 8,
     resolve: { scale: { color: "independent" } },
     config: baseConfig()
   };

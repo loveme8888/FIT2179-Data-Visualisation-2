@@ -442,6 +442,50 @@ h1 {
   align-items: flex-start;
 }
 
+.figure-card-source-markets-chart {
+  grid-template-columns: minmax(250px, 0.3fr) minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: start;
+  padding: 28px 30px;
+}
+
+.figure-card-source-markets-chart .figure-copy {
+  min-height: 430px;
+  padding-right: 24px;
+  border-right: 1px solid #dfe7f2;
+}
+
+.figure-card-source-markets-chart .figure-copy h3 {
+  color: #07175f;
+  font-size: clamp(28px, 2.15vw, 40px);
+  font-weight: 900;
+  line-height: 1.14;
+}
+
+.figure-card-source-markets-chart .figure-copy p {
+  max-width: 330px;
+  margin-top: 26px;
+  color: #273455;
+  font-size: 16px;
+  line-height: 1.48;
+}
+
+.figure-card-source-markets-chart .figure-copy p::before {
+  content: "";
+  display: block;
+  width: 54px;
+  height: 4px;
+  margin-bottom: 20px;
+  border-radius: 999px;
+  background: #1044ff;
+}
+
+.figure-card-source-markets-chart .chart {
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+
 .figure-copy {
   position: relative;
   z-index: 2;
@@ -547,6 +591,87 @@ h1 {
   color: #e85d04;
 }
 
+.source-market-kpis {
+  display: grid;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.source-market-kpi {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  max-width: 300px;
+  min-height: 104px;
+  padding: 16px;
+  border: 1px solid rgba(7, 23, 95, 0.08);
+  border-radius: 8px;
+}
+
+.source-market-kpi-blue {
+  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
+}
+
+.source-market-kpi-green {
+  background: linear-gradient(135deg, #eaf8ef 0%, #ffffff 100%);
+}
+
+.source-market-kpi-icon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(16, 68, 255, 0.1);
+  color: #1044ff;
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.source-market-kpi-green .source-market-kpi-icon {
+  background: rgba(46, 139, 87, 0.12);
+  color: #17964e;
+}
+
+.source-market-kpi strong,
+.source-market-kpi span,
+.source-market-kpi small {
+  display: block;
+}
+
+.source-market-kpi strong {
+  color: #1044ff;
+  font-size: 31px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.source-market-kpi-green strong {
+  color: #17964e;
+}
+
+.source-market-kpi strong small {
+  display: inline;
+  color: inherit;
+  font-size: 19px;
+}
+
+.source-market-kpi span {
+  margin-top: 8px;
+  color: #07175f;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.source-market-kpi small {
+  margin-top: 5px;
+  color: #273455;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .chart-heading {
   display: none;
   min-height: 0;
@@ -585,7 +710,7 @@ h1 {
 }
 
 .source-chart {
-  min-height: 340px;
+  min-height: 470px;
 }
 
 .trend-chart,
@@ -845,6 +970,14 @@ code {
     grid-template-columns: 1fr;
   }
 
+  .figure-card-source-markets-chart .figure-copy {
+    min-height: 0;
+    padding-right: 0;
+    padding-bottom: 18px;
+    border-right: 0;
+    border-bottom: 1px solid #dfe7f2;
+  }
+
   .chart,
   .ranking-box,
   .source-note,
@@ -948,6 +1081,14 @@ code {
   .figure-copy p {
     margin-top: 12px;
     font-size: 15px;
+  }
+
+  .figure-card-source-markets-chart {
+    padding: 18px;
+  }
+
+  .source-market-kpi {
+    max-width: 100%;
   }
 
   .transport-card,
