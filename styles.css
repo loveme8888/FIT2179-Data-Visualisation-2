@@ -543,10 +543,10 @@ h1 {
   left: 100%;
   top: 50%;
   z-index: 4;
-  width: 420px;
+  width: 284px;
   height: 0;
   border-top: 1.4px solid rgba(244, 160, 0, 0.62);
-  transform: rotate(-10deg);
+  transform: rotate(-3deg);
   transform-origin: left center;
   pointer-events: none;
 }
