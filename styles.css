@@ -489,6 +489,7 @@ h1 {
 }
 
 .figure-card-receipts-scatter-chart {
+  display: grid;
   grid-template-columns: 1fr;
   align-items: start;
   row-gap: 18px;
@@ -503,13 +504,14 @@ h1 {
 
 .figure-card-receipts-scatter-chart .chart {
   grid-column: 1;
-  width: min(1220px, 90%);
+  width: min(1260px, 92%);
   min-height: 520px;
   height: 520px;
   align-items: flex-start;
   justify-content: center;
   justify-self: center;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: visible;
   padding-top: 0;
 }
 
