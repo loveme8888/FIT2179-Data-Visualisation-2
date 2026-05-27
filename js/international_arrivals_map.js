@@ -123,7 +123,7 @@ function applyFigureNarratives() {
       ${chartId === "source-markets-chart" ? `
         <div class="source-market-kpis" aria-label="Source market highlights">
           <div class="source-market-kpi">
-            <span class="source-market-kpi-icon">SG</span>
+            <span class="source-market-kpi-icon" aria-hidden="true"></span>
             <div>
               <strong>18.9<small>M</small></strong>
               <span>arrivals from Singapore</span>
@@ -280,11 +280,11 @@ function labelLayer(region, halo) {
 }
 
 function sourceMarketsSpec() {
-  const width = chartWidth("#source-markets-chart", 900, 620);
+  const width = chartWidth("#source-markets-chart", 1040, 760);
   const isMobile = window.innerWidth < 760;
-  const rankWidth = isMobile ? 34 : 44;
-  const countryWidth = isMobile ? 220 : 255;
-  const barWidth = Math.max(isMobile ? 260 : 560, width - rankWidth - countryWidth - 44);
+  const rankWidth = isMobile ? 36 : 50;
+  const countryWidth = isMobile ? 218 : 260;
+  const barWidth = Math.max(isMobile ? 280 : 660, Math.floor((width - rankWidth - countryWidth - 26) * 1.08));
   const countrySort = [
     "Singapore",
     "Indonesia",
@@ -297,8 +297,8 @@ function sourceMarketsSpec() {
     "Australia",
     "Chinese Taipei"
   ];
-  const rowScale = { paddingInner: 0.4, paddingOuter: 0.2 };
-  const chartHeight = 390;
+  const rowScale = { paddingInner: 0.46, paddingOuter: 0.18 };
+  const chartHeight = 470;
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -314,14 +314,14 @@ function sourceMarketsSpec() {
       subtitle: "(million)",
       anchor: "start",
       font: "Inter",
-      fontSize: 17,
+      fontSize: 20,
       fontWeight: 900,
       color: "#07175f",
       subtitleFont: "Inter",
-      subtitleFontSize: 13,
+      subtitleFontSize: 15,
       subtitleFontWeight: 700,
       subtitleColor: "#3d4966",
-      offset: 16
+      offset: 14
     },
     hconcat: [
       {
@@ -329,9 +329,9 @@ function sourceMarketsSpec() {
         height: chartHeight,
         layer: [
           {
-            mark: { type: "point", filled: true, size: 640, opacity: 1 },
+            mark: { type: "point", filled: true, size: 760, opacity: 1 },
             encoding: {
-              x: { value: 18 },
+              x: { value: 20 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               color: {
                 condition: { test: "datum.Rank_Number == 1", value: "#0B2A6F" },
@@ -340,9 +340,9 @@ function sourceMarketsSpec() {
             }
           },
           {
-            mark: { type: "text", align: "center", baseline: "middle", fontSize: 12, fontWeight: 900 },
+            mark: { type: "text", align: "center", baseline: "middle", fontSize: 13, fontWeight: 900 },
             encoding: {
-              x: { value: 18 },
+              x: { value: 20 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               text: { field: "Rank_Number", type: "quantitative" },
               color: {
@@ -358,25 +358,25 @@ function sourceMarketsSpec() {
         height: chartHeight,
         layer: [
           {
-            mark: { type: "image", width: 30, height: 20, align: "center", baseline: "middle" },
+            mark: { type: "image", width: 34, height: 22, align: "center", baseline: "middle" },
             encoding: {
-              x: { value: 18 },
+              x: { value: 20 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               url: { field: "Flag_Path", type: "nominal" }
             }
           },
           {
-            mark: { type: "text", align: "left", baseline: "middle", fontSize: 13, fontWeight: 900, color: "#0B2A6F" },
+            mark: { type: "text", align: "left", baseline: "middle", fontSize: 15, fontWeight: 900, color: "#0B2A6F" },
             encoding: {
-              x: { value: 58 },
+              x: { value: 66 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               text: { field: "Flag", type: "nominal" }
             }
           },
           {
-            mark: { type: "text", align: "left", baseline: "middle", fontSize: 14, fontWeight: 800, color: "#101a36" },
+            mark: { type: "text", align: "left", baseline: "middle", fontSize: 16, fontWeight: 800, color: "#101a36" },
             encoding: {
-              x: { value: 102 },
+              x: { value: 118 },
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               text: { field: "Country", type: "nominal" },
               tooltip: [
@@ -390,18 +390,10 @@ function sourceMarketsSpec() {
       {
         width: barWidth,
         height: chartHeight,
-        title: {
-          text: "ARRIVALS (MILLION)",
-          anchor: "end",
-          fontSize: 11,
-          fontWeight: 800,
-          color: "#3d4966",
-          offset: 8
-        },
         layer: [
           {
             transform: [{ filter: "datum.Rank_Number != 1" }],
-            mark: { type: "bar", size: 22, cornerRadiusEnd: 4 },
+            mark: { type: "bar", size: 24, cornerRadiusEnd: 5 },
             encoding: {
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               x: {
@@ -413,7 +405,7 @@ function sourceMarketsSpec() {
                   orient: "bottom",
                   grid: true,
                   gridDash: [5, 5],
-                  gridColor: "#edf2f8",
+                  gridColor: "rgba(120,150,190,0.18)",
                   domainColor: "#0B2A6F",
                   tickColor: "#0B2A6F",
                   labelColor: "#0B2A6F",
@@ -432,7 +424,7 @@ function sourceMarketsSpec() {
           },
           {
             transform: [{ filter: "datum.Rank_Number == 1" }],
-            mark: { type: "bar", size: 30, cornerRadiusEnd: 5 },
+            mark: { type: "bar", size: 34, cornerRadiusEnd: 6 },
             encoding: {
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               x: { field: "Arrivals_Million", type: "quantitative", scale: { domain: [0, 20] } },
@@ -445,7 +437,7 @@ function sourceMarketsSpec() {
           },
           {
             transform: [{ filter: "datum.Rank_Number != 1" }],
-            mark: { type: "text", align: "left", dx: 8, baseline: "middle", fontWeight: 800, fontSize: 14, color: "#101a36" },
+            mark: { type: "text", align: "left", dx: 10, baseline: "middle", fontWeight: 800, fontSize: 16, color: "#101a36" },
             encoding: {
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               x: { field: "Arrivals_Million", type: "quantitative", scale: { domain: [0, 20] } },
@@ -454,7 +446,7 @@ function sourceMarketsSpec() {
           },
           {
             transform: [{ filter: "datum.Rank_Number == 1" }],
-            mark: { type: "text", align: "left", dx: 10, baseline: "middle", fontWeight: 900, fontSize: 18, color: "#0B2A6F" },
+            mark: { type: "text", align: "left", dx: 12, baseline: "middle", fontWeight: 900, fontSize: 22, color: "#0B2A6F" },
             encoding: {
               y: { field: "Country", type: "nominal", sort: countrySort, axis: null, scale: rowScale },
               x: { field: "Arrivals_Million", type: "quantitative", scale: { domain: [0, 20] } },
@@ -464,7 +456,7 @@ function sourceMarketsSpec() {
         ]
       }
     ],
-    spacing: 8,
+    spacing: 4,
     resolve: { scale: { color: "independent" } },
     config: baseConfig()
   };
