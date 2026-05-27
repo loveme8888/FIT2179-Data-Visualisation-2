@@ -504,9 +504,9 @@ h1 {
 
 .figure-card-receipts-scatter-chart .chart {
   grid-column: 1;
-  width: min(1260px, 92%);
-  min-height: 520px;
-  height: 520px;
+  width: min(1220px, 92%);
+  min-height: 500px;
+  height: 500px;
   align-items: flex-start;
   justify-content: center;
   justify-self: center;

@@ -39,8 +39,8 @@ const figureNarratives = {
   },
   "receipts-scatter-chart": {
     number: "FIGURE 04",
-    title: "2024 receipts rank differs from arrival rank",
-    body: "This rank ladder compares 2024 visitor-arrival rank with 2024 total tourism receipts rank. Right-side RM values are total receipts in billions, not per-visitor spending."
+    title: "Singapore and China deliver the largest receipt value",
+    body: "Total tourism receipts show market value directly. Singapore leads by a wide margin, while China generates the second-largest RM value in 2024."
   },
   "arrivals-map": {
     number: "FIGURE 05",
@@ -1725,151 +1725,100 @@ function domesticTopDestinationsSpec() {
 }
 
 function receiptsScatterSpec() {
-  const availableWidth = chartWidth("#receipts-scatter-chart", 1240, 900);
-  const width = Math.max(760, availableWidth - 360);
+  const width = chartWidth("#receipts-scatter-chart", 1180, 760);
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
-    height: 465,
-    padding: { left: 170, right: 190, top: 46, bottom: 34 },
-    data: { url: "data/top_source_markets_2024.csv" },
+    height: 430,
+    padding: { left: 150, right: 90, top: 34, bottom: 44 },
+    title: {
+      text: "Top tourism receipt markets in 2024",
+      subtitle: "Total receipts by source market, RM billion",
+      fontSize: 25,
+      subtitleFontSize: 15,
+      anchor: "start",
+      offset: 14
+    },
+    data: { url: "data/visitor_receipts_by_country_2024_2023.csv" },
     transform: [
-      { calculate: "toNumber(datum.Rank)", as: "Arrival_Rank" },
+      { calculate: "toNumber(datum.Rank)", as: "Receipt_Rank" },
       {
         lookup: "Country",
         from: {
-          data: { url: "data/visitor_receipts_by_country_2024_2023.csv" },
+          data: { url: "data/top_source_markets_2024.csv" },
           key: "Country",
-          fields: ["Rank", "Receipts_2024_RM_Mil"]
+          fields: ["Rank", "Flag"]
         }
       },
-      { filter: "isValid(datum.Receipts_2024_RM_Mil)" },
-      { calculate: "toNumber(datum.Rank)", as: "Receipt_Rank" },
-      { filter: "datum.Arrival_Rank <= 9" },
+      { filter: "datum.Receipt_Rank <= 12" },
+      { calculate: "isValid(datum.Rank) ? toNumber(datum.Rank) : null", as: "Arrival_Rank" },
       { calculate: "datum.Receipts_2024_RM_Mil / 1000", as: "Receipts_RM_Bil" },
-      { calculate: "datum.Arrival_Rank - datum.Receipt_Rank", as: "Rank_Shift" },
-      { calculate: "datum.Rank_Shift > 0 ? 'Value outranks volume' : datum.Rank_Shift < 0 ? 'Volume outranks value' : 'Same rank'", as: "Shift_Group" },
-      { calculate: "datum.Country === 'Singapore' || datum.Country === 'China' || datum.Country === 'India' || datum.Country === 'Philippines'", as: "Is_Highlight" },
-      { calculate: "datum.Flag + ' ' + datum.Country", as: "Arrival_Label" },
-      { calculate: "datum.Country + ' · RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
-      { fold: ["Arrival_Rank", "Receipt_Rank"], as: ["Rank_Type", "Rank_Value"] },
-      { calculate: "datum.Rank_Type === 'Arrival_Rank' ? '2024 arrivals rank' : '2024 total receipts rank'", as: "Rank_Axis" }
+      { calculate: "'RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
+      { calculate: "isValid(datum.Flag) ? datum.Flag + '  ' + datum.Country : datum.Country", as: "Market_Label" },
+      { calculate: "isValid(datum.Arrival_Rank) ? 'arrival rank #' + datum.Arrival_Rank : 'not in top arrivals'", as: "Arrival_Label" }
     ],
     layer: [
       {
-        mark: { type: "line" },
+        mark: { type: "bar", cornerRadiusEnd: 6, height: { band: 0.62 } },
         encoding: {
           x: {
-            field: "Rank_Axis",
-            type: "nominal",
-            scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] },
+            field: "Receipts_RM_Bil",
+            type: "quantitative",
+            title: "Total tourism receipts (RM billion)",
+            scale: { domain: [0, 30] },
             axis: {
-              orient: "top",
-              title: null,
-              labelAngle: 0,
-              labelColor: "#0B2A6F",
-              labelFontWeight: 900,
-              labelFontSize: 13,
+              values: [0, 5, 10, 15, 20, 25, 30],
+              grid: true,
+              gridColor: "rgba(120,150,190,0.18)",
+              domain: false,
+              tickColor: "#ccd8e6"
+            }
+          },
+          y: {
+            field: "Market_Label",
+            type: "nominal",
+            sort: { field: "Receipt_Rank", order: "ascending" },
+            title: null,
+            axis: {
+              labelFontSize: 15,
+              labelFontWeight: 800,
+              labelColor: "#152238",
               domain: false,
               ticks: false
             }
           },
-          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.4, 0.5] }, axis: { title: null, values: [1, 3, 5, 7, 9, 11], grid: true, gridColor: "#edf2f8", labelColor: "#60708b", domain: false, ticks: false } },
-          detail: { field: "Country", type: "nominal" },
           color: {
             condition: [
               { test: "datum.Country === 'Singapore'", value: "#0B2A6F" },
-              { test: "datum.Is_Highlight && datum.Rank_Shift > 0", value: "#1A36D6" },
-              { test: "datum.Is_Highlight && datum.Rank_Shift < 0", value: "#D7A64B" }
+              { test: "datum.Country === 'China'", value: "#1A36D6" }
             ],
-            value: "#C6D0DE"
-          },
-          strokeWidth: {
-            condition: { test: "datum.Is_Highlight", value: 4 },
-            value: 2
-          },
-          opacity: {
-            condition: { test: "datum.Is_Highlight", value: 0.95 },
-            value: 0.34
+            value: "#C7D5F0"
           },
           tooltip: [
             { field: "Country", title: "Country" },
-            { field: "Arrival_Rank", title: "2024 arrivals rank" },
             { field: "Receipt_Rank", title: "2024 total receipts rank" },
-            { field: "Receipts_RM_Bil", title: "2024 total receipts (RM bil.)", format: ".1f" }
+            { field: "Arrival_Rank", title: "2024 arrivals rank" },
+            { field: "Receipts_RM_Bil", title: "Receipts (RM bil.)", format: ".1f" }
           ]
         }
       },
       {
-        mark: { type: "point", filled: true, size: 130, stroke: "#ffffff", strokeWidth: 1.8 },
+        mark: { type: "text", align: "left", baseline: "middle", dx: 10, fontSize: 14, fontWeight: 900, color: "#152238" },
         encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
-          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.4, 0.5] } },
-          color: {
-            condition: [
-              { test: "datum.Country === 'Singapore'", value: "#0B2A6F" },
-              { test: "datum.Is_Highlight && datum.Rank_Shift > 0", value: "#1A36D6" },
-              { test: "datum.Is_Highlight && datum.Rank_Shift < 0", value: "#D7A64B" }
-            ],
-            value: "#C6D0DE"
-          },
-          opacity: {
-            condition: { test: "datum.Is_Highlight", value: 0.96 },
-            value: 0.45
-          }
+          x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
+          y: { field: "Market_Label", type: "nominal", sort: { field: "Receipt_Rank", order: "ascending" } },
+          text: { field: "Receipt_Label" }
         }
       },
       {
-        transform: [{ filter: "datum.Rank_Type === 'Arrival_Rank'" }],
-        mark: { type: "text", align: "right", baseline: "middle", dx: -18, fontSize: 15, fontWeight: 800 },
+        transform: [{ filter: "datum.Country === 'Singapore' || datum.Country === 'China'" }],
+        mark: { type: "text", align: "left", baseline: "middle", dx: 72, fontSize: 12.5, fontWeight: 800, color: "#5b6d86" },
         encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
-          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.4, 0.5] } },
+          x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
+          y: { field: "Market_Label", type: "nominal", sort: { field: "Receipt_Rank", order: "ascending" } },
           text: { field: "Arrival_Label", type: "nominal" },
-          color: {
-            condition: { test: "datum.Is_Highlight", value: "#152238" },
-            value: "#8C98AA"
-          },
-          opacity: {
-            condition: { test: "datum.Is_Highlight", value: 1 },
-            value: 0.58
-          }
-        }
-      },
-      {
-        transform: [{ filter: "datum.Rank_Type === 'Receipt_Rank'" }],
-        mark: { type: "text", align: "left", baseline: "middle", dx: 18, fontSize: 15, fontWeight: 800 },
-        encoding: {
-          x: { field: "Rank_Axis", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
-          y: { field: "Rank_Value", type: "quantitative", scale: { domain: [12.4, 0.5] } },
-          text: { field: "Receipt_Label", type: "nominal" },
-          color: {
-            condition: { test: "datum.Is_Highlight", value: "#152238" },
-            value: "#8C98AA"
-          },
-          opacity: {
-            condition: { test: "datum.Is_Highlight", value: 1 },
-            value: 0.58
-          }
-        }
-      },
-      {
-        data: { values: [{ x: "2024 total receipts rank", y: 1.55, label: "Higher tourism value than arrival volume suggests" }] },
-        mark: { type: "text", align: "left", baseline: "middle", dx: 18, fontSize: 13, fontWeight: 800, color: "#1A36D6" },
-        encoding: {
-          x: { field: "x", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
-          y: { field: "y", type: "quantitative", scale: { domain: [12.4, 0.5] } },
-          text: { field: "label" }
-        }
-      },
-      {
-        data: { values: [{ x: "2024 total receipts rank", y: 11.45, label: "High visitor volume but lower receipt ranking" }] },
-        mark: { type: "text", align: "left", baseline: "middle", dx: 18, fontSize: 13, fontWeight: 800, color: "#A87822" },
-        encoding: {
-          x: { field: "x", type: "nominal", scale: { domain: ["2024 arrivals rank", "2024 total receipts rank"] }, axis: null },
-          y: { field: "y", type: "quantitative", scale: { domain: [12.4, 0.5] } },
-          text: { field: "label" }
+          opacity: { value: 0.9 }
         }
       }
     ],
