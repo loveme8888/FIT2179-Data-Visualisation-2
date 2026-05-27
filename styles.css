@@ -489,21 +489,28 @@ h1 {
 }
 
 .figure-card-receipts-scatter-chart {
+  grid-template-columns: 1fr;
   align-items: start;
-  row-gap: 6px;
-  padding: 18px 26px 10px;
+  row-gap: 18px;
+  padding: 28px 32px 16px;
 }
 
 .figure-card-receipts-scatter-chart .figure-copy {
-  padding-top: 6px;
+  grid-column: 1;
+  width: min(1120px, 100%);
+  padding-top: 0;
 }
 
 .figure-card-receipts-scatter-chart .chart {
-  min-height: 0;
-  height: 330px;
+  grid-column: 1;
+  width: min(1220px, 90%);
+  min-height: 520px;
+  height: 520px;
   align-items: flex-start;
-  justify-content: flex-start;
-  overflow: hidden;
+  justify-content: center;
+  justify-self: center;
+  overflow: visible;
+  padding-top: 0;
 }
 
 .figure-card-receipts-scatter-chart .vega-embed {
@@ -511,7 +518,21 @@ h1 {
 }
 
 .figure-card-receipts-scatter-chart .source-note {
+  grid-column: 1;
   margin-top: 0;
+}
+
+.figure-card-receipts-scatter-chart .figure-copy h3 {
+  max-width: 760px;
+  font-size: clamp(32px, 3.2vw, 52px);
+  line-height: 1.08;
+}
+
+.figure-card-receipts-scatter-chart .figure-copy p {
+  max-width: 900px;
+  margin-top: 14px;
+  font-size: 18px;
+  line-height: 1.45;
 }
 
 .figure-copy {
