@@ -109,33 +109,19 @@ function applyFigureNarratives() {
       <h3>${narrative.title}</h3>
       <p>${narrative.body}</p>
       ${chartId === "monthly-trend-chart" ? `
-        <div class="figure-august-card" aria-label="August mid-year peak">
-          <span class="figure-event-icon">☀</span>
-          <div>
-            <strong>AUGUST<br>MID-YEAR PEAK</strong>
-            <small>School holidays lifted demand</small>
+        <div class="figure-kpi-card" aria-label="Foreign arrivals summary">
+          <div class="figure-kpi-growth">
+            <span>+27.6%</span>
+            <small>Growth in 2024 vs 2023</small>
+          </div>
+          <div class="figure-kpi-totals">
+            <div><strong>29.0M</strong><span>2023 visitors</span></div>
+            <div><strong>37.0M</strong><span>2024 visitors</span></div>
           </div>
         </div>
       ` : ""}
     `;
     card.insertBefore(copy, card.firstElementChild);
-
-    if (chartId === "monthly-trend-chart") {
-      const summary = document.createElement("div");
-      summary.className = "figure-kpi-card figure-kpi-card-floating";
-      summary.setAttribute("aria-label", "Foreign arrivals summary");
-      summary.innerHTML = `
-        <div class="figure-kpi-growth">
-          <span>+27.6%</span>
-          <small>Growth in 2024 vs 2023</small>
-        </div>
-        <div class="figure-kpi-totals">
-          <div><strong>29.0M</strong><span>2023 visitors</span></div>
-          <div><strong>37.0M</strong><span>2024 visitors</span></div>
-        </div>
-      `;
-      card.appendChild(summary);
-    }
   });
 }
 
