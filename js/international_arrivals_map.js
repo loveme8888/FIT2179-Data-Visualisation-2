@@ -448,7 +448,7 @@ function monthlyTrendSpec() {
   const size = isMobile
     ? Math.min(Math.max(250, width - 78), 300)
     : Math.min(Math.max(460, width - 90), 580);
-  const height = size + (isMobile ? 190 : 46);
+  const height = size + (isMobile ? 190 : 136);
   return {
     $schema: "https://vega.github.io/schema/vega/v5.json",
     width: size,
@@ -567,8 +567,8 @@ function monthlyTrendSpec() {
             color: "#2E8B57",
             bg: "#E8F3EC",
             icon: "🎄",
-            title: "DECEMBER\\nYEAR-END PEAK",
-            detail: "Highest arrivals\\nat 3.8 million",
+            title: "DECEMBER\\nPEAK",
+            detail: "Highest: 3.8M",
             anchor: "topLeft"
           },
           {
@@ -597,12 +597,12 @@ function monthlyTrendSpec() {
           { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
           { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
           { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" },
-          { type: "formula", as: "cardW", expr: "width < 520 ? 146 : 166" },
-          { type: "formula", as: "cardH", expr: "width < 520 ? 72 : 82" },
-          { type: "formula", as: "cardX", expr: "datum.anchor === 'bottomRight' ? width - datum.cardW : (datum.anchor === 'topLeft' ? 0 : 8)" },
-          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 0 : height - datum.cardH - 2" },
-          { type: "formula", as: "leaderX", expr: "datum.anchor === 'bottomRight' ? datum.cardX : datum.cardX + datum.cardW" },
-          { type: "formula", as: "leaderY", expr: "datum.cardY + datum.cardH / 2" }
+          { type: "formula", as: "cardW", expr: "datum.anchor === 'bottomRight' ? 206 : (datum.anchor === 'topLeft' ? 146 : (width < 520 ? 150 : 174))" },
+          { type: "formula", as: "cardH", expr: "datum.anchor === 'bottomRight' ? 98 : (datum.anchor === 'topLeft' ? 58 : 82)" },
+          { type: "formula", as: "cardX", expr: "datum.anchor === 'bottomRight' ? width - datum.cardW - 2 : (datum.anchor === 'topLeft' ? 2 : 10)" },
+          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 4 : height - datum.cardH - 4" },
+          { type: "formula", as: "leaderX", expr: "datum.anchor === 'bottomRight' ? datum.cardX + 8 : (datum.anchor === 'topLeft' ? datum.cardX + datum.cardW - 8 : datum.cardX + datum.cardW / 2)" },
+          { type: "formula", as: "leaderY", expr: "datum.anchor === 'topLeft' ? datum.cardY + datum.cardH / 2 : datum.cardY + 2" }
         ]
       },
       {
@@ -932,6 +932,24 @@ function monthlyTrendSpec() {
         }
       },
       {
+        type: "rule",
+        from: { data: "eventCallouts" },
+        encode: {
+          enter: {
+            stroke: { field: "color" },
+            strokeWidth: { value: 1.4 },
+            strokeOpacity: { value: 0.58 }
+          },
+          update: {
+            x: { field: "leaderX" },
+            y: { field: "leaderY" },
+            x2: { field: "x" },
+            y2: { field: "y" },
+            opacity: { signal: "width < 340 ? 0 : 1" }
+          }
+        }
+      },
+      {
         type: "text",
         from: { data: "monthLabels" },
         encode: {
@@ -1107,7 +1125,7 @@ function monthlyTrendSpec() {
           enter: {
             text: { field: "title" },
             font: { value: "Inter" },
-            fontSize: { value: 9.4 },
+            fontSize: { value: 9.2 },
             fontWeight: { value: 800 },
             lineBreak: { value: "\\n" },
             limit: { signal: "datum.cardW - 56" },
@@ -1129,7 +1147,7 @@ function monthlyTrendSpec() {
           enter: {
             text: { field: "detail" },
             font: { value: "Inter" },
-            fontSize: { value: 9.4 },
+            fontSize: { value: 9.2 },
             lineBreak: { value: "\\n" },
             limit: { signal: "datum.cardW - 56" },
             align: { value: "left" },
@@ -1138,7 +1156,7 @@ function monthlyTrendSpec() {
           },
           update: {
             x: { signal: "datum.cardX + 48" },
-            y: { signal: "datum.cardY + (datum.title === 'JUNE\\nSCHOOL HOLIDAY\\nSURGE' ? 48 : 42)" },
+            y: { signal: "datum.cardY + (datum.title === 'JUNE\\nSCHOOL HOLIDAY\\nSURGE' ? 62 : 44)" },
             opacity: { signal: "width < 340 ? 0 : 1" }
           }
         }
