@@ -109,19 +109,34 @@ function applyFigureNarratives() {
       <h3>${narrative.title}</h3>
       <p>${narrative.body}</p>
       ${chartId === "monthly-trend-chart" ? `
-        <div class="figure-kpi-card" aria-label="Foreign arrivals summary">
-          <div class="figure-kpi-growth">
-            <span>+27.6%</span>
-            <small>Growth in 2024 vs 2023</small>
-          </div>
-          <div class="figure-kpi-totals">
-            <div><strong>29.0M</strong><span>2023 visitors</span></div>
-            <div><strong>37.0M</strong><span>2024 visitors</span></div>
+        <div class="figure-august-card" aria-label="August mid-year peak">
+          <span class="figure-event-icon">☀</span>
+          <div>
+            <strong>AUGUST<br>MID-YEAR PEAK</strong>
+            <small>School holidays lifted demand</small>
           </div>
         </div>
+        <span class="figure-august-leader" aria-hidden="true"></span>
       ` : ""}
     `;
     card.insertBefore(copy, card.firstElementChild);
+
+    if (chartId === "monthly-trend-chart") {
+      const summary = document.createElement("div");
+      summary.className = "figure-kpi-card figure-kpi-card-floating";
+      summary.setAttribute("aria-label", "Foreign arrivals summary");
+      summary.innerHTML = `
+        <div class="figure-kpi-growth">
+          <span>+27.6%</span>
+          <small>Growth in 2024 vs 2023</small>
+        </div>
+        <div class="figure-kpi-totals">
+          <div><strong>29.0M</strong><span>2023 visitors</span></div>
+          <div><strong>37.0M</strong><span>2024 visitors</span></div>
+        </div>
+      `;
+      card.appendChild(summary);
+    }
   });
 }
 
@@ -576,16 +591,6 @@ function monthlyTrendSpec() {
             anchor: "topLeft"
           },
           {
-            Month_Num: 8,
-            value: 3.662108,
-            color: "#F4A000",
-            bg: "#FFF3D8",
-            icon: "☀",
-            title: "AUGUST\\nMID-YEAR PEAK",
-            detail: "School holidays\\nlifted demand",
-            anchor: "rightMiddle"
-          },
-          {
             Month_Num: 6,
             value: 3.40929,
             color: "#E85D04",
@@ -607,6 +612,20 @@ function monthlyTrendSpec() {
           { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 4 : (datum.anchor === 'rightMiddle' ? cy + 46 : cy + 136)" },
           { type: "formula", as: "leaderX", expr: "datum.anchor === 'topLeft' ? datum.cardX + datum.cardW - 8 : datum.cardX + 2" },
           { type: "formula", as: "leaderY", expr: "datum.anchor === 'rightMiddle' ? datum.cardY + datum.cardH - 12 : datum.cardY + datum.cardH / 2" }
+        ]
+      },
+      {
+        name: "eventHighlights",
+        values: [
+          { Month_Num: 12, value: 3.805306, color: "#2E8B57" },
+          { Month_Num: 8, value: 3.662108, color: "#F4A000" },
+          { Month_Num: 6, value: 3.40929, color: "#E85D04" }
+        ],
+        transform: [
+          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
+          { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
+          { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
+          { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" }
         ]
       },
       {
@@ -901,7 +920,7 @@ function monthlyTrendSpec() {
       },
       {
         type: "symbol",
-        from: { data: "eventCallouts" },
+        from: { data: "eventHighlights" },
         encode: {
           enter: {
             shape: { value: "circle" },
@@ -919,7 +938,7 @@ function monthlyTrendSpec() {
       },
       {
         type: "symbol",
-        from: { data: "eventCallouts" },
+        from: { data: "eventHighlights" },
         encode: {
           enter: {
             shape: { value: "circle" },
