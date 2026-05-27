@@ -437,10 +437,14 @@ h1 {
 }
 
 .figure-card-monthly-trend-chart .chart {
+  position: relative;
+  z-index: 1;
   align-items: flex-start;
 }
 
 .figure-copy {
+  position: relative;
+  z-index: 2;
   min-width: 0;
 }
 
@@ -518,6 +522,8 @@ h1 {
 }
 
 .figure-august-card {
+  position: relative;
+  z-index: 3;
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
   gap: 12px;
@@ -529,6 +535,20 @@ h1 {
   border: 1px solid rgba(244, 160, 0, 0.22);
   border-radius: 8px;
   background: #fff3d8;
+}
+
+.figure-august-card::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  z-index: 4;
+  width: 420px;
+  height: 0;
+  border-top: 1.4px solid rgba(244, 160, 0, 0.62);
+  transform: rotate(-10deg);
+  transform-origin: left center;
+  pointer-events: none;
 }
 
 .figure-event-icon {
@@ -557,19 +577,6 @@ h1 {
   color: var(--text);
   font-size: 10.5px;
   line-height: 1.25;
-}
-
-.figure-august-leader {
-  position: absolute;
-  left: 216px;
-  top: 512px;
-  z-index: 1;
-  width: 282px;
-  height: 0;
-  border-top: 1.4px solid rgba(244, 160, 0, 0.62);
-  transform: rotate(-9deg);
-  transform-origin: left center;
-  pointer-events: none;
 }
 
 .figure-kpi-growth {
@@ -935,7 +942,7 @@ code {
     order: 2;
   }
 
-  .figure-august-leader {
+  .figure-august-card::after {
     display: none;
   }
 

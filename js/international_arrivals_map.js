@@ -116,7 +116,6 @@ function applyFigureNarratives() {
             <small>School holidays lifted demand</small>
           </div>
         </div>
-        <span class="figure-august-leader" aria-hidden="true"></span>
       ` : ""}
     `;
     card.insertBefore(copy, card.firstElementChild);
