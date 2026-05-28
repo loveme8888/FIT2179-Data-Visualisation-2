@@ -867,13 +867,13 @@ h1 {
 
 .expenditure-insight-card {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 15px;
   align-items: center;
-  width: min(100%, 335px);
+  width: min(100%, 320px);
   margin-top: auto;
-  min-height: 132px;
-  padding: 16px 18px;
+  min-height: 122px;
+  padding: 15px 17px;
   border: 1px solid rgba(116, 111, 206, 0.13);
   border-radius: 8px;
   background: linear-gradient(135deg, #f4f2ff 0%, #fbfdff 100%);
@@ -889,8 +889,8 @@ h1 {
 }
 
 .expenditure-insight-icon {
-  width: 58px;
-  height: 58px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: #e6e4ff;
 }
@@ -907,8 +907,8 @@ h1 {
 }
 
 .expenditure-insight-icon svg {
-  width: 29px;
-  height: 29px;
+  width: 26px;
+  height: 26px;
   color: #163b9f;
   stroke-width: 1.45;
 }
@@ -920,7 +920,7 @@ h1 {
 
 .expenditure-insight-card strong {
   color: #173ed1;
-  font-size: clamp(31px, 2.8vw, 42px);
+  font-size: clamp(28px, 2.45vw, 37px);
   font-weight: 900;
   line-height: 0.95;
 }
@@ -928,7 +928,7 @@ h1 {
 .expenditure-insight-card span {
   margin-top: 7px;
   color: #0b1b43;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   line-height: 1.35;
 }
@@ -936,7 +936,7 @@ h1 {
 .suitcase-infographic {
   display: grid;
   grid-template-rows: auto auto auto;
-  gap: 16px;
+  gap: 18px;
   width: 100%;
   min-width: 0;
   align-content: center;
@@ -985,46 +985,46 @@ h1 {
   position: relative;
   align-self: stretch;
   justify-self: center;
-  width: min(84%, 860px);
-  min-height: 330px;
-  margin: 44px 0 0;
-  padding: 12px;
-  border: 6px solid #263f5f;
-  border-radius: 34px;
-  background: linear-gradient(135deg, #395b7a 0%, #263f5f 100%);
-  box-shadow: 0 12px 28px rgba(48, 70, 94, 0.12);
+  width: min(82%, 835px);
+  min-height: 318px;
+  margin: 48px 0 0;
+  padding: 10px;
+  border: 4px solid #50677f;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #70869b 0%, #4f667e 100%);
+  box-shadow: 0 8px 18px rgba(60, 78, 96, 0.08);
 }
 
 .suitcase-shell::before {
   content: "";
   position: absolute;
-  inset: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 25px;
+  inset: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 23px;
   pointer-events: none;
 }
 
 .suitcase-handle {
   position: absolute;
   left: 50%;
-  top: -46px;
-  width: 146px;
-  height: 54px;
-  border: 10px solid #263f5f;
+  top: -42px;
+  width: 132px;
+  height: 49px;
+  border: 7px solid #50677f;
   border-bottom: 0;
-  border-radius: 29px 29px 0 0;
-  box-shadow: inset 0 6px 10px rgba(255, 255, 255, 0.1);
+  border-radius: 26px 26px 0 0;
+  box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.12);
   transform: translateX(-50%);
 }
 
 .suitcase-foot {
   position: absolute;
-  bottom: -21px;
-  width: 36px;
-  height: 21px;
-  border-radius: 0 0 13px 13px;
-  background: #263f5f;
-  box-shadow: inset 0 -8px 10px rgba(0, 0, 0, 0.14);
+  bottom: -16px;
+  width: 30px;
+  height: 16px;
+  border-radius: 0 0 10px 10px;
+  background: #50677f;
+  box-shadow: inset 0 -5px 8px rgba(0, 0, 0, 0.08);
 }
 
 .suitcase-foot.left {
@@ -1039,28 +1039,28 @@ h1 {
   position: relative;
   z-index: 1;
   height: 100%;
-  min-height: 298px;
+  min-height: 286px;
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: 21px;
   background: #fff;
 }
 
 .suitcase-tile {
-  --tile-gap: 6px;
+  --tile-gap: 9px;
   position: absolute;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  padding: 16px 18px;
+  padding: 22px 24px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background-image:
-    linear-gradient(rgba(247, 232, 206, 0.2), rgba(247, 232, 206, 0.2)),
+    linear-gradient(rgba(255, 245, 226, 0.34), rgba(255, 245, 226, 0.34)),
     linear-gradient(var(--tile-overlay), var(--tile-overlay)),
     var(--tile-image);
   background-position: center;
   background-size: cover;
-  background-blend-mode: screen, multiply, normal;
+  background-blend-mode: screen, normal, luminosity;
   color: #fff;
   isolation: isolate;
 }
@@ -1071,52 +1071,52 @@ h1 {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(180deg, rgba(255, 246, 230, 0.18), rgba(57, 76, 94, 0.22)),
-    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.14), transparent 34%);
+    linear-gradient(180deg, rgba(255, 251, 242, 0.32), rgba(121, 105, 86, 0.13)),
+    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.2), transparent 36%);
 }
 
 .suitcase-tile.shopping {
-  --tile-overlay: rgba(202, 149, 44, 0.72);
+  --tile-overlay: rgba(211, 162, 58, 0.76);
   left: 0;
   top: 0;
   width: calc(62% - var(--tile-gap));
-  height: calc(52% - var(--tile-gap));
+  height: calc(53% - var(--tile-gap));
 }
 
 .suitcase-tile.accommodation {
-  --tile-overlay: rgba(91, 131, 182, 0.72);
+  --tile-overlay: rgba(124, 156, 196, 0.76);
   left: 62%;
   top: 0;
   width: 38%;
-  height: calc(52% - var(--tile-gap));
+  height: calc(53% - var(--tile-gap));
 }
 
 .suitcase-tile.food {
-  --tile-overlay: rgba(83, 151, 150, 0.72);
+  --tile-overlay: rgba(106, 167, 163, 0.76);
   left: 0;
-  top: 52%;
+  top: 53%;
   width: calc(43% - var(--tile-gap));
-  height: calc(29% - var(--tile-gap));
+  height: calc(28% - var(--tile-gap));
 }
 
 .suitcase-tile.international-airfares {
-  --tile-overlay: rgba(114, 153, 126, 0.74);
+  --tile-overlay: rgba(139, 170, 137, 0.78);
   left: 43%;
-  top: 52%;
+  top: 53%;
   width: calc(33% - var(--tile-gap));
-  height: calc(29% - var(--tile-gap));
+  height: calc(28% - var(--tile-gap));
 }
 
 .suitcase-tile.local-transportation {
-  --tile-overlay: rgba(126, 146, 93, 0.74);
+  --tile-overlay: rgba(146, 162, 113, 0.78);
   left: 76%;
-  top: 52%;
+  top: 53%;
   width: 24%;
-  height: calc(29% - var(--tile-gap));
+  height: calc(28% - var(--tile-gap));
 }
 
 .suitcase-tile.entertainment {
-  --tile-overlay: rgba(142, 120, 174, 0.74);
+  --tile-overlay: rgba(190, 176, 218, 0.9);
   left: 0;
   top: 81%;
   width: calc(22% - var(--tile-gap));
@@ -1124,7 +1124,7 @@ h1 {
 }
 
 .suitcase-tile.organised-tour {
-  --tile-overlay: rgba(177, 117, 150, 0.74);
+  --tile-overlay: rgba(224, 184, 205, 0.9);
   left: 22%;
   top: 81%;
   width: calc(20% - var(--tile-gap));
@@ -1132,7 +1132,7 @@ h1 {
 }
 
 .suitcase-tile.medical {
-  --tile-overlay: rgba(199, 125, 105, 0.74);
+  --tile-overlay: rgba(230, 183, 171, 0.9);
   left: 42%;
   top: 81%;
   width: calc(19% - var(--tile-gap));
@@ -1140,7 +1140,7 @@ h1 {
 }
 
 .suitcase-tile.domestic-airfares {
-  --tile-overlay: rgba(113, 146, 176, 0.74);
+  --tile-overlay: rgba(179, 206, 226, 0.9);
   left: 61%;
   top: 81%;
   width: calc(20% - var(--tile-gap));
@@ -1148,7 +1148,7 @@ h1 {
 }
 
 .suitcase-tile.fuel {
-  --tile-overlay: rgba(168, 142, 107, 0.74);
+  --tile-overlay: rgba(221, 204, 178, 0.9);
   left: 81%;
   top: 81%;
   width: 19%;
@@ -1157,11 +1157,11 @@ h1 {
 
 .tile-icon {
   position: absolute;
-  right: 16px;
-  bottom: 14px;
-  width: 34px;
-  height: 34px;
-  color: rgba(255, 255, 255, 0.38);
+  right: 20px;
+  bottom: 18px;
+  width: 30px;
+  height: 30px;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .tile-icon svg {
@@ -1173,14 +1173,14 @@ h1 {
 .suitcase-tile.shopping .tile-icon,
 .suitcase-tile.accommodation .tile-icon,
 .suitcase-tile.food .tile-icon {
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
 }
 
 .tile-copy {
   position: relative;
   z-index: 1;
-  text-shadow: 0 1px 6px rgba(38, 54, 76, 0.18);
+  text-shadow: 0 1px 4px rgba(38, 54, 76, 0.12);
 }
 
 .tile-copy strong,
@@ -1190,30 +1190,30 @@ h1 {
 }
 
 .tile-copy strong {
-  font-size: clamp(10px, 0.95vw, 15px);
+  font-size: clamp(9px, 0.78vw, 13px);
   font-weight: 900;
   line-height: 1.15;
 }
 
 .tile-copy span {
-  margin-top: 5px;
-  font-size: clamp(18px, 2.45vw, 34px);
+  margin-top: 7px;
+  font-size: clamp(16px, 2vw, 28px);
   font-weight: 900;
   line-height: 0.95;
 }
 
 .suitcase-tile.shopping .tile-copy strong,
 .suitcase-tile.accommodation .tile-copy strong {
-  font-size: clamp(14px, 1.15vw, 19px);
+  font-size: clamp(12px, 0.96vw, 16px);
 }
 
 .suitcase-tile.shopping .tile-copy span,
 .suitcase-tile.accommodation .tile-copy span {
-  font-size: clamp(32px, 3.4vw, 50px);
+  font-size: clamp(26px, 2.75vw, 40px);
 }
 
 .suitcase-tile.food .tile-copy span {
-  font-size: clamp(24px, 2.75vw, 38px);
+  font-size: clamp(20px, 2.15vw, 30px);
 }
 
 .suitcase-tile.entertainment,
@@ -1221,7 +1221,7 @@ h1 {
 .suitcase-tile.medical,
 .suitcase-tile.domestic-airfares,
 .suitcase-tile.fuel {
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
 
 .suitcase-tile.entertainment .tile-icon,
@@ -1231,14 +1231,16 @@ h1 {
 .suitcase-tile.fuel .tile-icon {
   right: 12px;
   bottom: 12px;
-  width: 22px;
-  height: 22px;
+  width: 19px;
+  height: 19px;
 }
 
 .suitcase-tile.is-compact {
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 12px 14px;
+  background-image: linear-gradient(var(--tile-overlay), var(--tile-overlay));
+  background-blend-mode: normal;
 }
 
 .suitcase-tile.is-compact .tile-copy strong {
@@ -1251,13 +1253,14 @@ h1 {
 
 .suitcase-tile.is-compact .tile-copy span {
   margin-top: 0;
-  font-size: clamp(15px, 1.55vw, 23px);
+  font-size: clamp(13px, 1.25vw, 19px);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .expenditure-icon-row {
   display: grid;
   grid-template-columns: repeat(5, max-content);
-  gap: 7px 16px;
+  gap: 6px 15px;
   align-items: center;
   justify-content: center;
   width: min(84%, 860px);
@@ -1268,26 +1271,26 @@ h1 {
 .expenditure-icon-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-height: 26px;
-  color: #2d3f5f;
-  font-size: 11px;
+  gap: 6px;
+  min-height: 24px;
+  color: #42536b;
+  font-size: 10.5px;
   font-weight: 800;
   line-height: 1;
 }
 
 .expenditure-icon-pill i {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--pill-bg);
   color: var(--pill-color);
 }
 
 .expenditure-icon-pill svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 1.7;
+  width: 13px;
+  height: 13px;
+  stroke-width: 1.55;
 }
 
 .expenditure-icon-pill.shopping {
@@ -2028,10 +2031,10 @@ code {
 
   .suitcase-shell {
     width: 100%;
-    min-height: 520px;
+    min-height: 500px;
     margin-top: 8px;
-    padding: 12px;
-    border-width: 5px;
+    padding: 9px;
+    border-width: 4px;
     border-radius: 28px;
   }
 
@@ -2040,12 +2043,12 @@ code {
   }
 
   .suitcase-grid {
-    min-height: 490px;
+    min-height: 472px;
     border-radius: 19px;
   }
 
   .suitcase-tile {
-    padding: 12px;
+    padding: 16px;
   }
 
   .suitcase-tile.shopping {
@@ -2122,7 +2125,7 @@ code {
   .suitcase-tile.accommodation .tile-copy span,
   .suitcase-tile.food .tile-copy span,
   .tile-copy span {
-    font-size: 25px;
+    font-size: 22px;
   }
 
   .suitcase-tile.shopping .tile-copy strong,
@@ -2135,8 +2138,8 @@ code {
   .suitcase-tile.shopping .tile-icon,
   .suitcase-tile.accommodation .tile-icon,
   .suitcase-tile.food .tile-icon {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
   }
 
   .expenditure-icon-row {
