@@ -1340,30 +1340,30 @@ h1 {
 }
 
 .figure-card-expenditure-chart {
-  grid-template-columns: minmax(235px, 24%) minmax(0, 1fr);
-  column-gap: 22px;
-  padding: 22px 24px 18px;
+  grid-template-columns: minmax(210px, 22%) minmax(0, 1fr);
+  column-gap: 18px;
+  padding: 18px 20px 16px;
   overflow: hidden;
 }
 
 .figure-card-expenditure-chart .figure-copy {
-  min-height: 470px;
-  padding: 10px 22px 16px 4px;
+  min-height: 410px;
+  padding: 8px 18px 14px 4px;
   border-right-color: rgba(120, 150, 190, 0.24);
 }
 
 .figure-card-expenditure-chart .figure-copy h3 {
-  max-width: 285px;
+  max-width: 250px;
   color: #0a1630;
-  font-size: clamp(24px, 2vw, 32px);
+  font-size: clamp(21px, 1.55vw, 27px);
   line-height: 1.1;
 }
 
 .figure-card-expenditure-chart .figure-copy p {
-  max-width: 300px;
-  margin-top: 20px;
+  max-width: 255px;
+  margin-top: 16px;
   color: #263654;
-  font-size: clamp(14px, 1.05vw, 17px);
+  font-size: clamp(13px, 0.85vw, 15px);
   line-height: 1.45;
 }
 
@@ -1372,17 +1372,19 @@ h1 {
 }
 
 .figure-card-expenditure-chart .chart {
-  min-height: 470px;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 410px;
   overflow: visible;
 }
 
 .figure-card-expenditure-chart .figure-label {
-  min-height: 30px;
-  margin-bottom: 24px;
-  padding: 0 18px;
+  min-height: 26px;
+  margin-bottom: 18px;
+  padding: 0 14px;
   background: #c8c3ff;
   color: #3940bd;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.12em;
 }
 
@@ -1404,38 +1406,38 @@ h1 {
 }
 
 .expenditure-insight-card {
-  grid-template-columns: 70px minmax(0, 1fr);
-  width: min(100%, 280px);
-  min-height: 190px;
+  grid-template-columns: 52px minmax(0, 1fr);
+  width: min(100%, 235px);
+  min-height: 145px;
   margin-top: auto;
-  padding: 18px;
+  padding: 14px;
   border: 0;
   background: linear-gradient(135deg, rgba(246, 247, 255, 0.98), rgba(255, 255, 255, 0.78));
   box-shadow: 0 18px 50px rgba(40, 70, 125, 0.08);
 }
 
 .expenditure-insight-icon {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   background: #e5e2ff;
 }
 
 .expenditure-insight-icon svg {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
   color: #0b2a5e;
   stroke-width: 1.55;
 }
 
 .expenditure-insight-card strong {
   color: #173ed1;
-  font-size: clamp(34px, 3vw, 46px);
+  font-size: clamp(29px, 2.35vw, 38px);
 }
 
 .expenditure-insight-card span {
-  margin-top: 8px;
+  margin-top: 6px;
   color: #10224d;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -1443,26 +1445,26 @@ h1 {
 .expenditure-insight-note {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 9px;
   align-items: center;
-  margin: 16px 0 0;
-  padding-top: 14px;
+  margin: 10px 0 0;
+  padding-top: 10px;
   border-top: 1px solid #dbe3f0;
 }
 
 .expenditure-insight-note i {
   display: grid;
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   place-items: center;
   color: #8176f7;
 }
 
 .expenditure-insight-note svg {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
@@ -1473,7 +1475,7 @@ h1 {
 .expenditure-insight-note span {
   margin: 0;
   color: #243151;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1.35;
 }
@@ -1481,50 +1483,53 @@ h1 {
 .suitcase-infographic {
   gap: 12px;
   align-content: start;
+  justify-items: center;
   padding-top: 4px;
   width: 100%;
   min-width: 0;
 }
 
 .expenditure-header {
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 12px;
-  width: min(100%, 760px);
-  justify-self: start;
-  margin-left: 12px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  width: min(100%, 620px);
+  justify-self: center;
+  margin-left: 0;
 }
 
 .expenditure-title-icon {
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   background: #eef6fb;
 }
 
 .expenditure-title-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   stroke-width: 1.65;
 }
 
 .expenditure-header h3 {
   color: #0a2a5e;
-  font-size: clamp(24px, 2.2vw, 34px);
-  line-height: 1;
+  font-size: clamp(19px, 1.65vw, 26px);
+  line-height: 1.05;
+  white-space: normal;
 }
 
 .expenditure-header p {
-  margin-top: 6px;
+  margin-top: 4px;
   color: #30405f;
-  font-size: clamp(13px, 1.05vw, 17px);
+  font-size: clamp(11px, 0.8vw, 14px);
 }
 
 .suitcase-shell {
-  width: min(100%, 760px);
-  min-height: 340px;
-  margin: 44px 0 0;
-  padding: 10px;
-  border: 7px solid #0d2849;
-  border-radius: 36px;
+  justify-self: center;
+  width: min(100%, 620px);
+  min-height: 270px;
+  margin: 32px 0 0;
+  padding: 8px;
+  border: 5px solid #0d2849;
+  border-radius: 28px;
   background: linear-gradient(180deg, #2f4767 0%, #102f52 100%);
   box-shadow:
     0 18px 22px rgba(11, 31, 57, 0.12),
@@ -1532,28 +1537,28 @@ h1 {
 }
 
 .suitcase-shell::before {
-  inset: 12px;
+  inset: 8px;
   border: 2px solid rgba(255, 255, 255, 0.8);
-  border-radius: 33px;
+  border-radius: 22px;
 }
 
 .suitcase-handle {
-  top: -58px;
-  width: 200px;
-  height: 60px;
-  border: 22px solid #0d2849;
+  top: -43px;
+  width: 150px;
+  height: 45px;
+  border: 16px solid #0d2849;
   border-bottom: 0;
-  border-radius: 32px 32px 0 0;
+  border-radius: 24px 24px 0 0;
   background: rgba(255, 255, 255, 0.18);
   box-shadow: inset 0 10px 18px rgba(255, 255, 255, 0.12);
 }
 
 .suitcase-clasp {
   position: absolute;
-  top: -18px;
+  top: -13px;
   z-index: 0;
-  width: 64px;
-  height: 16px;
+  width: 48px;
+  height: 12px;
   border-radius: 5px 5px 0 0;
   background: linear-gradient(180deg, #6d4c3b, #342519);
 }
@@ -1572,14 +1577,14 @@ h1 {
 
 .suitcase-total-tag {
   position: absolute;
-  right: 10px;
-  top: 24px;
+  right: 8px;
+  top: 18px;
   z-index: 4;
   display: grid;
   place-items: center;
-  width: 78px;
-  height: 110px;
-  padding: 14px 8px;
+  width: 58px;
+  height: 82px;
+  padding: 10px 6px;
   border: 2px solid rgba(5, 19, 44, 0.5);
   border-radius: 12px;
   background: #1c3a61;
@@ -1591,11 +1596,11 @@ h1 {
 .suitcase-total-tag::before {
   content: "";
   position: absolute;
-  left: 35px;
-  top: -48px;
-  width: 26px;
-  height: 58px;
-  border: 5px solid #6b3d29;
+  left: 25px;
+  top: -36px;
+  width: 20px;
+  height: 44px;
+  border: 4px solid #6b3d29;
   border-bottom: 0;
   border-radius: 18px 18px 0 0;
 }
@@ -1603,23 +1608,23 @@ h1 {
 .suitcase-total-tag::after {
   content: "";
   position: absolute;
-  left: 32px;
-  top: 14px;
-  width: 12px;
-  height: 12px;
+  left: 24px;
+  top: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: #d1dde8;
 }
 
 .suitcase-total-tag span {
-  margin-top: 20px;
+  margin-top: 14px;
   color: rgba(255, 255, 255, 0.8);
 }
 
 .suitcase-total-tag svg {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
@@ -1631,20 +1636,20 @@ h1 {
 .suitcase-total-tag b {
   display: block;
   color: #fff;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 900;
   line-height: 1.05;
   text-align: center;
 }
 
 .suitcase-total-tag b {
-  font-size: 17px;
+  font-size: 13px;
 }
 
 .suitcase-foot {
-  bottom: -30px;
-  width: 48px;
-  height: 30px;
+  bottom: -23px;
+  width: 36px;
+  height: 23px;
   border-radius: 0 0 24px 24px;
   background: linear-gradient(180deg, #193a5d, #0b2747);
 }
@@ -1658,13 +1663,13 @@ h1 {
 }
 
 .suitcase-grid {
-  min-height: 300px;
-  border-radius: 24px;
+  min-height: 238px;
+  border-radius: 18px;
 }
 
 .suitcase-tile {
   --tile-gap: 5px;
-  padding: 22px 24px;
+  padding: 16px 18px;
   border: 2px solid rgba(255, 255, 255, 0.84);
   border-radius: 10px;
   background-image:
@@ -1740,27 +1745,27 @@ h1 {
 }
 
 .tile-copy strong {
-  font-size: clamp(11px, 0.9vw, 15px);
+  font-size: clamp(9px, 0.68vw, 12px);
 }
 
 .tile-copy span {
-  margin-top: 8px;
-  font-size: clamp(24px, 2.3vw, 40px);
+  margin-top: 6px;
+  font-size: clamp(19px, 1.75vw, 31px);
   line-height: 0.9;
 }
 
 .suitcase-tile.shopping .tile-copy strong,
 .suitcase-tile.accommodation .tile-copy strong {
-  font-size: clamp(16px, 1.35vw, 22px);
+  font-size: clamp(13px, 1.05vw, 17px);
 }
 
 .suitcase-tile.shopping .tile-copy span,
 .suitcase-tile.accommodation .tile-copy span {
-  font-size: clamp(42px, 3.9vw, 58px);
+  font-size: clamp(32px, 2.95vw, 45px);
 }
 
 .suitcase-tile.food .tile-copy span {
-  font-size: clamp(34px, 3.2vw, 46px);
+  font-size: clamp(27px, 2.45vw, 36px);
 }
 
 .suitcase-tile.is-compact .tile-copy strong {
@@ -1769,13 +1774,13 @@ h1 {
   height: auto;
   overflow: visible;
   clip: auto;
-  font-size: clamp(11px, 0.92vw, 16px);
+  font-size: clamp(9px, 0.66vw, 12px);
 }
 
 .suitcase-tile.is-compact .tile-copy span {
-  margin-top: 8px;
+  margin-top: 5px;
   color: #fff;
-  font-size: clamp(20px, 1.9vw, 30px);
+  font-size: clamp(16px, 1.35vw, 23px);
 }
 
 .tile-icon {
@@ -1783,29 +1788,37 @@ h1 {
 }
 
 .expenditure-icon-row {
-  grid-template-columns: repeat(5, max-content);
-  gap: 12px 22px;
-  width: min(100%, 760px);
-  margin-top: 14px;
+  grid-template-columns: repeat(5, minmax(82px, 1fr));
+  gap: 8px 12px;
+  width: min(100%, 620px);
+  margin-top: 10px;
+  justify-self: center;
   justify-content: center;
 }
 
 .expenditure-icon-pill {
-  gap: 8px;
-  min-height: 32px;
+  gap: 6px;
+  min-width: 0;
+  min-height: 26px;
   color: #2b3855;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 800;
 }
 
 .expenditure-icon-pill i {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
 }
 
 .expenditure-icon-pill svg {
-  width: 17px;
-  height: 17px;
+  width: 14px;
+  height: 14px;
+}
+
+.expenditure-icon-pill b {
+  min-width: 0;
+  line-height: 1.15;
 }
 
 .domestic-photo-ranking {
