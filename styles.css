@@ -1340,29 +1340,30 @@ h1 {
 }
 
 .figure-card-expenditure-chart {
-  grid-template-columns: minmax(330px, 27%) minmax(0, 1fr);
-  column-gap: 34px;
-  padding: 26px 38px 20px;
+  grid-template-columns: minmax(235px, 24%) minmax(0, 1fr);
+  column-gap: 22px;
+  padding: 22px 24px 18px;
+  overflow: hidden;
 }
 
 .figure-card-expenditure-chart .figure-copy {
-  min-height: 560px;
-  padding: 16px 34px 22px 8px;
+  min-height: 470px;
+  padding: 10px 22px 16px 4px;
   border-right-color: rgba(120, 150, 190, 0.24);
 }
 
 .figure-card-expenditure-chart .figure-copy h3 {
-  max-width: 365px;
+  max-width: 285px;
   color: #0a1630;
-  font-size: clamp(30px, 2.6vw, 43px);
-  line-height: 1.15;
+  font-size: clamp(24px, 2vw, 32px);
+  line-height: 1.1;
 }
 
 .figure-card-expenditure-chart .figure-copy p {
-  max-width: 370px;
-  margin-top: 28px;
+  max-width: 300px;
+  margin-top: 20px;
   color: #263654;
-  font-size: clamp(16px, 1.35vw, 23px);
+  font-size: clamp(14px, 1.05vw, 17px);
   line-height: 1.45;
 }
 
@@ -1371,16 +1372,17 @@ h1 {
 }
 
 .figure-card-expenditure-chart .chart {
-  min-height: 570px;
+  min-height: 470px;
+  overflow: visible;
 }
 
 .figure-card-expenditure-chart .figure-label {
-  min-height: 38px;
-  margin-bottom: 34px;
-  padding: 0 22px;
+  min-height: 30px;
+  margin-bottom: 24px;
+  padding: 0 18px;
   background: #c8c3ff;
   color: #3940bd;
-  font-size: 18px;
+  font-size: 14px;
   letter-spacing: 0.12em;
 }
 
@@ -1402,38 +1404,38 @@ h1 {
 }
 
 .expenditure-insight-card {
-  grid-template-columns: 108px minmax(0, 1fr);
-  width: min(100%, 360px);
-  min-height: 304px;
+  grid-template-columns: 70px minmax(0, 1fr);
+  width: min(100%, 280px);
+  min-height: 190px;
   margin-top: auto;
-  padding: 28px 28px 24px;
+  padding: 18px;
   border: 0;
   background: linear-gradient(135deg, rgba(246, 247, 255, 0.98), rgba(255, 255, 255, 0.78));
   box-shadow: 0 18px 50px rgba(40, 70, 125, 0.08);
 }
 
 .expenditure-insight-icon {
-  width: 86px;
-  height: 86px;
+  width: 64px;
+  height: 64px;
   background: #e5e2ff;
 }
 
 .expenditure-insight-icon svg {
-  width: 48px;
-  height: 48px;
+  width: 34px;
+  height: 34px;
   color: #0b2a5e;
   stroke-width: 1.55;
 }
 
 .expenditure-insight-card strong {
   color: #173ed1;
-  font-size: clamp(46px, 4.4vw, 64px);
+  font-size: clamp(34px, 3vw, 46px);
 }
 
 .expenditure-insight-card span {
-  margin-top: 10px;
+  margin-top: 8px;
   color: #10224d;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -1441,11 +1443,11 @@ h1 {
 .expenditure-insight-note {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
-  margin: 24px 0 0;
-  padding-top: 22px;
+  margin: 16px 0 0;
+  padding-top: 14px;
   border-top: 1px solid #dbe3f0;
 }
 
@@ -1471,60 +1473,62 @@ h1 {
 .expenditure-insight-note span {
   margin: 0;
   color: #243151;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.35;
 }
 
 .suitcase-infographic {
-  gap: 16px;
+  gap: 12px;
   align-content: start;
   padding-top: 4px;
+  width: 100%;
+  min-width: 0;
 }
 
 .expenditure-header {
-  grid-template-columns: 54px minmax(0, 1fr);
-  gap: 16px;
-  width: min(94%, 980px);
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  width: min(100%, 760px);
   justify-self: start;
-  margin-left: 24px;
+  margin-left: 12px;
 }
 
 .expenditure-title-icon {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   background: #eef6fb;
 }
 
 .expenditure-title-icon svg {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   stroke-width: 1.65;
 }
 
 .expenditure-header h3 {
   color: #0a2a5e;
-  font-size: clamp(30px, 2.7vw, 45px);
-  line-height: 0.98;
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1;
 }
 
 .expenditure-header p {
-  margin-top: 8px;
+  margin-top: 6px;
   color: #30405f;
-  font-size: clamp(16px, 1.3vw, 21px);
+  font-size: clamp(13px, 1.05vw, 17px);
 }
 
 .suitcase-shell {
-  width: min(94%, 980px);
-  min-height: 442px;
-  margin: 62px 0 0;
-  padding: 14px;
-  border: 10px solid #0d2849;
-  border-radius: 48px;
+  width: min(100%, 760px);
+  min-height: 340px;
+  margin: 44px 0 0;
+  padding: 10px;
+  border: 7px solid #0d2849;
+  border-radius: 36px;
   background: linear-gradient(180deg, #2f4767 0%, #102f52 100%);
   box-shadow:
-    0 24px 24px rgba(11, 31, 57, 0.14),
-    inset 0 0 0 7px rgba(255, 255, 255, 0.16);
+    0 18px 22px rgba(11, 31, 57, 0.12),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.16);
 }
 
 .suitcase-shell::before {
@@ -1534,12 +1538,12 @@ h1 {
 }
 
 .suitcase-handle {
-  top: -76px;
-  width: 260px;
-  height: 80px;
-  border: 28px solid #0d2849;
+  top: -58px;
+  width: 200px;
+  height: 60px;
+  border: 22px solid #0d2849;
   border-bottom: 0;
-  border-radius: 40px 40px 0 0;
+  border-radius: 32px 32px 0 0;
   background: rgba(255, 255, 255, 0.18);
   box-shadow: inset 0 10px 18px rgba(255, 255, 255, 0.12);
 }
@@ -1568,14 +1572,14 @@ h1 {
 
 .suitcase-total-tag {
   position: absolute;
-  right: -28px;
-  top: 30px;
+  right: 10px;
+  top: 24px;
   z-index: 4;
   display: grid;
   place-items: center;
-  width: 108px;
-  height: 150px;
-  padding: 18px 10px;
+  width: 78px;
+  height: 110px;
+  padding: 14px 8px;
   border: 2px solid rgba(5, 19, 44, 0.5);
   border-radius: 12px;
   background: #1c3a61;
@@ -1587,11 +1591,11 @@ h1 {
 .suitcase-total-tag::before {
   content: "";
   position: absolute;
-  left: 48px;
-  top: -64px;
-  width: 34px;
-  height: 76px;
-  border: 7px solid #6b3d29;
+  left: 35px;
+  top: -48px;
+  width: 26px;
+  height: 58px;
+  border: 5px solid #6b3d29;
   border-bottom: 0;
   border-radius: 18px 18px 0 0;
 }
@@ -1599,10 +1603,10 @@ h1 {
 .suitcase-total-tag::after {
   content: "";
   position: absolute;
-  left: 45px;
-  top: 16px;
-  width: 16px;
-  height: 16px;
+  left: 32px;
+  top: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #d1dde8;
 }
@@ -1614,8 +1618,8 @@ h1 {
 
 .suitcase-total-tag svg {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
@@ -1627,20 +1631,20 @@ h1 {
 .suitcase-total-tag b {
   display: block;
   color: #fff;
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 900;
   line-height: 1.05;
   text-align: center;
 }
 
 .suitcase-total-tag b {
-  font-size: 22px;
+  font-size: 17px;
 }
 
 .suitcase-foot {
-  bottom: -38px;
-  width: 58px;
-  height: 38px;
+  bottom: -30px;
+  width: 48px;
+  height: 30px;
   border-radius: 0 0 24px 24px;
   background: linear-gradient(180deg, #193a5d, #0b2747);
 }
@@ -1654,13 +1658,13 @@ h1 {
 }
 
 .suitcase-grid {
-  min-height: 394px;
-  border-radius: 31px;
+  min-height: 300px;
+  border-radius: 24px;
 }
 
 .suitcase-tile {
   --tile-gap: 5px;
-  padding: 28px 34px;
+  padding: 22px 24px;
   border: 2px solid rgba(255, 255, 255, 0.84);
   border-radius: 10px;
   background-image:
@@ -1736,27 +1740,27 @@ h1 {
 }
 
 .tile-copy strong {
-  font-size: clamp(12px, 1.05vw, 18px);
+  font-size: clamp(11px, 0.9vw, 15px);
 }
 
 .tile-copy span {
-  margin-top: 10px;
-  font-size: clamp(28px, 3vw, 54px);
+  margin-top: 8px;
+  font-size: clamp(24px, 2.3vw, 40px);
   line-height: 0.9;
 }
 
 .suitcase-tile.shopping .tile-copy strong,
 .suitcase-tile.accommodation .tile-copy strong {
-  font-size: clamp(19px, 1.8vw, 28px);
+  font-size: clamp(16px, 1.35vw, 22px);
 }
 
 .suitcase-tile.shopping .tile-copy span,
 .suitcase-tile.accommodation .tile-copy span {
-  font-size: clamp(52px, 5.2vw, 76px);
+  font-size: clamp(42px, 3.9vw, 58px);
 }
 
 .suitcase-tile.food .tile-copy span {
-  font-size: clamp(42px, 4.2vw, 58px);
+  font-size: clamp(34px, 3.2vw, 46px);
 }
 
 .suitcase-tile.is-compact .tile-copy strong {
@@ -1771,7 +1775,7 @@ h1 {
 .suitcase-tile.is-compact .tile-copy span {
   margin-top: 8px;
   color: #fff;
-  font-size: clamp(24px, 2.4vw, 36px);
+  font-size: clamp(20px, 1.9vw, 30px);
 }
 
 .tile-icon {
@@ -1780,28 +1784,28 @@ h1 {
 
 .expenditure-icon-row {
   grid-template-columns: repeat(5, max-content);
-  gap: 18px 36px;
-  width: min(94%, 980px);
-  margin-top: 20px;
+  gap: 12px 22px;
+  width: min(100%, 760px);
+  margin-top: 14px;
   justify-content: center;
 }
 
 .expenditure-icon-pill {
-  gap: 12px;
+  gap: 8px;
   min-height: 32px;
   color: #2b3855;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
 }
 
 .expenditure-icon-pill i {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
 }
 
 .expenditure-icon-pill svg {
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
 }
 
 .domestic-photo-ranking {
