@@ -59,8 +59,8 @@ const figureNarratives = {
   },
   "domestic-expenditure-chart": {
     number: "FIGURE 08",
-    title: "Domestic expenditure has a similar retail-led structure",
-    body: "Domestic spending is led by shopping and food, showing where local travel feeds the tourism economy."
+    title: "Transport-related spending grew fastest",
+    body: "Shopping remained the largest international spending item, but airfares, fuel, food, and accommodation recorded stronger year-on-year momentum."
   },
   "domestic-purpose-chart": {
     number: "FIGURE 09",
@@ -1629,50 +1629,135 @@ function renderDomesticStateVisitorsRanking() {
   `;
 }
 
-function domesticExpenditureSpec() {
+function internationalSpendingGrowthSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#domestic-expenditure-chart", 760, 650),
-    height: 340,
+    height: 390,
     title: {
-      text: "Domestic Visitor Expenditure Mix",
-      subtitle: "Bubble size shows 2024 expenditure value",
+      text: "International Spending Momentum",
+      subtitle: "2023 to 2024 expenditure value by category; badges show year-on-year growth",
       fontSize: 24,
       subtitleFontSize: 14
     },
-    data: { url: "data/domestic_expenditure_components_2023_2024.csv" },
+    data: { url: "data/visitor_expenditure_items_2024_2023.csv" },
     transform: [
-      { filter: "datum.Year == 2024 && datum.Row_Type == 'Component'" },
-      { calculate: "datum.Expenditure_RM_Mil / 1000", as: "Expenditure_RM_Bil" }
+      { filter: "datum.Item != 'Sports' && datum.Item != 'Others'" },
+      { calculate: "datum.Value_2023_RM_Mil / 1000", as: "RM_2023_Bil" },
+      { calculate: "datum.Value_2024_RM_Mil / 1000", as: "RM_2024_Bil" },
+      { calculate: "datum.Value_2024_RM_Mil / 1000 - datum.Value_2023_RM_Mil / 1000", as: "Change_RM_Bil" },
+      { calculate: "datum.Growth_Pct >= 0 ? '+' + format(datum.Growth_Pct, '.1f') + '%' : format(datum.Growth_Pct, '.1f') + '%'", as: "Growth_Label" },
+      { calculate: "datum.Growth_Pct >= 75 ? 'surge' : datum.Growth_Pct < 0 ? 'decline' : 'rise'", as: "Momentum" }
     ],
     layer: [
       {
-        mark: { type: "circle", opacity: 0.82, stroke: "#ffffff", strokeWidth: 2 },
+        mark: { type: "rule", strokeWidth: 9, strokeCap: "round", opacity: 0.24 },
         encoding: {
-          x: { field: "Share_Pct", type: "quantitative", title: "Share of domestic expenditure (%)", scale: { domain: [0, 42] }, axis: { grid: true, gridColor: "rgba(120,150,190,0.16)" } },
-          y: { field: "Component", type: "nominal", sort: "-x", title: null, axis: { labelFontSize: 13, labelFontWeight: 750 } },
-          size: { field: "Expenditure_RM_Bil", type: "quantitative", title: "RM billion", scale: { range: [260, 4400] }, legend: { orient: "bottom", direction: "horizontal" } },
+          x: {
+            field: "RM_2023_Bil",
+            type: "quantitative",
+            title: "Expenditure value (RM billion)",
+            scale: { domain: [0, 42] },
+            axis: { grid: true, gridColor: "rgba(120,150,190,0.14)", tickCount: 7 }
+          },
+          x2: { field: "RM_2024_Bil" },
+          y: {
+            field: "Item",
+            type: "nominal",
+            sort: { field: "Growth_Pct", order: "descending" },
+            title: null,
+            axis: { labelFontSize: 12, labelFontWeight: 800, labelColor: "#172546" }
+          },
           color: {
             condition: [
-              { test: "datum.Component == 'Shopping'", value: "#D9A441" },
-              { test: "datum.Component == 'Food & Beverage'", value: "#5A8CCF" },
-              { test: "datum.Component == 'Accommodation'", value: "#2E6DA4" }
+              { test: "datum.Momentum == 'surge'", value: "#D9A441" },
+              { test: "datum.Momentum == 'decline'", value: "#D84C4C" }
             ],
-            value: "#DCE6F2"
+            value: "#2E6DA4"
           },
           tooltip: [
-            { field: "Component", title: "Component" },
-            { field: "Expenditure_RM_Mil", title: "RM mil.", format: ",.1f" },
-            { field: "Share_Pct", title: "Share %", format: ".1f" }
+            { field: "Item", title: "Category" },
+            { field: "RM_2023_Bil", title: "2023 RM bil.", format: ".1f" },
+            { field: "RM_2024_Bil", title: "2024 RM bil.", format: ".1f" },
+            { field: "Growth_Pct", title: "Growth", format: "+.1f" },
+            { field: "Share_2024", title: "2024 share %", format: ".1f" }
           ]
         }
       },
       {
-        mark: { type: "text", align: "center", baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
+        mark: { type: "point", filled: true, size: 95, color: "#c8d8e7", stroke: "#ffffff", strokeWidth: 2 },
         encoding: {
-          x: { field: "Share_Pct", type: "quantitative", scale: { domain: [0, 42] } },
-          y: { field: "Component", type: "nominal", sort: "-x" },
-          text: { field: "Expenditure_RM_Bil", type: "quantitative", format: ".1f" }
+          x: { field: "RM_2023_Bil", type: "quantitative", scale: { domain: [0, 42] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          tooltip: [
+            { field: "Item", title: "Category" },
+            { field: "RM_2023_Bil", title: "2023 RM bil.", format: ".1f" }
+          ]
+        }
+      },
+      {
+        mark: { type: "point", filled: true, size: 170, stroke: "#ffffff", strokeWidth: 2 },
+        encoding: {
+          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [0, 42] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          color: {
+            condition: [
+              { test: "datum.Momentum == 'surge'", value: "#D9A441" },
+              { test: "datum.Momentum == 'decline'", value: "#D84C4C" }
+            ],
+            value: "#2E6DA4"
+          },
+          tooltip: [
+            { field: "Item", title: "Category" },
+            { field: "RM_2024_Bil", title: "2024 RM bil.", format: ".1f" },
+            { field: "Growth_Pct", title: "Growth", format: "+.1f" }
+          ]
+        }
+      },
+      {
+        mark: { type: "text", align: "left", dx: 9, baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
+        encoding: {
+          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [0, 42] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          text: { field: "RM_2024_Bil", type: "quantitative", format: ".1f" }
+        }
+      },
+      {
+        mark: { type: "text", align: "right", dx: -10, baseline: "middle", fontWeight: 800, color: "#6a7890", fontSize: 11 },
+        encoding: {
+          x: { field: "RM_2023_Bil", type: "quantitative", scale: { domain: [0, 42] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          text: { field: "RM_2023_Bil", type: "quantitative", format: ".1f" }
+        }
+      },
+      {
+        mark: { type: "text", align: "left", baseline: "middle", fontWeight: 900, fontSize: 12 },
+        encoding: {
+          x: { datum: 42 },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          text: { field: "Growth_Label" },
+          color: {
+            condition: [
+              { test: "datum.Momentum == 'surge'", value: "#9a6700" },
+              { test: "datum.Momentum == 'decline'", value: "#B32929" }
+            ],
+            value: "#0B5E8E"
+          }
+        }
+      },
+      {
+        data: {
+          values: [
+            { x: 4, y: "Fuel", label: "2023" },
+            { x: 8.6, y: "Fuel", label: "2024 value" },
+            { x: 37.5, y: "Fuel", label: "growth" }
+          ]
+        },
+        mark: { type: "text", align: "center", dy: -18, color: "#5b6d86", fontSize: 11, fontWeight: 800 },
+        encoding: {
+          x: { field: "x", type: "quantitative", scale: { domain: [0, 42] } },
+          y: { field: "y", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          text: { field: "label" }
         }
       }
     ],
@@ -2157,7 +2242,7 @@ const charts = [
   ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
   ["#arrivals-map", mapSpec],
-  ["#domestic-expenditure-chart", domesticExpenditureSpec],
+  ["#domestic-expenditure-chart", internationalSpendingGrowthSpec],
   ["#domestic-purpose-chart", domesticPurposeSpec],
   ["#domestic-structure-chart", domesticStructureSpec],
   ["#domestic-od-chart", domesticODSpec],
