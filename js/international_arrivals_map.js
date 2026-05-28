@@ -55,7 +55,7 @@ const figureNarratives = {
   "expenditure-chart": {
     number: "FIGURE 07",
     title: "Shopping is the largest international visitor spend category",
-    body: "The expenditure mix shows how visitor value is distributed across retail, accommodation, food, and other items."
+    body: "International visitors spent the largest share on shopping in 2024, followed by accommodation and food-related activities, reflecting Malaysia's retail-driven tourism economy."
   },
   "domestic-expenditure-chart": {
     number: "FIGURE 08",
@@ -152,6 +152,22 @@ function applyFigureNarratives() {
           <div>
             <strong>61.5%</strong>
             <span>of domestic visits came from the top 5 states in 2024</span>
+          </div>
+        </div>
+      ` : ""}
+      ${chartId === "expenditure-chart" ? `
+        <div class="expenditure-insight-card" aria-label="Shopping expenditure insight">
+          <span class="expenditure-insight-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M6 8h12l-1 12H7L6 8Z"></path>
+              <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+              <path d="M9 13h.01"></path>
+              <path d="M15 13h.01"></path>
+            </svg>
+          </span>
+          <div>
+            <strong>37.4%</strong>
+            <span>of total international visitor expenditure was contributed by shopping in 2024.</span>
           </div>
         </div>
       ` : ""}
@@ -1308,63 +1324,141 @@ function transportSpec() {
   };
 }
 
-function expenditureSpec() {
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#expenditure-chart", 760, 650),
-    height: 360,
-    title: {
-      text: "Visitor Expenditure Mix",
-      subtitle: "Share of 2024 international visitor expenditure",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    data: { url: "data/visitor_expenditure_items_2024_2023.csv" },
-    transform: [
-      { calculate: "datum.Value_2024_RM_Mil / 1000", as: "Value_2024_RM_Bil" },
-      { filter: "datum.Share_2024 >= 1" },
-      { calculate: "datum.Item + '  ' + format(datum.Share_2024, '.1f') + '%'", as: "Share_Label" }
-    ],
-    layer: [
-      {
-        mark: { type: "arc", innerRadius: 78, outerRadius: 148, stroke: "#ffffff", strokeWidth: 2 },
-        encoding: {
-          theta: { field: "Share_2024", type: "quantitative", stack: true },
-          color: {
-            field: "Item",
-            type: "nominal",
-            scale: {
-              domain: ["Shopping", "Accommodation", "Food & Beverages", "International Airfares", "Local Transportation", "Medical", "Organised Tour", "Domestic Airfares", "Entertainment", "Fuel"],
-              range: ["#D9A441", "#0B2A6F", "#5A8CCF", "#8FB6D9", "#9BC5BF", "#7BAE7F", "#C7D5F0", "#B8C4D8", "#D9B06F", "#E2D7B5"]
-            },
-            legend: { orient: "right", title: null, labelLimit: 180 }
-          },
-          tooltip: [
-            { field: "Item", title: "Item" },
-            { field: "Value_2024_RM_Mil", title: "2024 RM mil.", format: ",.2f" },
-            { field: "Share_2024", title: "Share 2024", format: ".1f" },
-            { field: "Growth_Pct", title: "Growth %", format: ".1f" }
-          ]
-        }
-      },
-      {
-        transform: [{ filter: "datum.Item == 'Shopping'" }],
-        mark: { type: "text", align: "center", baseline: "middle", fontSize: 28, fontWeight: 900, color: "#0B2A6F" },
-        encoding: {
-          text: { value: "37.4%" }
-        }
-      },
-      {
-        transform: [{ filter: "datum.Item == 'Shopping'" }],
-        mark: { type: "text", align: "center", baseline: "middle", dy: 28, fontSize: 13, fontWeight: 800, color: "#5b6d86" },
-        encoding: {
-          text: { value: "shopping share" }
-        }
-      }
-    ],
-    config: baseConfig()
+const expenditureTiles = [
+  {
+    category: "Shopping",
+    share: "37.4%",
+    className: "shopping",
+    icon: "bag",
+    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1100&q=80"
+  },
+  {
+    category: "Accommodation",
+    share: "18.2%",
+    className: "accommodation",
+    icon: "bed",
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    category: "Food & Beverages",
+    share: "15.4%",
+    className: "food",
+    icon: "utensils",
+    image: "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    category: "International Airfares",
+    share: "8.1%",
+    className: "international-airfares",
+    icon: "plane",
+    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    category: "Local Transportation",
+    share: "5.2%",
+    className: "local-transportation",
+    icon: "train",
+    image: "https://images.unsplash.com/photo-1556122071-e404eaedb77f?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    category: "Entertainment",
+    share: "4.0%",
+    className: "entertainment",
+    icon: "ticket",
+    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    category: "Organised Tour",
+    share: "3.1%",
+    className: "organised-tour",
+    icon: "flag",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    category: "Medical",
+    share: "2.6%",
+    className: "medical",
+    icon: "medical",
+    image: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    category: "Domestic Airfares",
+    share: "2.1%",
+    className: "domestic-airfares",
+    icon: "plane",
+    image: "https://images.unsplash.com/photo-1529074963764-98f45c47344b?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    category: "Fuel",
+    share: "1.9%",
+    className: "fuel",
+    icon: "fuel",
+    image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=600&q=80"
+  }
+];
+
+function expenditureIcon(type) {
+  const icons = {
+    bag: '<path d="M6 8h12l-1 12H7L6 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path>',
+    bed: '<path d="M3 11V6h7a3 3 0 0 1 3 3v2"></path><path d="M3 19v-8h18v8"></path><path d="M21 11v8"></path><path d="M7 11v8"></path>',
+    utensils: '<path d="M4 3v7"></path><path d="M8 3v7"></path><path d="M6 3v18"></path><path d="M14 3v18"></path><path d="M14 3a5 5 0 0 1 5 5v3h-5"></path>',
+    plane: '<path d="M2 16l20-9-9 20-2-8-9-3Z"></path><path d="M11 19l4-8"></path>',
+    train: '<path d="M6 3h12a2 2 0 0 1 2 2v9a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V5a2 2 0 0 1 2-2Z"></path><path d="M8 21l2-3"></path><path d="M16 21l-2-3"></path><path d="M8 8h8"></path><path d="M8 13h.01"></path><path d="M16 13h.01"></path>',
+    ticket: '<path d="M3 9V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a3 3 0 0 0 0 6v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a3 3 0 0 0 0-6Z"></path><path d="M13 5v14"></path>',
+    flag: '<path d="M5 21V4"></path><path d="M5 4h12l-1.5 4L17 12H5"></path>',
+    medical: '<path d="M12 5v14"></path><path d="M5 12h14"></path><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"></path>',
+    fuel: '<path d="M5 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v17"></path><path d="M3 21h14"></path><path d="M8 7h4"></path><path d="M15 8h2l3 3v8a2 2 0 0 1-4 0v-5"></path>'
   };
+
+  return `<svg viewBox="0 0 24 24" focusable="false">${icons[type]}</svg>`;
 }
+
+function renderSuitcaseExpenditure() {
+  const chart = document.querySelector("#expenditure-chart");
+  if (!chart) return;
+
+  chart.innerHTML = `
+    <div class="suitcase-infographic" role="img" aria-label="Suitcase treemap showing 2024 international visitor expenditure shares">
+      <div class="expenditure-header">
+        <span class="expenditure-title-icon" aria-hidden="true">${expenditureIcon("bag")}</span>
+        <div>
+          <h3>WHERE TOURISTS SPEND THEIR MONEY</h3>
+          <p>Share of 2024 international visitor expenditure</p>
+        </div>
+      </div>
+      <div class="suitcase-shell">
+        <div class="suitcase-handle" aria-hidden="true"></div>
+        <div class="suitcase-side-tag" aria-hidden="true">
+          ${expenditureIcon("plane")}
+          <strong>Total</strong>
+          <span>100%</span>
+        </div>
+        <div class="suitcase-foot left" aria-hidden="true"></div>
+        <div class="suitcase-foot right" aria-hidden="true"></div>
+        <div class="suitcase-grid">
+          ${expenditureTiles.map((tile) => `
+            <article class="suitcase-tile ${tile.className}" style="--tile-image: url('${tile.image}')">
+              <span class="tile-icon" aria-hidden="true">${expenditureIcon(tile.icon)}</span>
+              <div class="tile-copy">
+                <strong>${tile.category}</strong>
+                <span>${tile.share}</span>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+      <div class="expenditure-icon-row" aria-label="Expenditure categories">
+        ${expenditureTiles.map((tile) => `
+          <span class="expenditure-icon-pill ${tile.className}">
+            <i aria-hidden="true">${expenditureIcon(tile.icon)}</i>
+            <b>${tile.category}</b>
+          </span>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
 
 function domesticKeyIndicatorsSpec() {
   return {
@@ -2046,7 +2140,6 @@ const charts = [
   ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
   ["#arrivals-map", mapSpec],
-  ["#expenditure-chart", expenditureSpec],
   ["#domestic-expenditure-chart", domesticExpenditureSpec],
   ["#domestic-purpose-chart", domesticPurposeSpec],
   ["#domestic-structure-chart", domesticStructureSpec],
@@ -2060,6 +2153,7 @@ async function renderAll() {
   try {
     applyFigureNarratives();
     renderDomesticStateVisitorsRanking();
+    renderSuitcaseExpenditure();
 
     if (!window.vega || !window.vegaLite || !window.vegaEmbed) {
       showStatus("Vega libraries did not load. Please check the internet connection and refresh the page.");
