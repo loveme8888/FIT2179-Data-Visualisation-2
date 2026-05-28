@@ -1339,6 +1339,471 @@ h1 {
   --pill-color: #8c6741;
 }
 
+.figure-card-expenditure-chart {
+  grid-template-columns: minmax(330px, 27%) minmax(0, 1fr);
+  column-gap: 34px;
+  padding: 26px 38px 20px;
+}
+
+.figure-card-expenditure-chart .figure-copy {
+  min-height: 560px;
+  padding: 16px 34px 22px 8px;
+  border-right-color: rgba(120, 150, 190, 0.24);
+}
+
+.figure-card-expenditure-chart .figure-copy h3 {
+  max-width: 365px;
+  color: #0a1630;
+  font-size: clamp(30px, 2.6vw, 43px);
+  line-height: 1.15;
+}
+
+.figure-card-expenditure-chart .figure-copy p {
+  max-width: 370px;
+  margin-top: 28px;
+  color: #263654;
+  font-size: clamp(16px, 1.35vw, 23px);
+  line-height: 1.45;
+}
+
+.figure-card-expenditure-chart .figure-copy p::before {
+  display: none;
+}
+
+.figure-card-expenditure-chart .chart {
+  min-height: 570px;
+}
+
+.figure-card-expenditure-chart .figure-label {
+  min-height: 38px;
+  margin-bottom: 34px;
+  padding: 0 22px;
+  background: #c8c3ff;
+  color: #3940bd;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+}
+
+.figure-card-expenditure-chart .source-note {
+  margin-top: 4px;
+  padding-top: 14px;
+  font-size: 16px;
+}
+
+.figure-card-expenditure-chart .source-note::before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin-right: 14px;
+  border: 2px solid #8176f7;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.expenditure-insight-card {
+  grid-template-columns: 108px minmax(0, 1fr);
+  width: min(100%, 360px);
+  min-height: 304px;
+  margin-top: auto;
+  padding: 28px 28px 24px;
+  border: 0;
+  background: linear-gradient(135deg, rgba(246, 247, 255, 0.98), rgba(255, 255, 255, 0.78));
+  box-shadow: 0 18px 50px rgba(40, 70, 125, 0.08);
+}
+
+.expenditure-insight-icon {
+  width: 86px;
+  height: 86px;
+  background: #e5e2ff;
+}
+
+.expenditure-insight-icon svg {
+  width: 48px;
+  height: 48px;
+  color: #0b2a5e;
+  stroke-width: 1.55;
+}
+
+.expenditure-insight-card strong {
+  color: #173ed1;
+  font-size: clamp(46px, 4.4vw, 64px);
+}
+
+.expenditure-insight-card span {
+  margin-top: 10px;
+  color: #10224d;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.expenditure-insight-note {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin: 24px 0 0;
+  padding-top: 22px;
+  border-top: 1px solid #dbe3f0;
+}
+
+.expenditure-insight-note i {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: #8176f7;
+}
+
+.expenditure-insight-note svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.expenditure-insight-note span {
+  margin: 0;
+  color: #243151;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.suitcase-infographic {
+  gap: 16px;
+  align-content: start;
+  padding-top: 4px;
+}
+
+.expenditure-header {
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 16px;
+  width: min(94%, 980px);
+  justify-self: start;
+  margin-left: 24px;
+}
+
+.expenditure-title-icon {
+  width: 50px;
+  height: 50px;
+  background: #eef6fb;
+}
+
+.expenditure-title-icon svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.65;
+}
+
+.expenditure-header h3 {
+  color: #0a2a5e;
+  font-size: clamp(30px, 2.7vw, 45px);
+  line-height: 0.98;
+}
+
+.expenditure-header p {
+  margin-top: 8px;
+  color: #30405f;
+  font-size: clamp(16px, 1.3vw, 21px);
+}
+
+.suitcase-shell {
+  width: min(94%, 980px);
+  min-height: 442px;
+  margin: 62px 0 0;
+  padding: 14px;
+  border: 10px solid #0d2849;
+  border-radius: 48px;
+  background: linear-gradient(180deg, #2f4767 0%, #102f52 100%);
+  box-shadow:
+    0 24px 24px rgba(11, 31, 57, 0.14),
+    inset 0 0 0 7px rgba(255, 255, 255, 0.16);
+}
+
+.suitcase-shell::before {
+  inset: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 33px;
+}
+
+.suitcase-handle {
+  top: -76px;
+  width: 260px;
+  height: 80px;
+  border: 28px solid #0d2849;
+  border-bottom: 0;
+  border-radius: 40px 40px 0 0;
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 10px 18px rgba(255, 255, 255, 0.12);
+}
+
+.suitcase-clasp {
+  position: absolute;
+  top: -18px;
+  z-index: 0;
+  width: 64px;
+  height: 16px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, #6d4c3b, #342519);
+}
+
+.suitcase-clasp.left {
+  left: 12%;
+}
+
+.suitcase-clasp.middle {
+  left: 31%;
+}
+
+.suitcase-clasp.right {
+  right: 9%;
+}
+
+.suitcase-total-tag {
+  position: absolute;
+  right: -28px;
+  top: 30px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 150px;
+  padding: 18px 10px;
+  border: 2px solid rgba(5, 19, 44, 0.5);
+  border-radius: 12px;
+  background: #1c3a61;
+  color: #fff;
+  box-shadow: 0 12px 22px rgba(5, 17, 35, 0.26);
+  transform: rotate(-14deg);
+}
+
+.suitcase-total-tag::before {
+  content: "";
+  position: absolute;
+  left: 48px;
+  top: -64px;
+  width: 34px;
+  height: 76px;
+  border: 7px solid #6b3d29;
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+}
+
+.suitcase-total-tag::after {
+  content: "";
+  position: absolute;
+  left: 45px;
+  top: 16px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d1dde8;
+}
+
+.suitcase-total-tag span {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.suitcase-total-tag svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.suitcase-total-tag strong,
+.suitcase-total-tag b {
+  display: block;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.suitcase-total-tag b {
+  font-size: 22px;
+}
+
+.suitcase-foot {
+  bottom: -38px;
+  width: 58px;
+  height: 38px;
+  border-radius: 0 0 24px 24px;
+  background: linear-gradient(180deg, #193a5d, #0b2747);
+}
+
+.suitcase-foot.left {
+  left: 42px;
+}
+
+.suitcase-foot.right {
+  right: 42px;
+}
+
+.suitcase-grid {
+  min-height: 394px;
+  border-radius: 31px;
+}
+
+.suitcase-tile {
+  --tile-gap: 5px;
+  padding: 28px 34px;
+  border: 2px solid rgba(255, 255, 255, 0.84);
+  border-radius: 10px;
+  background-image:
+    linear-gradient(var(--tile-overlay), var(--tile-overlay)),
+    var(--tile-image);
+  background-blend-mode: normal, luminosity;
+}
+
+.suitcase-tile::after {
+  background: radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.18), transparent 30%);
+}
+
+.suitcase-tile.shopping {
+  --tile-overlay: rgba(238, 174, 32, 0.83);
+  width: calc(62% - var(--tile-gap));
+  height: calc(50% - var(--tile-gap));
+}
+
+.suitcase-tile.accommodation {
+  --tile-overlay: rgba(58, 105, 181, 0.78);
+  left: 62%;
+  width: 38%;
+  height: calc(50% - var(--tile-gap));
+}
+
+.suitcase-tile.food {
+  --tile-overlay: rgba(69, 145, 150, 0.78);
+  top: 50%;
+  width: calc(43% - var(--tile-gap));
+  height: calc(29% - var(--tile-gap));
+}
+
+.suitcase-tile.international-airfares {
+  --tile-overlay: rgba(92, 154, 128, 0.78);
+  top: 50%;
+  height: calc(29% - var(--tile-gap));
+}
+
+.suitcase-tile.local-transportation {
+  --tile-overlay: rgba(126, 154, 88, 0.78);
+  top: 50%;
+  height: calc(29% - var(--tile-gap));
+}
+
+.suitcase-tile.entertainment {
+  --tile-overlay: rgba(123, 89, 185, 0.88);
+  top: 79%;
+  height: 21%;
+}
+
+.suitcase-tile.organised-tour {
+  --tile-overlay: rgba(180, 73, 127, 0.88);
+  top: 79%;
+  height: 21%;
+}
+
+.suitcase-tile.medical {
+  --tile-overlay: rgba(219, 91, 72, 0.88);
+  top: 79%;
+  height: 21%;
+}
+
+.suitcase-tile.domestic-airfares {
+  --tile-overlay: rgba(95, 127, 159, 0.88);
+  top: 79%;
+  height: 21%;
+}
+
+.suitcase-tile.fuel {
+  --tile-overlay: rgba(151, 121, 86, 0.9);
+  top: 79%;
+  height: 21%;
+}
+
+.tile-copy strong {
+  font-size: clamp(12px, 1.05vw, 18px);
+}
+
+.tile-copy span {
+  margin-top: 10px;
+  font-size: clamp(28px, 3vw, 54px);
+  line-height: 0.9;
+}
+
+.suitcase-tile.shopping .tile-copy strong,
+.suitcase-tile.accommodation .tile-copy strong {
+  font-size: clamp(19px, 1.8vw, 28px);
+}
+
+.suitcase-tile.shopping .tile-copy span,
+.suitcase-tile.accommodation .tile-copy span {
+  font-size: clamp(52px, 5.2vw, 76px);
+}
+
+.suitcase-tile.food .tile-copy span {
+  font-size: clamp(42px, 4.2vw, 58px);
+}
+
+.suitcase-tile.is-compact .tile-copy strong {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  font-size: clamp(11px, 0.92vw, 16px);
+}
+
+.suitcase-tile.is-compact .tile-copy span {
+  margin-top: 8px;
+  color: #fff;
+  font-size: clamp(24px, 2.4vw, 36px);
+}
+
+.tile-icon {
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.expenditure-icon-row {
+  grid-template-columns: repeat(5, max-content);
+  gap: 18px 36px;
+  width: min(94%, 980px);
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.expenditure-icon-pill {
+  gap: 12px;
+  min-height: 32px;
+  color: #2b3855;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.expenditure-icon-pill i {
+  width: 34px;
+  height: 34px;
+}
+
+.expenditure-icon-pill svg {
+  width: 19px;
+  height: 19px;
+}
+
 .domestic-photo-ranking {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);

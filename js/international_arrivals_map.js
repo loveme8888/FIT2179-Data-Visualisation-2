@@ -55,7 +55,7 @@ const figureNarratives = {
   "expenditure-chart": {
     number: "FIGURE 07",
     title: "Shopping is the largest international visitor spend category",
-    body: "International visitors spent the largest share on shopping in 2024, followed by accommodation and food-related activities, reflecting Malaysia's retail-driven tourism economy."
+    body: "International visitors spent the most on shopping, making up more than one-third of total expenditure in 2024, followed by accommodation and food & beverages."
   },
   "domestic-expenditure-chart": {
     number: "FIGURE 08",
@@ -167,8 +167,16 @@ function applyFigureNarratives() {
           </span>
           <div>
             <strong>37.4%</strong>
-            <span>of total international visitor expenditure was contributed by shopping in 2024.</span>
+            <span>of total spend was contributed by shopping in 2024.</span>
           </div>
+          <p class="expenditure-insight-note">
+            <i aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M12 2l2.9 6.5 7.1.7-5.3 4.8 1.5 7-6.2-3.6L5.8 21l1.5-7L2 9.2l7.1-.7L12 2Z"></path>
+              </svg>
+            </i>
+            <span>Shopping alone accounts for over one-third of international visitor expenditure.</span>
+          </p>
         </div>
       ` : ""}
     `;
@@ -1434,6 +1442,14 @@ function renderSuitcaseExpenditure() {
       </div>
       <div class="suitcase-shell">
         <div class="suitcase-handle" aria-hidden="true"></div>
+        <div class="suitcase-clasp left" aria-hidden="true"></div>
+        <div class="suitcase-clasp middle" aria-hidden="true"></div>
+        <div class="suitcase-clasp right" aria-hidden="true"></div>
+        <div class="suitcase-total-tag" aria-hidden="true">
+          <span>${expenditureIcon("plane")}</span>
+          <strong>TOTAL</strong>
+          <b>100%</b>
+        </div>
         <div class="suitcase-foot left" aria-hidden="true"></div>
         <div class="suitcase-foot right" aria-hidden="true"></div>
         <div class="suitcase-grid">
@@ -1449,7 +1465,7 @@ function renderSuitcaseExpenditure() {
         </div>
       </div>
       <div class="expenditure-icon-row" aria-label="Expenditure categories">
-        ${expenditureTiles.filter((tile) => !tile.compact).map((tile) => `
+        ${expenditureTiles.map((tile) => `
           <span class="expenditure-icon-pill ${tile.className}">
             <i aria-hidden="true">${expenditureIcon(tile.icon)}</i>
             <b>${tile.legendLabel || tile.category}</b>
