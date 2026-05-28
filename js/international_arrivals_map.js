@@ -1657,16 +1657,16 @@ function internationalSpendingGrowthSpec() {
             field: "RM_2023_Bil",
             type: "quantitative",
             title: "Expenditure value (RM billion)",
-            scale: { domain: [0, 42] },
+            scale: { domain: [-1, 50] },
             axis: { grid: true, gridColor: "rgba(120,150,190,0.14)", tickCount: 7 }
           },
           x2: { field: "RM_2024_Bil" },
           y: {
             field: "Item",
             type: "nominal",
-            sort: { field: "Growth_Pct", order: "descending" },
+            sort: { field: "Growth_Pct", op: "max", order: "descending" },
             title: null,
-            axis: { labelFontSize: 12, labelFontWeight: 800, labelColor: "#172546" }
+            axis: { labelFontSize: 12, labelFontWeight: 800, labelColor: "#172546", labelLimit: 185 }
           },
           color: {
             condition: [
@@ -1687,8 +1687,8 @@ function internationalSpendingGrowthSpec() {
       {
         mark: { type: "point", filled: true, size: 95, color: "#c8d8e7", stroke: "#ffffff", strokeWidth: 2 },
         encoding: {
-          x: { field: "RM_2023_Bil", type: "quantitative", scale: { domain: [0, 42] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          x: { field: "RM_2023_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
           tooltip: [
             { field: "Item", title: "Category" },
             { field: "RM_2023_Bil", title: "2023 RM bil.", format: ".1f" }
@@ -1698,8 +1698,8 @@ function internationalSpendingGrowthSpec() {
       {
         mark: { type: "point", filled: true, size: 170, stroke: "#ffffff", strokeWidth: 2 },
         encoding: {
-          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [0, 42] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
           color: {
             condition: [
               { test: "datum.Momentum == 'surge'", value: "#D9A441" },
@@ -1716,25 +1716,27 @@ function internationalSpendingGrowthSpec() {
       },
       {
         mark: { type: "text", align: "left", dx: 9, baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
+        transform: [{ filter: "datum.RM_2024_Bil <= 36" }],
         encoding: {
-          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [0, 42] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
           text: { field: "RM_2024_Bil", type: "quantitative", format: ".1f" }
         }
       },
       {
-        mark: { type: "text", align: "right", dx: -10, baseline: "middle", fontWeight: 800, color: "#6a7890", fontSize: 11 },
+        mark: { type: "text", align: "right", dx: -12, baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
+        transform: [{ filter: "datum.RM_2024_Bil > 36" }],
         encoding: {
-          x: { field: "RM_2023_Bil", type: "quantitative", scale: { domain: [0, 42] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
-          text: { field: "RM_2023_Bil", type: "quantitative", format: ".1f" }
+          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
+          text: { field: "RM_2024_Bil", type: "quantitative", format: ".1f" }
         }
       },
       {
         mark: { type: "text", align: "left", baseline: "middle", fontWeight: 900, fontSize: 12 },
         encoding: {
-          x: { datum: 42 },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
+          x: { datum: 46.5 },
+          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
           text: { field: "Growth_Label" },
           color: {
             condition: [
@@ -1743,21 +1745,6 @@ function internationalSpendingGrowthSpec() {
             ],
             value: "#0B5E8E"
           }
-        }
-      },
-      {
-        data: {
-          values: [
-            { x: 4, y: "Fuel", label: "2023" },
-            { x: 8.6, y: "Fuel", label: "2024 value" },
-            { x: 37.5, y: "Fuel", label: "growth" }
-          ]
-        },
-        mark: { type: "text", align: "center", dy: -18, color: "#5b6d86", fontSize: 11, fontWeight: 800 },
-        encoding: {
-          x: { field: "x", type: "quantitative", scale: { domain: [0, 42] } },
-          y: { field: "y", type: "nominal", sort: { field: "Growth_Pct", order: "descending" } },
-          text: { field: "label" }
         }
       }
     ],
