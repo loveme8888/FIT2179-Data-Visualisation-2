@@ -57,38 +57,33 @@ const figureNarratives = {
     title: "Shopping is the largest international visitor spend category",
     body: "International visitors spent the most on shopping, making up more than one-third of total expenditure in 2024, followed by accommodation and food & beverages."
   },
-  "domestic-expenditure-chart": {
-    number: "FIGURE 08",
-    title: "Transport-related spending grew fastest",
-    body: "Shopping remained the largest international spending item, but airfares, fuel, food, and accommodation recorded stronger year-on-year momentum."
-  },
   "domestic-purpose-chart": {
-    number: "FIGURE 09",
+    number: "FIGURE 08",
     title: "Domestic trips are strongly social and everyday in nature",
     body: "Visiting relatives and friends leads the purpose mix, ahead of shopping and leisure travel."
   },
   "domestic-structure-chart": {
-    number: "FIGURE 10",
+    number: "FIGURE 09",
     title: "Domestic travel relies on land movement and informal stays",
     body: "Transport and accommodation charts show road-oriented movement and heavy use of relatives' and friends' homes."
   },
   "domestic-od-chart": {
-    number: "FIGURE 11",
+    number: "FIGURE 10",
     title: "Origin-destination flows reveal state-to-state travel corridors",
     body: "The heatmap shows where domestic tourists came from and which destination states they visited in 2024."
   },
   "state-guests-chart": {
-    number: "FIGURE 12",
+    number: "FIGURE 11",
     title: "Growth opportunities appear beyond the largest bases",
     body: "State growth rates identify where foreign hotel guest momentum strengthened most sharply year on year."
   },
   "capacity-aor-chart": {
-    number: "FIGURE 13",
+    number: "FIGURE 12",
     title: "Scale and growth together separate mature and emerging states",
     body: "The quadrant view compares foreign hotel guest volume with growth to distinguish established demand from momentum."
   },
   "domestic-top-destinations-chart": {
-    number: "FIGURE 14",
+    number: "FIGURE 13",
     title: "Recognizable attractions support domestic destination appeal",
     body: "Selected high-volume states are paired with their top visited places to connect demand with actual destinations."
   }
@@ -1629,129 +1624,6 @@ function renderDomesticStateVisitorsRanking() {
   `;
 }
 
-function internationalSpendingGrowthSpec() {
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#domestic-expenditure-chart", 760, 650),
-    height: 390,
-    title: {
-      text: "International Spending Momentum",
-      subtitle: "2023 to 2024 expenditure value by category; badges show year-on-year growth",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    data: { url: "data/visitor_expenditure_items_2024_2023.csv" },
-    transform: [
-      { filter: "datum.Item != 'Sports' && datum.Item != 'Others'" },
-      { calculate: "datum.Value_2023_RM_Mil / 1000", as: "RM_2023_Bil" },
-      { calculate: "datum.Value_2024_RM_Mil / 1000", as: "RM_2024_Bil" },
-      { calculate: "datum.Value_2024_RM_Mil / 1000 - datum.Value_2023_RM_Mil / 1000", as: "Change_RM_Bil" },
-      { calculate: "datum.Growth_Pct >= 0 ? '+' + format(datum.Growth_Pct, '.1f') + '%' : format(datum.Growth_Pct, '.1f') + '%'", as: "Growth_Label" },
-      { calculate: "datum.Growth_Pct >= 75 ? 'surge' : datum.Growth_Pct < 0 ? 'decline' : 'rise'", as: "Momentum" }
-    ],
-    layer: [
-      {
-        mark: { type: "rule", strokeWidth: 9, strokeCap: "round", opacity: 0.24 },
-        encoding: {
-          x: {
-            field: "RM_2023_Bil",
-            type: "quantitative",
-            title: "Expenditure value (RM billion)",
-            scale: { domain: [-1, 50] },
-            axis: { grid: true, gridColor: "rgba(120,150,190,0.14)", tickCount: 7 }
-          },
-          x2: { field: "RM_2024_Bil" },
-          y: {
-            field: "Item",
-            type: "nominal",
-            sort: { field: "Growth_Pct", op: "max", order: "descending" },
-            title: null,
-            axis: { labelFontSize: 12, labelFontWeight: 800, labelColor: "#172546", labelLimit: 185 }
-          },
-          color: {
-            condition: [
-              { test: "datum.Momentum == 'surge'", value: "#D9A441" },
-              { test: "datum.Momentum == 'decline'", value: "#D84C4C" }
-            ],
-            value: "#2E6DA4"
-          },
-          tooltip: [
-            { field: "Item", title: "Category" },
-            { field: "RM_2023_Bil", title: "2023 RM bil.", format: ".1f" },
-            { field: "RM_2024_Bil", title: "2024 RM bil.", format: ".1f" },
-            { field: "Growth_Pct", title: "Growth", format: "+.1f" },
-            { field: "Share_2024", title: "2024 share %", format: ".1f" }
-          ]
-        }
-      },
-      {
-        mark: { type: "point", filled: true, size: 95, color: "#c8d8e7", stroke: "#ffffff", strokeWidth: 2 },
-        encoding: {
-          x: { field: "RM_2023_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
-          tooltip: [
-            { field: "Item", title: "Category" },
-            { field: "RM_2023_Bil", title: "2023 RM bil.", format: ".1f" }
-          ]
-        }
-      },
-      {
-        mark: { type: "point", filled: true, size: 170, stroke: "#ffffff", strokeWidth: 2 },
-        encoding: {
-          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
-          color: {
-            condition: [
-              { test: "datum.Momentum == 'surge'", value: "#D9A441" },
-              { test: "datum.Momentum == 'decline'", value: "#D84C4C" }
-            ],
-            value: "#2E6DA4"
-          },
-          tooltip: [
-            { field: "Item", title: "Category" },
-            { field: "RM_2024_Bil", title: "2024 RM bil.", format: ".1f" },
-            { field: "Growth_Pct", title: "Growth", format: "+.1f" }
-          ]
-        }
-      },
-      {
-        mark: { type: "text", align: "left", dx: 9, baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
-        transform: [{ filter: "datum.RM_2024_Bil <= 36" }],
-        encoding: {
-          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
-          text: { field: "RM_2024_Bil", type: "quantitative", format: ".1f" }
-        }
-      },
-      {
-        mark: { type: "text", align: "right", dx: -12, baseline: "middle", fontWeight: 900, color: "#152238", fontSize: 12 },
-        transform: [{ filter: "datum.RM_2024_Bil > 36" }],
-        encoding: {
-          x: { field: "RM_2024_Bil", type: "quantitative", scale: { domain: [-1, 50] } },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
-          text: { field: "RM_2024_Bil", type: "quantitative", format: ".1f" }
-        }
-      },
-      {
-        mark: { type: "text", align: "left", baseline: "middle", fontWeight: 900, fontSize: 12 },
-        encoding: {
-          x: { datum: 46.5 },
-          y: { field: "Item", type: "nominal", sort: { field: "Growth_Pct", op: "max", order: "descending" } },
-          text: { field: "Growth_Label" },
-          color: {
-            condition: [
-              { test: "datum.Momentum == 'surge'", value: "#9a6700" },
-              { test: "datum.Momentum == 'decline'", value: "#B32929" }
-            ],
-            value: "#0B5E8E"
-          }
-        }
-      }
-    ],
-    config: baseConfig()
-  };
-}
-
 function domesticPurposeSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -2229,7 +2101,6 @@ const charts = [
   ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
   ["#arrivals-map", mapSpec],
-  ["#domestic-expenditure-chart", internationalSpendingGrowthSpec],
   ["#domestic-purpose-chart", domesticPurposeSpec],
   ["#domestic-structure-chart", domesticStructureSpec],
   ["#domestic-od-chart", domesticODSpec],

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=figure08-growth-2">
+  <link rel="stylesheet" href="styles.css?v=merge-sections-1">
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
@@ -23,8 +23,7 @@
         <a href="#growth-trends">Growth</a>
         <a href="#market-patterns">Market Patterns</a>
         <a href="#destination-patterns">Destinations</a>
-        <a href="#spending-patterns">Spending Patterns</a>
-        <a href="#domestic-patterns">Domestic Travel</a>
+        <a href="#spending-patterns">Spending & Behaviour</a>
         <a href="#opportunity-insights">Opportunities</a>
         <a class="index-cta" href="#data">Explore data <span aria-hidden="true">→</span></a>
       </div>
@@ -171,22 +170,22 @@
         <div class="section-heading">
           <span class="section-badge">4</span>
           <div>
-            <h2>Tourism Spending Patterns</h2>
-            <p>How visitor expenditure was distributed across categories for international and domestic tourism.</p>
+            <h2>Visitor Spending & Domestic Behaviour</h2>
+            <p>How international visitors spent money, and how domestic tourists travelled within Malaysia.</p>
           </div>
         </div>
         <div class="narrative-grid">
           <article class="text-block">
-            <h3>Value Lens</h3>
-            <p>Spending patterns reveal what visitors bought, not just how many visitors arrived or where they travelled.</p>
+            <h3>Behaviour Lens</h3>
+            <p>Spending and domestic travel patterns reveal what visitors did after arrival, not just where demand came from.</p>
           </article>
           <article class="text-block">
             <h3>Main Pattern</h3>
-            <p>Shopping is the largest category in both international and domestic expenditure, with food, accommodation, and transport-related costs also prominent.</p>
+            <p>Shopping was the largest international spending category, while domestic tourism was shaped by social trips, road movement, and informal stays.</p>
           </article>
           <article class="text-block">
             <h3>Why It Matters</h3>
-            <p>Comparing international and domestic expenditure shows which parts of the visitor economy are consistently central to tourism value.</p>
+            <p>Combining value and behaviour shows how tourism money enters the economy and how Malaysians move between states.</p>
           </article>
         </div>
         <div class="viz-flow">
@@ -194,40 +193,6 @@
             <div id="expenditure-chart" class="chart spending-chart"></div>
             <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 13.</p>
           </article>
-          <article class="viz-card chart-card-full">
-            <div id="domestic-expenditure-chart" class="chart spending-chart"></div>
-            <p class="source-note">Source: Malaysia Tourism Statistics in Brief 2024, p. 13.</p>
-          </article>
-        </div>
-        <div class="insight-box">
-          <span>RM</span>
-          <p>Shopping anchors 2024 visitor value, while transport-related items carried the fastest spending momentum.</p>
-        </div>
-      </section>
-
-      <section class="story-section section-white" id="domestic-patterns">
-        <div class="section-heading">
-          <span class="section-badge">5</span>
-          <div>
-            <h2>Domestic Tourism Patterns</h2>
-            <p>Why domestic visitors travelled, how they moved, where they stayed, and how states connected.</p>
-          </div>
-        </div>
-        <div class="narrative-grid">
-          <article class="text-block">
-            <h3>Behaviour Lens</h3>
-            <p>Domestic tourism needs its own view because local travel is shaped by family visits, road movement, and non-hotel accommodation.</p>
-          </article>
-          <article class="text-block">
-            <h3>Main Pattern</h3>
-            <p>Visiting relatives and friends was the top trip purpose, land transport dominated movement, and relatives' or friends' houses were the leading accommodation type.</p>
-          </article>
-          <article class="text-block">
-            <h3>Why It Matters</h3>
-            <p>Domestic travel complements inbound tourism by showing everyday travel behaviour and state-to-state movement within Malaysia.</p>
-          </article>
-        </div>
-        <div class="viz-flow">
           <article class="viz-card chart-card-full">
             <div id="domestic-purpose-chart" class="chart spending-chart"></div>
             <p class="source-note">Source: Domestic Tourism Survey 2024: Publication Tables, Table 7.</p>
@@ -243,13 +208,13 @@
         </div>
         <div class="insight-box">
           <span>MY</span>
-          <p>Domestic tourism is highly road-oriented and socially anchored, with strong flows between populous states and nearby destinations.</p>
+          <p>Shopping anchors international visitor value, while domestic tourism is highly road-oriented and socially anchored.</p>
         </div>
       </section>
 
-      <section class="story-section section-blue" id="opportunity-insights">
+      <section class="story-section section-white" id="opportunity-insights">
         <div class="section-heading">
-          <span class="section-badge">6</span>
+          <span class="section-badge">5</span>
           <div>
             <h2>Tourism Opportunity Insights</h2>
             <p>Where state-level volume, growth, and domestic destination appeal point to stronger tourism opportunities.</p>
@@ -298,7 +263,7 @@
         <ul>
           <li>Tourism activity strengthened across international and domestic indicators.</li>
           <li>Singapore remains the dominant source market.</li>
-          <li>Shopping anchors both international and domestic expenditure.</li>
+          <li>Shopping anchors international visitor value, while domestic travel remains socially and road oriented.</li>
           <li>State opportunities depend on both scale and growth momentum.</li>
         </ul>
       </aside>
@@ -325,6 +290,6 @@
     </div>
   </main>
 
-  <script src="js/international_arrivals_map.js?v=figure08-growth-2"></script>
+  <script src="js/international_arrivals_map.js?v=merge-sections-1"></script>
 </body>
 </html>
