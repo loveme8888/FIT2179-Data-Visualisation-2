@@ -1348,6 +1348,7 @@ const expenditureTiles = [
   },
   {
     category: "International Airfares",
+    legendLabel: "Airfares",
     share: "8.1%",
     className: "international-airfares",
     icon: "plane",
@@ -1362,6 +1363,7 @@ const expenditureTiles = [
   },
   {
     category: "Entertainment",
+    compact: true,
     share: "4.0%",
     className: "entertainment",
     icon: "ticket",
@@ -1369,6 +1371,7 @@ const expenditureTiles = [
   },
   {
     category: "Organised Tour",
+    compact: true,
     share: "3.1%",
     className: "organised-tour",
     icon: "flag",
@@ -1376,6 +1379,7 @@ const expenditureTiles = [
   },
   {
     category: "Medical",
+    compact: true,
     share: "2.6%",
     className: "medical",
     icon: "medical",
@@ -1383,6 +1387,7 @@ const expenditureTiles = [
   },
   {
     category: "Domestic Airfares",
+    compact: true,
     share: "2.1%",
     className: "domestic-airfares",
     icon: "plane",
@@ -1390,6 +1395,7 @@ const expenditureTiles = [
   },
   {
     category: "Fuel",
+    compact: true,
     share: "1.9%",
     className: "fuel",
     icon: "fuel",
@@ -1428,16 +1434,11 @@ function renderSuitcaseExpenditure() {
       </div>
       <div class="suitcase-shell">
         <div class="suitcase-handle" aria-hidden="true"></div>
-        <div class="suitcase-side-tag" aria-hidden="true">
-          ${expenditureIcon("plane")}
-          <strong>Total</strong>
-          <span>100%</span>
-        </div>
         <div class="suitcase-foot left" aria-hidden="true"></div>
         <div class="suitcase-foot right" aria-hidden="true"></div>
         <div class="suitcase-grid">
           ${expenditureTiles.map((tile) => `
-            <article class="suitcase-tile ${tile.className}" style="--tile-image: url('${tile.image}')">
+            <article class="suitcase-tile ${tile.className}${tile.compact ? " is-compact" : ""}" style="--tile-image: url('${tile.image}')" title="${tile.category} ${tile.share}">
               <span class="tile-icon" aria-hidden="true">${expenditureIcon(tile.icon)}</span>
               <div class="tile-copy">
                 <strong>${tile.category}</strong>
@@ -1448,10 +1449,10 @@ function renderSuitcaseExpenditure() {
         </div>
       </div>
       <div class="expenditure-icon-row" aria-label="Expenditure categories">
-        ${expenditureTiles.map((tile) => `
+        ${expenditureTiles.filter((tile) => !tile.compact).map((tile) => `
           <span class="expenditure-icon-pill ${tile.className}">
             <i aria-hidden="true">${expenditureIcon(tile.icon)}</i>
-            <b>${tile.category}</b>
+            <b>${tile.legendLabel || tile.category}</b>
           </span>
         `).join("")}
       </div>
