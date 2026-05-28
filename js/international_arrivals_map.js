@@ -49,8 +49,8 @@ const figureNarratives = {
   },
   "domestic-state-visitors-chart": {
     number: "FIGURE 06",
-    title: "Domestic visitors spread across a broader set of states",
-    body: "Selangor leads domestic visitor volume, with Kuala Lumpur, Perak, and other large states forming the next tier."
+    title: "Domestic tourism remains concentrated in key states",
+    body: "Selangor and Kuala Lumpur continue to dominate domestic tourism activity, while nature-based destinations such as Sabah and Pahang remain highly attractive among Malaysian travelers."
   },
   "expenditure-chart": {
     number: "FIGURE 07",
@@ -136,6 +136,22 @@ function applyFigureNarratives() {
               <span>arrivals from Singapore</span>
               <small>49.7% of total arrivals in 2024</small>
             </div>
+          </div>
+        </div>
+      ` : ""}
+      ${chartId === "domestic-state-visitors-chart" ? `
+        <div class="domestic-share-card" aria-label="Top 5 domestic visits share">
+          <span class="domestic-share-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M16 21v-2a4 4 0 0 0-8 0v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+              <path d="M6 21v-2a4 4 0 0 1 2.2-3.58"></path>
+              <path d="M18 21v-2a4 4 0 0 0-2.2-3.58"></path>
+            </svg>
+          </span>
+          <div>
+            <strong>61.5%</strong>
+            <span>of domestic visits came from the top 5 states in 2024</span>
           </div>
         </div>
       ` : ""}
@@ -1420,71 +1436,86 @@ function domesticKeyIndicatorsSpec() {
   };
 }
 
-function domesticStateVisitorsSpec() {
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#domestic-state-visitors-chart", 760, 650),
-    height: 390,
-    title: {
-      text: "Domestic Visitors by State",
-      subtitle: "Top visited states in 2024",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    data: { url: "data/domestic_visitors_by_state_2017_2024.csv" },
-    transform: [
-      { filter: "datum.Year == 2024 && datum.Is_Total == 'FALSE'" },
-      { calculate: "datum.Domestic_Visitors_000 / 1000", as: "Domestic_Visitors_Million" },
-      { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Domestic_Visitors_000", order: "descending" }] },
-      { filter: "datum.Rank <= 12" }
-    ],
-    layer: [
-      {
-        mark: { type: "rule", strokeWidth: 2, opacity: 0.55 },
-        encoding: {
-          y: { field: "State", type: "nominal", sort: "-x", title: null },
-          x: { field: "Domestic_Visitors_Million", type: "quantitative", title: "Domestic visitors (million)" },
-          x2: { datum: 0 },
-          color: {
-            condition: [
-              { test: "datum.State == 'Selangor'", value: "#D9A441" },
-              { test: "datum.State == 'W.P. Kuala Lumpur'", value: "#2E6DA4" },
-              { test: "datum.State == 'Perak'", value: "#5A8CCF" }
-            ],
-            value: "#DCE6F2"
-          },
-          tooltip: [
-            { field: "State", title: "State" },
-            { field: "Domestic_Visitors_000", title: "Domestic visitors ('000)", format: ",.1f" }
-          ]
-        }
-      },
-      {
-        mark: { type: "circle", size: 155, opacity: 0.95, stroke: "#ffffff", strokeWidth: 2 },
-        encoding: {
-          y: { field: "State", type: "nominal", sort: "-x", title: null },
-          x: { field: "Domestic_Visitors_Million", type: "quantitative", title: "Domestic visitors (million)" },
-          color: {
-            condition: [
-              { test: "datum.State == 'Selangor'", value: "#D9A441" },
-              { test: "datum.State == 'W.P. Kuala Lumpur'", value: "#2E6DA4" },
-              { test: "datum.State == 'Perak'", value: "#5A8CCF" }
-            ],
-            value: "#AFC3DF"
-          }
-        }
-      },
-      {
-        mark: { type: "text", align: "left", dx: 6, baseline: "middle", fontWeight: "bold", color: colors.text },
-        encoding: {
-          y: { field: "State", type: "nominal", sort: "-x" },
-          x: { field: "Domestic_Visitors_Million", type: "quantitative" },
-          text: { field: "Domestic_Visitors_Million", type: "quantitative", format: ".1f" }
-        }
-      }
-    ],
-    config: baseConfig()
-  };
+const domesticStateRankings = [
+  {
+    rank: 1,
+    state: "Selangor",
+    destination: "Batu Caves",
+    visitors: 34.5,
+    image: "assets/figure06-selangor-batu-caves.png",
+    accent: "#1A55D6"
+  },
+  {
+    rank: 2,
+    state: "W.P. Kuala Lumpur",
+    destination: "Petronas Twin Towers",
+    visitors: 27.0,
+    image: "assets/figure06-kuala-lumpur-petronas.png",
+    accent: "#0F7F97"
+  },
+  {
+    rank: 3,
+    state: "Perak",
+    destination: "Ipoh Limestone Hills",
+    visitors: 21.8,
+    image: "assets/figure06-perak-ipoh-limestone.png",
+    accent: "#2E9B9B"
+  },
+  {
+    rank: 4,
+    state: "Sabah",
+    destination: "Semporna",
+    visitors: 20.6,
+    image: "assets/figure06-sabah-semporna.png",
+    accent: "#7B67B4"
+  },
+  {
+    rank: 5,
+    state: "Pahang",
+    destination: "Cameron Highlands",
+    visitors: 20.2,
+    image: "assets/figure06-pahang-cameron-highlands.png",
+    accent: "#E86F22"
+  }
+];
+
+function renderDomesticStateVisitorsRanking() {
+  const chart = document.querySelector("#domestic-state-visitors-chart");
+  if (!chart) return;
+
+  const maxVisitors = Math.max(...domesticStateRankings.map((row) => row.visitors));
+  const rows = domesticStateRankings.map((row) => {
+    const width = ((row.visitors / maxVisitors) * 100).toFixed(1);
+    return `
+      <article class="domestic-ranking-row" style="--rank-color: ${row.accent}; --bar-width: ${width}%;">
+        <div class="domestic-rank-number">${row.rank}</div>
+        <div class="domestic-rank-copy">
+          <strong>${row.state}</strong>
+          <span>${row.destination}</span>
+        </div>
+        <div class="domestic-photo-track">
+          <div class="domestic-photo-bar" role="img" aria-label="${row.state}, ${row.destination}: ${row.visitors.toFixed(1)} million domestic visitors" style="background-image: url('${row.image}');">
+            <div class="domestic-photo-value">
+              <strong>${row.visitors.toFixed(1)}<small>M</small></strong>
+              <span>visitors</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  chart.innerHTML = `
+    <section class="domestic-photo-ranking" aria-label="Top 5 domestic tourism states in 2024">
+      <header class="domestic-ranking-header">
+        <h3>TOP 5 DOMESTIC TOURISM STATES IN 2024</h3>
+        <p>By number of domestic visitors (million)</p>
+      </header>
+      <div class="domestic-ranking-list">
+        ${rows}
+      </div>
+    </section>
+  `;
 }
 
 function domesticExpenditureSpec() {
@@ -2015,7 +2046,6 @@ const charts = [
   ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
   ["#arrivals-map", mapSpec],
-  ["#domestic-state-visitors-chart", domesticStateVisitorsSpec],
   ["#expenditure-chart", expenditureSpec],
   ["#domestic-expenditure-chart", domesticExpenditureSpec],
   ["#domestic-purpose-chart", domesticPurposeSpec],
@@ -2029,6 +2059,7 @@ const charts = [
 async function renderAll() {
   try {
     applyFigureNarratives();
+    renderDomesticStateVisitorsRanking();
 
     if (!window.vega || !window.vegaLite || !window.vegaEmbed) {
       showStatus("Vega libraries did not load. Please check the internet connection and refresh the page.");
