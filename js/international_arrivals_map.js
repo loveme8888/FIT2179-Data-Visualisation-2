@@ -64,8 +64,8 @@ const figureNarratives = {
   },
   "domestic-structure-chart": {
     number: "FIGURE 09",
-    title: "Hotel rooms and occupancy separate state roles",
-    body: "The quadrant view highlights states that turn large room supply into strong demand, led by Kuala Lumpur and high-occupancy Pahang."
+    title: "Domestic trips are mostly social and shopping-led",
+    body: "Visiting relatives and friends is the largest trip purpose, followed by shopping and holiday or leisure travel."
   },
   "domestic-od-chart": {
     number: "FIGURE 10",
@@ -76,16 +76,6 @@ const figureNarratives = {
     number: "FIGURE 11",
     title: "Growth opportunities appear beyond the largest bases",
     body: "State growth rates identify where foreign hotel guest momentum strengthened most sharply year on year."
-  },
-  "capacity-aor-chart": {
-    number: "FIGURE 12",
-    title: "Scale and growth together separate mature and emerging states",
-    body: "The quadrant view compares foreign hotel guest volume with growth to distinguish established demand from momentum."
-  },
-  "domestic-top-destinations-chart": {
-    number: "FIGURE 13",
-    title: "Recognizable attractions support domestic destination appeal",
-    body: "Selected high-volume states are paired with their top visited places to connect demand with actual destinations."
   }
 };
 
@@ -1767,146 +1757,127 @@ function domesticPurposeSpec() {
 
 function domesticStructureSpec() {
   const width = chartWidth("#domestic-structure-chart", 760, 650);
-  const focusStates = ["Kuala Lumpur", "Pahang", "Pulau Pinang", "Sabah", "Selangor"];
-  const focusLabelLayers = [
-    { state: "Kuala Lumpur", align: "right", dx: -12, dy: -16 },
-    { state: "Pahang", align: "center", dx: 0, dy: -22 },
-    { state: "Pulau Pinang", align: "right", dx: -12, dy: -18 },
-    { state: "Sabah", align: "right", dx: -12, dy: -16 },
-    { state: "Selangor", align: "left", dx: 16, dy: -12 }
-  ].map(({ state, align, dx, dy }) => ({
-    transform: [{ filter: `datum.State == '${state}'` }],
-    mark: {
-      type: "text",
-      align,
-      dx,
-      dy,
-      fontSize: 12,
-      fontWeight: 900,
-      color: colors.text,
-      limit: 130
-    },
-    encoding: {
-      x: { field: "Rooms_2024", type: "quantitative" },
-      y: { field: "AOR_2024", type: "quantitative" },
-      text: { field: "State" }
-    }
-  }));
+  const isCompact = width < 560;
+  const flowerWidth = Math.min(width, 820);
+  const centerRadius = isCompact ? 48 : 74;
+  const petalInnerRadius = centerRadius + 2;
+  const petalRadiusRange = isCompact ? [72, 122] : [112, 230];
+  const valueLabelRadius = isCompact ? 88 : 140;
+  const outerLabelRadius = isCompact ? 146 : 256;
+  const outerLabelFontSize = isCompact ? 10 : 12;
+  const petalColors = [
+    "#F54E62",
+    "#F9793A",
+    "#F3A712",
+    "#B9C532",
+    "#53B76B",
+    "#55BDB8",
+    "#73A9DE",
+    "#8B62C8"
+  ];
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width,
-    height: 360,
+    width: flowerWidth,
+    height: isCompact ? 430 : 540,
+    padding: { left: 24, right: 24, top: 20, bottom: 20 },
     title: {
-      text: "Hotel Occupancy vs Room Supply",
-      subtitle: "Rooms and average occupancy rate by state, 2024",
+      text: "Purpose of Domestic Trips in 2024",
+      subtitle: "Share of domestic trips by main purpose (%)",
       fontSize: 24,
       subtitleFontSize: 14
     },
-    data: { url: "data/hotel_capacity_aor_by_state_2024_2023.csv" },
-    transform: [
-      { calculate: `indexof(${JSON.stringify(focusStates)}, datum.State) >= 0`, as: "Is_Focus_State" }
-    ],
     layer: [
       {
-        mark: { type: "rule", strokeDash: [5, 5], color: "#cbd8e6" },
-        encoding: {
-          y: { datum: 50, type: "quantitative" }
-        }
+        data: { values: [{ value: 1 }] },
+        mark: { type: "arc", innerRadius: 0, outerRadius: centerRadius, color: "#ffffff", stroke: "#e4edf5", strokeWidth: 2 },
+        encoding: { theta: { field: "value", type: "quantitative" } }
       },
       {
-        mark: { type: "rule", strokeDash: [5, 5], color: "#cbd8e6" },
-        encoding: {
-          x: { datum: 25000, type: "quantitative" }
-        }
-      },
-      {
-        data: {
-          values: [
-            { x: 12500, y: 76.5, text: "High occupancy, smaller supply" },
-            { x: 58500, y: 76.5, text: "Star destinations" },
-            { x: 12500, y: 34.5, text: "Lower demand" },
-            { x: 58500, y: 34.5, text: "Oversupply watch" }
-          ]
-        },
-        mark: { type: "text", fontSize: 11, fontWeight: 800, color: "#7a8aa0", opacity: 0.86 },
-        encoding: {
-          x: { field: "x", type: "quantitative" },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "text" }
-        }
-      },
-      {
-        mark: {
-          type: "circle",
-          size: 150,
-          color: "#aab8c7",
-          opacity: 0.48,
-          stroke: "#ffffff",
-          strokeWidth: 1.2
-        },
-        encoding: {
-          x: {
-            field: "Rooms_2024",
-            type: "quantitative",
-            title: "Hotel rooms, 2024",
-            scale: { domain: [0, 68000] },
-            axis: { format: "~s", tickCount: 6, grid: true }
-          },
-          y: {
-            field: "AOR_2024",
-            type: "quantitative",
-            title: "Average occupancy rate, 2024 (%)",
-            scale: { domain: [32, 80] },
-            axis: { tickCount: 6, grid: true }
-          },
-          tooltip: [
-            { field: "State", title: "State" },
-            { field: "Rooms_2024", title: "Rooms 2024", format: "," },
-            { field: "AOR_2024", title: "Average occupancy rate", format: ".1f" }
-          ]
-        }
-      },
-      {
+        data: { url: "data/domestic_trip_purpose_2024.csv" },
         transform: [
-          { filter: "datum.Is_Focus_State" }
+          { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
+          { calculate: "1", as: "Petal" }
         ],
         mark: {
-          type: "circle",
-          size: 250,
-          color: colors.green,
-          opacity: 0.84,
+          type: "arc",
+          innerRadius: petalInnerRadius,
+          cornerRadius: isCompact ? 20 : 34,
+          opacity: 0.78,
           stroke: "#ffffff",
-          strokeWidth: 1.6
+          strokeWidth: isCompact ? 4 : 7
         },
         encoding: {
-          x: { field: "Rooms_2024", type: "quantitative" },
-          y: { field: "AOR_2024", type: "quantitative" },
+          theta: { field: "Petal", type: "quantitative", stack: true },
+          radius: {
+            field: "Share_Pct",
+            type: "quantitative",
+            scale: { domain: [0, 35], range: petalRadiusRange },
+            legend: null
+          },
+          order: { field: "Rank", type: "quantitative" },
+          color: {
+            field: "Purpose",
+            type: "nominal",
+            legend: null,
+            scale: { range: petalColors }
+          },
           tooltip: [
-            { field: "State", title: "State" },
-            { field: "Rooms_2024", title: "Rooms 2024", format: "," },
-            { field: "AOR_2024", title: "Average occupancy rate", format: ".1f" }
+            { field: "Purpose", title: "Purpose" },
+            { field: "Share_Pct", title: "Share of trips", format: ".1f" },
+            { field: "Activity_1", title: "Top activity" },
+            { field: "Activity_2", title: "Second activity" }
           ]
         }
       },
-      ...focusLabelLayers,
       {
-        data: { values: [{ x: 66500, y: 51.2, text: "More rooms" }] },
-        mark: { type: "text", align: "right", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+        data: { url: "data/domestic_trip_purpose_2024.csv" },
+        transform: [
+          { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
+          { calculate: "1", as: "Petal" },
+          { calculate: "format(datum.Share_Pct, '.1f') + '%'", as: "Share_Label" },
+          { filter: "datum.Share_Pct >= 3" }
+        ],
+        mark: { type: "text", radius: valueLabelRadius, fontSize: isCompact ? 13 : 19, fontWeight: 900, color: colors.text },
         encoding: {
-          x: { field: "x", type: "quantitative" },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "text" }
+          theta: { field: "Petal", type: "quantitative", stack: "center" },
+          order: { field: "Rank", type: "quantitative" },
+          text: { field: "Share_Label" }
         }
       },
       {
-        data: { values: [{ x: 25800, y: 78.5, text: "Higher occupancy" }] },
-        mark: { type: "text", align: "left", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+        data: { url: "data/domestic_trip_purpose_2024.csv" },
+        transform: [
+          { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
+          { calculate: "1", as: "Petal" },
+          {
+            calculate: "datum.Purpose == 'Visiting relatives & friends' ? 'Visiting relatives\\n& friends' : datum.Purpose == 'Holiday/ leisure/ relaxation' ? 'Holiday / leisure\\n/ relaxation' : datum.Purpose == 'Incentive travel/ others' ? 'Incentive travel\\n/ others' : datum.Purpose == 'Entertainment/ attending special event/ sports' ? 'Entertainment\\n/ events' : datum.Purpose == 'Medical treatment/ wellness' ? 'Medical treatment\\n/ wellness' : datum.Purpose == 'Religious worship/ visit places of worship' ? 'Religious worship\\n/ visit' : datum.Purpose == 'Official business/ business/ education' ? 'Official business\\n/ education' : datum.Purpose",
+            as: "Purpose_Label"
+          },
+          { calculate: "datum.Purpose_Label + '\\n' + format(datum.Share_Pct, '.1f') + '%'", as: "Outer_Label" }
+        ],
+        mark: { type: "text", radius: outerLabelRadius, fontSize: outerLabelFontSize, fontWeight: 900, color: colors.text, lineBreak: "\n", lineHeight: isCompact ? 12 : 15 },
         encoding: {
-          x: { field: "x", type: "quantitative" },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "text" }
+          theta: { field: "Petal", type: "quantitative", stack: "center" },
+          order: { field: "Rank", type: "quantitative" },
+          text: { field: "Outer_Label" },
+          color: {
+            field: "Purpose",
+            type: "nominal",
+            legend: null,
+            scale: { range: petalColors }
+          }
         }
+      },
+      {
+        data: { values: [{ label: "Domestic" }] },
+        mark: { type: "text", align: "center", baseline: "middle", dy: isCompact ? -7 : -9, fontSize: isCompact ? 12 : 16, fontWeight: 900, color: colors.text },
+        encoding: { text: { field: "label" } }
+      },
+      {
+        data: { values: [{ label: "Trips" }] },
+        mark: { type: "text", align: "center", baseline: "middle", dy: isCompact ? 11 : 14, fontSize: isCompact ? 12 : 16, fontWeight: 900, color: colors.text },
+        encoding: { text: { field: "label" } }
       }
     ],
     config: baseConfig()
@@ -1942,38 +1913,6 @@ function domesticODSpec() {
         { field: "Origin_State", title: "Origin" },
         { field: "Destination_State", title: "Destination" },
         { field: "Tourists_000", title: "Tourists ('000)", format: ",.1f" }
-      ]
-    },
-    config: baseConfig()
-  };
-}
-
-function domesticTopDestinationsSpec() {
-  const selectedStates = ["Selangor", "W.P. Kuala Lumpur", "Sabah", "Pahang", "Pulau Pinang", "Johor"];
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#domestic-top-destinations-chart", 760, 650),
-    height: 260,
-    title: {
-      text: "High-Volume Domestic Destination Appeal",
-      subtitle: "Top visited places in selected destination states",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    data: { url: "data/domestic_top_destinations_by_state_2024.csv" },
-    transform: [
-      { filter: `indexof(${JSON.stringify(selectedStates)}, datum.State) >= 0` },
-      { calculate: "datum.Rank + '. ' + datum.Destination", as: "Destination_Label" }
-    ],
-    mark: { type: "text", align: "left", baseline: "middle", fontSize: 12.5, color: colors.text },
-    encoding: {
-      y: { field: "State", type: "nominal", sort: selectedStates, title: null },
-      x: { field: "Rank", type: "ordinal", title: "Rank", axis: { labelAngle: 0 } },
-      text: { field: "Destination_Label", type: "nominal" },
-      tooltip: [
-        { field: "State", title: "State" },
-        { field: "Rank", title: "Rank" },
-        { field: "Destination", title: "Destination" }
       ]
     },
     config: baseConfig()
@@ -2147,75 +2086,6 @@ function stateGuestsSpec() {
   };
 }
 
-function capacityAorSpec() {
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#capacity-aor-chart", 760, 650),
-    height: 360,
-    title: {
-      text: "Arrivals vs Growth by State",
-      subtitle: "Verified state-level foreign hotel guests; the reports do not publish state-level spending",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    data: { url: "data/international_arrivals_by_state_2024.csv" },
-    transform: [
-      { calculate: "datum.international_2024 / 1000000", as: "Foreign_Million" },
-      { calculate: "datum.total_2024 / 1000000", as: "Total_Million" }
-    ],
-    layer: [
-      {
-        data: {
-          values: [
-            { x: 8.2, y: 55, label: "High arrivals + high growth" },
-            { x: 8.2, y: -22, label: "High arrivals + low growth" },
-            { x: 1.3, y: 55, label: "Emerging growth markets" },
-            { x: 1.3, y: -22, label: "Low arrivals + low growth" }
-          ]
-        },
-        mark: { type: "text", align: "center", baseline: "middle", fontSize: 15, fontWeight: "bold", color: "#8b9bb0", opacity: 0.78 },
-        encoding: {
-          x: { field: "x", type: "quantitative" },
-          y: { field: "y", type: "quantitative" },
-          text: { field: "label" }
-        }
-      },
-      { mark: { type: "rule", color: "#cbd8e6", strokeDash: [5, 5] }, encoding: { x: { datum: 3, type: "quantitative" } } },
-      { mark: { type: "rule", color: "#cbd8e6", strokeDash: [5, 5] }, encoding: { y: { datum: 20, type: "quantitative" } } },
-      {
-        mark: { type: "circle", opacity: 0.82, stroke: "#ffffff", strokeWidth: 1.4 },
-        encoding: {
-          x: { field: "Foreign_Million", type: "quantitative", title: "Foreign hotel guests (million)", scale: { domain: [0, 12.8] } },
-          y: { field: "international_growth_pct", type: "quantitative", title: "Growth 2024/2023 (%)", scale: { domain: [-35, 80] } },
-          size: { field: "Total_Million", type: "quantitative", title: "Total hotel guests (million)", scale: { range: [260, 4200] } },
-          color: {
-            field: "international_growth_pct",
-            type: "quantitative",
-            title: "Growth %",
-            scale: { domain: [-35, 0, 75], range: ["#D84C4C", "#F5D98B", "#2E8B57"] }
-          },
-          tooltip: [
-            { field: "state", title: "State" },
-            { field: "international_2024", title: "Foreign guests", format: "," },
-            { field: "international_growth_pct", title: "Growth %", format: ".1f" },
-            { field: "total_2024", title: "Total guests", format: "," }
-          ]
-        }
-      },
-      {
-        transform: [{ filter: "datum.international_2024 >= 2500000 || datum.international_growth_pct >= 40 || datum.international_growth_pct < -10" }],
-        mark: { type: "text", dy: -16, fontSize: 14, fontWeight: "bold", color: colors.text },
-        encoding: {
-          x: { field: "Foreign_Million", type: "quantitative" },
-          y: { field: "international_growth_pct", type: "quantitative" },
-          text: { field: "state" }
-        }
-      }
-    ],
-    config: baseConfig()
-  };
-}
-
 const charts = [
   ["#monthly-trend-chart", monthlyTrendSpec],
   ["#domestic-key-indicators-chart", domesticKeyIndicatorsSpec],
@@ -2225,9 +2095,7 @@ const charts = [
   ["#domestic-purpose-chart", domesticPurposeSpec],
   ["#domestic-structure-chart", domesticStructureSpec],
   ["#domestic-od-chart", domesticODSpec],
-  ["#state-guests-chart", stateGuestsSpec],
-  ["#capacity-aor-chart", capacityAorSpec],
-  ["#domestic-top-destinations-chart", domesticTopDestinationsSpec]
+  ["#state-guests-chart", stateGuestsSpec]
 ];
 
 async function renderAll() {
