@@ -64,8 +64,8 @@ const figureNarratives = {
   },
   "domestic-structure-chart": {
     number: "FIGURE 09",
-    title: "Hotel supply and occupancy reveal different state roles",
-    body: "Room supply shows where accommodation capacity is concentrated, while occupancy rates identify states converting capacity into stronger demand."
+    title: "Hotel rooms and occupancy separate state roles",
+    body: "The quadrant view highlights states that turn large room supply into strong demand, led by Kuala Lumpur and high-occupancy Pahang."
   },
   "domestic-od-chart": {
     number: "FIGURE 10",
@@ -1767,6 +1767,31 @@ function domesticPurposeSpec() {
 
 function domesticStructureSpec() {
   const width = chartWidth("#domestic-structure-chart", 760, 650);
+  const focusStates = ["Kuala Lumpur", "Pahang", "Pulau Pinang", "Sabah", "Selangor"];
+  const focusLabelLayers = [
+    { state: "Kuala Lumpur", align: "right", dx: -12, dy: -16 },
+    { state: "Pahang", align: "center", dx: 0, dy: -22 },
+    { state: "Pulau Pinang", align: "right", dx: -12, dy: -18 },
+    { state: "Sabah", align: "right", dx: -12, dy: -16 },
+    { state: "Selangor", align: "left", dx: 16, dy: -12 }
+  ].map(({ state, align, dx, dy }) => ({
+    transform: [{ filter: `datum.State == '${state}'` }],
+    mark: {
+      type: "text",
+      align,
+      dx,
+      dy,
+      fontSize: 12,
+      fontWeight: 900,
+      color: colors.text,
+      limit: 130
+    },
+    encoding: {
+      x: { field: "Rooms_2024", type: "quantitative" },
+      y: { field: "AOR_2024", type: "quantitative" },
+      text: { field: "State" }
+    }
+  }));
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
@@ -1780,8 +1805,7 @@ function domesticStructureSpec() {
     },
     data: { url: "data/hotel_capacity_aor_by_state_2024_2023.csv" },
     transform: [
-      { calculate: "datum.AOR_Difference >= 0 ? '+' + format(datum.AOR_Difference, '.1f') : format(datum.AOR_Difference, '.1f')", as: "AOR_Difference_Label" },
-      { calculate: "datum.AOR_Difference_Label + ' pp vs 2023'", as: "AOR_Change_Label" }
+      { calculate: `indexof(${JSON.stringify(focusStates)}, datum.State) >= 0`, as: "Is_Focus_State" }
     ],
     layer: [
       {
@@ -1797,7 +1821,30 @@ function domesticStructureSpec() {
         }
       },
       {
-        mark: { type: "circle", opacity: 0.74, stroke: "#ffffff", strokeWidth: 1.3 },
+        data: {
+          values: [
+            { x: 12500, y: 76.5, text: "High occupancy, smaller supply" },
+            { x: 58500, y: 76.5, text: "Star destinations" },
+            { x: 12500, y: 34.5, text: "Lower demand" },
+            { x: 58500, y: 34.5, text: "Oversupply watch" }
+          ]
+        },
+        mark: { type: "text", fontSize: 11, fontWeight: 800, color: "#7a8aa0", opacity: 0.86 },
+        encoding: {
+          x: { field: "x", type: "quantitative" },
+          y: { field: "y", type: "quantitative" },
+          text: { field: "text" }
+        }
+      },
+      {
+        mark: {
+          type: "circle",
+          size: 150,
+          color: "#aab8c7",
+          opacity: 0.48,
+          stroke: "#ffffff",
+          strokeWidth: 1.2
+        },
         encoding: {
           x: {
             field: "Rooms_2024",
@@ -1813,75 +1860,38 @@ function domesticStructureSpec() {
             scale: { domain: [32, 80] },
             axis: { tickCount: 6, grid: true }
           },
-          size: {
-            field: "Hotels_2024",
-            type: "quantitative",
-            title: "Hotels",
-            scale: { range: [80, 1350] },
-            legend: { orient: "bottom", title: "Hotels, 2024" }
-          },
-          color: {
-            field: "AOR_Difference",
-            type: "quantitative",
-            title: "AOR change",
-            scale: { domain: [-1.5, 0, 4], range: ["#D84C4C", "#F0D88A", "#2E8B57"] },
-            legend: { orient: "bottom", title: "AOR change vs 2023, pp" }
-          },
           tooltip: [
             { field: "State", title: "State" },
             { field: "Rooms_2024", title: "Rooms 2024", format: "," },
-            { field: "Hotels_2024", title: "Hotels 2024", format: "," },
-            { field: "AOR_2024", title: "AOR 2024", format: ".1f" },
-            { field: "AOR_Difference", title: "AOR change, pp", format: "+.1f" }
+            { field: "AOR_2024", title: "Average occupancy rate", format: ".1f" }
           ]
         }
       },
       {
         transform: [
-          { filter: "datum.State == 'Pahang'" }
+          { filter: "datum.Is_Focus_State" }
         ],
-        mark: { type: "text", dy: -20, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
+        mark: {
+          type: "circle",
+          size: 250,
+          color: colors.green,
+          opacity: 0.84,
+          stroke: "#ffffff",
+          strokeWidth: 1.6
+        },
         encoding: {
           x: { field: "Rooms_2024", type: "quantitative" },
           y: { field: "AOR_2024", type: "quantitative" },
-          text: { field: "State" }
+          tooltip: [
+            { field: "State", title: "State" },
+            { field: "Rooms_2024", title: "Rooms 2024", format: "," },
+            { field: "AOR_2024", title: "Average occupancy rate", format: ".1f" }
+          ]
         }
       },
+      ...focusLabelLayers,
       {
-        transform: [
-          { filter: "datum.State == 'Kuala Lumpur'" }
-        ],
-        mark: { type: "text", align: "right", dx: -12, dy: -18, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
-        encoding: {
-          x: { field: "Rooms_2024", type: "quantitative" },
-          y: { field: "AOR_2024", type: "quantitative" },
-          text: { field: "State" }
-        }
-      },
-      {
-        transform: [
-          { filter: "datum.State == 'Pulau Pinang'" }
-        ],
-        mark: { type: "text", align: "right", dx: -8, dy: -18, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
-        encoding: {
-          x: { field: "Rooms_2024", type: "quantitative" },
-          y: { field: "AOR_2024", type: "quantitative" },
-          text: { field: "State" }
-        }
-      },
-      {
-        transform: [
-          { filter: "datum.State == 'Selangor'" }
-        ],
-        mark: { type: "text", align: "left", dx: 14, dy: -8, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
-        encoding: {
-          x: { field: "Rooms_2024", type: "quantitative" },
-          y: { field: "AOR_2024", type: "quantitative" },
-          text: { field: "State" }
-        }
-      },
-      {
-        data: { values: [{ x: 66500, y: 76, text: "High occupancy" }] },
+        data: { values: [{ x: 66500, y: 51.2, text: "More rooms" }] },
         mark: { type: "text", align: "right", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
         encoding: {
           x: { field: "x", type: "quantitative" },
@@ -1890,8 +1900,8 @@ function domesticStructureSpec() {
         }
       },
       {
-        data: { values: [{ x: 66500, y: 36, text: "Larger room supply" }] },
-        mark: { type: "text", align: "right", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+        data: { values: [{ x: 25800, y: 78.5, text: "Higher occupancy" }] },
+        mark: { type: "text", align: "left", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
         encoding: {
           x: { field: "x", type: "quantitative" },
           y: { field: "y", type: "quantitative" },
