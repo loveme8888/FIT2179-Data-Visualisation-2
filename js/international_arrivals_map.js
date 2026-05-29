@@ -64,8 +64,8 @@ const figureNarratives = {
   },
   "domestic-structure-chart": {
     number: "FIGURE 09",
-    title: "Domestic travel relies on land movement and informal stays",
-    body: "Transport and accommodation charts show road-oriented movement and heavy use of relatives' and friends' homes."
+    title: "Hotel supply and occupancy reveal different state roles",
+    body: "Room supply shows where accommodation capacity is concentrated, while occupancy rates identify states converting capacity into stronger demand."
   },
   "domestic-od-chart": {
     number: "FIGURE 10",
@@ -1767,107 +1767,105 @@ function domesticPurposeSpec() {
 
 function domesticStructureSpec() {
   const width = chartWidth("#domestic-structure-chart", 760, 650);
-  const halfWidth = Math.max(300, Math.floor((width - 30) / 2));
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    hconcat: [
+    width,
+    height: 360,
+    title: {
+      text: "Hotel Occupancy vs Room Supply",
+      subtitle: "Rooms and average occupancy rate by state, 2024",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
+    data: { url: "data/hotel_capacity_aor_by_state_2024_2023.csv" },
+    transform: [
+      { calculate: "datum.AOR_Difference >= 0 ? '+' + format(datum.AOR_Difference, '.1f') : format(datum.AOR_Difference, '.1f')", as: "AOR_Difference_Label" },
+      { calculate: "datum.AOR_Difference_Label + ' pp vs 2023'", as: "AOR_Change_Label" }
+    ],
+    layer: [
       {
-        width: halfWidth,
-        height: 280,
-        title: {
-          text: "Domestic Transport Mode",
-          subtitle: "Visitors, 2024",
-          fontSize: 22,
-          subtitleFontSize: 13
-        },
-        data: { url: "data/domestic_transport_mode_2023_2024.csv" },
-        transform: [
-          { filter: "datum.Year == 2024 && datum.Visitor_Type == 'Visitors' && datum.Mode_Type == 'Aggregate mode'" }
-        ],
-        layer: [
-          {
-            mark: { type: "arc", innerRadius: 62, outerRadius: 118, stroke: "#ffffff", strokeWidth: 2 },
-            encoding: {
-              theta: { field: "Share_Pct", type: "quantitative", stack: true },
-              color: {
-                field: "Mode",
-                type: "nominal",
-                scale: { domain: ["Land", "Air", "Water"], range: ["#2E8B57", "#2E6DA4", "#5A8CCF"] },
-                legend: { orient: "bottom", title: null }
-              },
-              tooltip: [
-                { field: "Mode", title: "Mode" },
-                { field: "Share_Pct", title: "Share %", format: ".1f" }
-              ]
-            }
-          },
-          {
-            transform: [{ filter: "datum.Mode == 'Land'" }],
-            mark: { type: "text", align: "center", baseline: "middle", fontSize: 28, fontWeight: 900, color: "#2E8B57" },
-            encoding: {
-              text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
-            }
-          },
-          {
-            transform: [{ filter: "datum.Mode == 'Land'" }],
-            mark: { type: "text", align: "center", baseline: "middle", dy: 28, fontSize: 12, fontWeight: 800, color: "#5b6d86" },
-            encoding: {
-              text: { value: "land" }
-            }
-          }
-        ]
+        mark: { type: "rule", strokeDash: [5, 5], color: "#cbd8e6" },
+        encoding: {
+          y: { datum: 50, type: "quantitative" }
+        }
       },
       {
-        width: halfWidth,
-        height: 280,
-        title: {
-          text: "Tourist Accommodation Type",
-          subtitle: "Tourists, 2024",
-          fontSize: 22,
-          subtitleFontSize: 13
-        },
-        data: { url: "data/domestic_accommodation_type_2023_2024.csv" },
+        mark: { type: "rule", strokeDash: [5, 5], color: "#cbd8e6" },
+        encoding: {
+          x: { datum: 25000, type: "quantitative" }
+        }
+      },
+      {
+        mark: { type: "circle", opacity: 0.86, stroke: "#ffffff", strokeWidth: 1.5 },
+        encoding: {
+          x: {
+            field: "Rooms_2024",
+            type: "quantitative",
+            title: "Hotel rooms, 2024",
+            scale: { domain: [0, 68000] },
+            axis: { format: "~s", tickCount: 6, grid: true }
+          },
+          y: {
+            field: "AOR_2024",
+            type: "quantitative",
+            title: "Average occupancy rate, 2024 (%)",
+            scale: { domain: [32, 80] },
+            axis: { tickCount: 6, grid: true }
+          },
+          size: {
+            field: "Hotels_2024",
+            type: "quantitative",
+            title: "Hotels",
+            scale: { range: [140, 2500] },
+            legend: { orient: "bottom", title: "Hotels, 2024" }
+          },
+          color: {
+            field: "AOR_Difference",
+            type: "quantitative",
+            title: "AOR change",
+            scale: { domain: [-1.5, 0, 4], range: ["#D84C4C", "#F0D88A", "#2E8B57"] },
+            legend: { orient: "bottom", title: "AOR change vs 2023, pp" }
+          },
+          tooltip: [
+            { field: "State", title: "State" },
+            { field: "Rooms_2024", title: "Rooms 2024", format: "," },
+            { field: "Hotels_2024", title: "Hotels 2024", format: "," },
+            { field: "AOR_2024", title: "AOR 2024", format: ".1f" },
+            { field: "AOR_Difference", title: "AOR change, pp", format: "+.1f" }
+          ]
+        }
+      },
+      {
         transform: [
-          { filter: "datum.Year == 2024 && datum.Row_Type == 'Accommodation type'" }
+          { filter: "datum.State == 'Kuala Lumpur' || datum.State == 'Pahang' || datum.State == 'Johor' || datum.State == 'Pulau Pinang' || datum.State == 'Sabah' || datum.State == 'Selangor'" }
         ],
-        layer: [
-          {
-            mark: { type: "arc", innerRadius: 62, outerRadius: 118, stroke: "#ffffff", strokeWidth: 2 },
-            encoding: {
-              theta: { field: "Share_Pct", type: "quantitative", stack: true },
-              color: {
-                condition: [
-                  { test: "datum.Accommodation_Type == \"Relatives' & Friends' House\"", value: "#D9A441" },
-                  { test: "datum.Accommodation_Type == 'Hotel'", value: "#2E6DA4" }
-                ],
-                value: "#C7D5F0",
-                legend: { orient: "bottom", title: null, labelLimit: 150 }
-              },
-              tooltip: [
-                { field: "Accommodation_Type", title: "Type" },
-                { field: "Share_Pct", title: "Share %", format: ".1f" }
-              ]
-            }
-          },
-          {
-            transform: [{ filter: "datum.Accommodation_Type == \"Relatives' & Friends' House\"" }],
-            mark: { type: "text", align: "center", baseline: "middle", fontSize: 28, fontWeight: 900, color: "#D9A441" },
-            encoding: {
-              text: { field: "Share_Pct", type: "quantitative", format: ".1f" }
-            }
-          },
-          {
-            transform: [{ filter: "datum.Accommodation_Type == \"Relatives' & Friends' House\"" }],
-            mark: { type: "text", align: "center", baseline: "middle", dy: 28, fontSize: 12, fontWeight: 800, color: "#5b6d86" },
-            encoding: {
-              text: { value: "friends/family" }
-            }
-          }
-        ]
+        mark: { type: "text", dy: -14, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
+        encoding: {
+          x: { field: "Rooms_2024", type: "quantitative" },
+          y: { field: "AOR_2024", type: "quantitative" },
+          text: { field: "State" }
+        }
+      },
+      {
+        data: { values: [{ x: 66500, y: 77, text: "High occupancy" }] },
+        mark: { type: "text", align: "right", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+        encoding: {
+          x: { field: "x", type: "quantitative" },
+          y: { field: "y", type: "quantitative" },
+          text: { field: "text" }
+        }
+      },
+      {
+        data: { values: [{ x: 66500, y: 36, text: "Larger room supply" }] },
+        mark: { type: "text", align: "right", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
+        encoding: {
+          x: { field: "x", type: "quantitative" },
+          y: { field: "y", type: "quantitative" },
+          text: { field: "text" }
+        }
       }
     ],
-    spacing: 30,
     config: baseConfig()
   };
 }
