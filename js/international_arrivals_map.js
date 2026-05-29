@@ -59,8 +59,8 @@ const figureNarratives = {
   },
   "domestic-purpose-chart": {
     number: "FIGURE 08",
-    title: "International visitors enter Malaysia mainly by land",
-    body: "Land crossings account for two-thirds of 2024 arrivals, while air travel recorded the fastest year-on-year rebound."
+    title: "Domestic trips are mostly social and shopping-led",
+    body: "Visiting relatives and friends is the largest trip purpose, followed by shopping and holiday or leisure travel."
   },
   "domestic-structure-chart": {
     number: "FIGURE 09",
@@ -84,6 +84,10 @@ function applyFigureNarratives() {
     const chart = document.getElementById(chartId);
     const card = chart?.closest(".viz-card");
     if (!chart || !card || card.querySelector(".figure-copy")) return;
+    if (chartId === "domestic-purpose-chart") {
+      card.classList.add("purpose-flower-card");
+      return;
+    }
 
     card.classList.add("figure-card", `figure-card-${chartId}`);
 
@@ -1821,22 +1825,30 @@ function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
   ].join(" ");
 }
 
+function leaderPath(cx, cy, startRadius, endRadius, angleDeg, labelX) {
+  const start = polarPoint(cx, cy, startRadius, angleDeg);
+  const elbow = polarPoint(cx, cy, endRadius, angleDeg);
+  const horizontal = labelX > cx ? 44 : -44;
+  return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} L ${elbow.x.toFixed(1)} ${elbow.y.toFixed(1)} L ${(elbow.x + horizontal).toFixed(1)} ${elbow.y.toFixed(1)}`;
+}
+
 function labelForPurpose(purpose) {
   const labels = {
     "Visiting relatives & friends": ["Visiting relatives", "& friends"],
     Shopping: ["Shopping"],
-    "Holiday/ leisure/ relaxation": ["Holiday / leisure", "/ relaxation"],
-    "Incentive travel/ others": ["Incentive travel", "/ others"],
-    "Entertainment/ attending special event/ sports": ["Entertainment", "/ events"],
-    "Medical treatment/ wellness": ["Medical treatment", "/ wellness"],
-    "Religious worship/ visit places of worship": ["Religious worship", "/ visit"],
-    "Official business/ business/ education": ["Official business", "/ education"]
+    "Holiday/ leisure/ relaxation": ["Holiday / Leisure /", "Relaxation"],
+    "Incentive travel/ others": ["Incentive travel /", "Others"],
+    "Entertainment/ attending special event/ sports": ["Entertainment /", "Attend events"],
+    "Medical treatment/ wellness": ["Medical treatment /", "Wellness"],
+    "Religious worship/ visit places of worship": ["Religious worship /", "Visit"],
+    "Official business/ business/ education": ["Official business /", "Business"],
+    "Others / Not stated": ["Others /", "Not stated"]
   };
   return labels[purpose] || [purpose];
 }
 
 async function renderDomesticTripPurposeFlower() {
-  const container = document.querySelector("#domestic-structure-chart");
+  const container = document.querySelector("#domestic-purpose-chart");
   if (!container) return;
 
   const response = await fetch("data/domestic_trip_purpose_2024.csv");
@@ -1844,11 +1856,13 @@ async function renderDomesticTripPurposeFlower() {
     .map((row) => ({ ...row, Share_Pct: Number(row.Share_Pct) }))
     .filter((row) => Number.isFinite(row.Share_Pct));
 
-  const width = Math.max(680, chartWidth("#domestic-structure-chart", 860, 650));
-  const height = 620;
-  const cx = width / 2;
-  const cy = 330;
-  const innerRadius = 62;
+  rows.push({ Purpose: "Others / Not stated", Share_Pct: 3.8 });
+
+  const width = Math.max(760, chartWidth("#domestic-purpose-chart", 1080, 720));
+  const height = 780;
+  const cx = width * 0.51;
+  const cy = 420;
+  const innerRadius = 78;
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
   const colorsByPurpose = {
     "Visiting relatives & friends": "#F85A70",
@@ -1858,39 +1872,58 @@ async function renderDomesticTripPurposeFlower() {
     "Entertainment/ attending special event/ sports": "#55B96C",
     "Medical treatment/ wellness": "#58BFB8",
     "Religious worship/ visit places of worship": "#78AEE5",
-    "Official business/ business/ education": "#9270CF"
+    "Official business/ business/ education": "#9270CF",
+    "Others / Not stated": "#9673D2"
   };
   const anglesByPurpose = {
-    "Visiting relatives & friends": -76,
-    Shopping: -28,
-    "Holiday/ leisure/ relaxation": 20,
-    "Incentive travel/ others": 68,
-    "Entertainment/ attending special event/ sports": 116,
-    "Medical treatment/ wellness": 164,
-    "Religious worship/ visit places of worship": 212,
-    "Official business/ business/ education": 260
+    "Visiting relatives & friends": -75,
+    Shopping: -25,
+    "Holiday/ leisure/ relaxation": 24,
+    "Incentive travel/ others": 67,
+    "Entertainment/ attending special event/ sports": 100,
+    "Medical treatment/ wellness": 138,
+    "Religious worship/ visit places of worship": 178,
+    "Official business/ business/ education": 213,
+    "Others / Not stated": 247
+  };
+  const iconByPurpose = {
+    "Visiting relatives & friends": "family",
+    Shopping: "bag",
+    "Holiday/ leisure/ relaxation": "sun",
+    "Incentive travel/ others": "ticket",
+    "Entertainment/ attending special event/ sports": "masks",
+    "Medical treatment/ wellness": "medical",
+    "Religious worship/ visit places of worship": "worship",
+    "Official business/ business/ education": "briefcase",
+    "Others / Not stated": "dots"
   };
 
   const petals = rows.map((row) => {
     const angle = anglesByPurpose[row.Purpose] ?? -90;
-    const length = 74 + (row.Share_Pct / maxShare) * 148;
+    const length = 90 + (row.Share_Pct / maxShare) * 210;
     const outerRadius = innerRadius + length;
-    const labelPoint = polarPoint(cx, cy, outerRadius + 38, angle);
+    const labelRadius = outerRadius + (row.Share_Pct >= 20 ? 92 : 72);
+    const labelPoint = polarPoint(cx, cy, labelRadius, angle);
     const valuePoint = polarPoint(cx, cy, innerRadius + length * 0.58, angle);
+    const iconPoint = polarPoint(cx, cy, innerRadius + length * 0.36, angle);
     const color = colorsByPurpose[row.Purpose] || colors.teal;
-    const labelLines = [...labelForPurpose(row.Purpose), `${row.Share_Pct.toFixed(1)}%`];
+    const labelLines = labelForPurpose(row.Purpose);
     const textAnchor = Math.cos((Math.PI / 180) * angle) > 0.25
       ? "start"
       : Math.cos((Math.PI / 180) * angle) < -0.25
         ? "end"
         : "middle";
 
-    return { ...row, angle, outerRadius, labelPoint, valuePoint, color, labelLines, textAnchor };
+    return { ...row, angle, outerRadius, labelPoint, valuePoint, iconPoint, color, icon: iconByPurpose[row.Purpose], labelLines, textAnchor };
   });
 
   const labelMarkup = petals.map((petal) => `
+    <path class="flower-leader" d="${leaderPath(cx, cy, petal.outerRadius + 4, petal.outerRadius + 42, petal.angle, petal.labelPoint.x)}"
+      stroke="${petal.color}"></path>
+    <circle class="flower-leader-dot" cx="${polarPoint(cx, cy, petal.outerRadius + 42, petal.angle).x.toFixed(1)}"
+      cy="${polarPoint(cx, cy, petal.outerRadius + 42, petal.angle).y.toFixed(1)}" r="5" fill="${petal.color}"></circle>
     <text class="flower-label" x="${petal.labelPoint.x.toFixed(1)}" y="${petal.labelPoint.y.toFixed(1)}"
-      text-anchor="${petal.textAnchor}" style="fill:${petal.color}">
+      text-anchor="${petal.textAnchor}">
       ${petal.labelLines.map((line, index) => `
         <tspan x="${petal.labelPoint.x.toFixed(1)}" dy="${index === 0 ? 0 : 17}">${line}</tspan>
       `).join("")}
@@ -1898,17 +1931,26 @@ async function renderDomesticTripPurposeFlower() {
   `).join("");
 
   const valueMarkup = petals
-    .filter((petal) => petal.Share_Pct >= 4)
+    .filter((petal) => petal.Share_Pct >= 0.8)
     .map((petal) => `
       <text class="flower-value" x="${petal.valuePoint.x.toFixed(1)}" y="${petal.valuePoint.y.toFixed(1)}"
         text-anchor="middle" dominant-baseline="middle">${petal.Share_Pct.toFixed(1)}%</text>
     `).join("");
 
+  const iconMarkup = petals.map((petal) => `
+    <g class="flower-purpose-icon" transform="translate(${petal.iconPoint.x.toFixed(1)}, ${petal.iconPoint.y.toFixed(1)}) scale(${petal.Share_Pct >= 20 ? 1.15 : 1})"
+      style="--icon-color:${petal.color}">
+      ${purposeIconMarkup(petal.icon)}
+    </g>
+  `).join("");
+
   container.innerHTML = `
     <svg class="flower-chart-svg" viewBox="0 0 ${width} ${height}" role="img"
       aria-label="Purpose of domestic trips in 2024">
-      <text class="flower-title" x="12" y="34">PURPOSE OF DOMESTIC TRIPS IN 2024</text>
-      <text class="flower-subtitle" x="12" y="62">Share of domestic trips by main purpose (%)</text>
+      <rect class="flower-figure-pill" x="8" y="8" width="128" height="34" rx="17"></rect>
+      <text class="flower-figure-label" x="72" y="31" text-anchor="middle">FIGURE 08</text>
+      <text class="flower-title" x="8" y="94">PURPOSE OF DOMESTIC TRIPS IN 2024</text>
+      <text class="flower-subtitle" x="8" y="132">Share of domestic trips by main purpose (%)</text>
       <g class="flower-petals">
         ${petals.map((petal) => `
           <path d="${petalPath(cx, cy, innerRadius, petal.outerRadius, petal.angle, 17)}"
@@ -1918,6 +1960,7 @@ async function renderDomesticTripPurposeFlower() {
         `).join("")}
       </g>
       <circle cx="${cx}" cy="${cy}" r="${innerRadius + 7}" fill="#ffffff" stroke="#e5edf5" stroke-width="2"/>
+      ${iconMarkup}
       <g class="flower-center-icon" transform="translate(${cx - 30}, ${cy - 40})">
         <circle cx="30" cy="15" r="10"></circle>
         <circle cx="10" cy="24" r="8"></circle>
@@ -1934,6 +1977,25 @@ async function renderDomesticTripPurposeFlower() {
       ${labelMarkup}
     </svg>
   `;
+}
+
+function purposeIconMarkup(icon) {
+  const icons = {
+    family: `
+      <circle cx="-8" cy="-18" r="6"></circle><path d="M-14 14v-18c0-8 12-8 12 0v18"></path>
+      <circle cx="15" cy="-10" r="5"></circle><path d="M8 14v-13c0-7 14-7 14 0v13"></path>
+      <circle cx="2" cy="-4" r="4"></circle><path d="M-3 15V5c0-5 10-5 10 0v10"></path>
+    `,
+    bag: `<path d="M-15 -9h30l-2 27h-26z"></path><path d="M-7 -9v-4c0-8 14-8 14 0v4"></path>`,
+    sun: `<path d="M-18 10c8-11 28-11 36 0"></path><path d="M-10 16h20"></path><circle cx="10" cy="-12" r="6"></circle><path d="M10 -25v-6M10 7v6M-3 -12h-6M23 -12h6M0 -22l-4-4M20 -22l4-4M0 -2l-4 4M20 -2l4 4"></path>`,
+    ticket: `<path d="M-18 -15h36v30h-36z"></path><path d="M-8 -6h8M-8 2h14M-8 10h10"></path>`,
+    masks: `<path d="M-18 -8c8 2 15 0 22-5 3 17-4 27-16 27-7 0-10-9-6-22z"></path><path d="M4 -2c6 1 11 0 16-4 2 12-3 20-12 20-5 0-7-7-4-16z"></path><path d="M-10 4c3 3 7 3 10 0"></path>`,
+    medical: `<path d="M-16 -14h32v28h-32z"></path><path d="M0 -7v14M-7 0h14"></path>`,
+    worship: `<path d="M-18 16h36"></path><path d="M-13 16v-24l13-12 13 12v24"></path><path d="M-7 16V3c0-8 14-8 14 0v13"></path>`,
+    briefcase: `<path d="M-18 -9h36v25h-36z"></path><path d="M-8 -9v-7h16v7M-18 0h36"></path>`,
+    dots: `<circle cx="-12" cy="0" r="4"></circle><circle cx="0" cy="0" r="4"></circle><circle cx="12" cy="0" r="4"></circle>`
+  };
+  return icons[icon] || icons.dots;
 }
 
 function domesticODSpec() {
@@ -2144,7 +2206,6 @@ const charts = [
   ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
   ["#arrivals-map", mapSpec],
-  ["#domestic-purpose-chart", domesticPurposeSpec],
   ["#domestic-od-chart", domesticODSpec],
   ["#state-guests-chart", stateGuestsSpec]
 ];

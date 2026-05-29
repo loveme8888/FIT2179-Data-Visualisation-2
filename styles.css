@@ -1996,6 +1996,23 @@ h1 {
   justify-content: center;
 }
 
+.purpose-flower-card {
+  grid-template-columns: 1fr;
+  align-items: start;
+  padding: 28px 34px 16px;
+}
+
+.purpose-flower-card .chart {
+  grid-column: 1;
+  justify-content: stretch;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.purpose-flower-card .source-note {
+  grid-column: 1;
+}
+
 .map-chart {
   min-height: 320px;
 }
@@ -2026,43 +2043,68 @@ h1 {
   display: block;
   width: 100%;
   height: auto;
-  min-height: 430px;
+  min-height: 560px;
   overflow: visible;
+}
+
+.flower-figure-pill {
+  fill: #c7c1ff;
+}
+
+.flower-figure-label {
+  fill: #3f49c9;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
 }
 
 .flower-title {
   fill: var(--text);
   font-family: "Bebas Neue", "Oswald", sans-serif;
-  font-size: 25px;
+  font-size: 43px;
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 
 .flower-subtitle {
   fill: var(--muted);
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 700;
 }
 
 .flower-petals path {
-  filter: drop-shadow(0 10px 18px rgba(21, 34, 56, 0.08));
+  filter: drop-shadow(0 13px 22px rgba(21, 34, 56, 0.1));
 }
 
 .flower-value {
   fill: var(--text);
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 900;
 }
 
 .flower-label {
-  font-size: 12px;
+  fill: var(--text);
+  font-size: 16px;
   font-weight: 900;
-  line-height: 1.1;
+}
+
+.flower-leader {
+  fill: none;
+  stroke-width: 1.6;
+}
+
+.flower-purpose-icon {
+  fill: none;
+  stroke: var(--icon-color);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.95;
 }
 
 .flower-center-text {
   fill: var(--text);
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 900;
 }
 
