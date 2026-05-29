@@ -59,8 +59,8 @@ const figureNarratives = {
   },
   "domestic-purpose-chart": {
     number: "FIGURE 08",
-    title: "Domestic trips are strongly social and everyday in nature",
-    body: "Visiting relatives and friends leads the purpose mix, ahead of shopping and leisure travel."
+    title: "International visitors enter Malaysia mainly by land",
+    body: "Land crossings account for two-thirds of 2024 arrivals, while air travel recorded the fastest year-on-year rebound."
   },
   "domestic-structure-chart": {
     number: "FIGURE 09",
@@ -1626,139 +1626,140 @@ function renderDomesticStateVisitorsRanking() {
 
 function domesticPurposeSpec() {
   const width = chartWidth("#domestic-purpose-chart", 760, 650);
-  const purposeColors = {
-    "Visiting relatives & friends": "#D9A441",
-    "Shopping": "#2E6DA4",
-    "Holiday/ leisure/ relaxation": "#5A8CCF",
-    "Incentive travel/ others": "#2E9B9B",
-    "Entertainment/ attending special event/ sports": "#E86F22",
-    "Medical treatment/ wellness": "#7E6AAE",
-    "Religious worship/ visit places of worship": "#8EA4BD",
-    "Official business/ business/ education": "#B9C6D6"
+  const donutWidth = Math.min(360, Math.max(280, Math.floor(width * 0.48)));
+  const growthWidth = Math.max(270, width - donutWidth - 34);
+  const transportColors = {
+    Land: "#2E8B57",
+    Air: "#2E6DA4",
+    Sea: "#6B5FB5",
+    Rail: "#E86F22"
   };
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     title: {
-      text: "Purpose of Domestic Trips",
-      subtitle: "100% trip-mix ribbon with ranked purpose lanes, 2024",
+      text: "International Visitors by Mode of Transport",
+      subtitle: "Donut shows 2024 arrival share; bars show growth vs 2023",
       fontSize: 24,
       subtitleFontSize: 14
     },
-    data: { url: "data/domestic_trip_purpose_2024.csv" },
+    data: { url: "data/mode_of_transport_2024_2023.csv" },
     transform: [
-      { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
-      { calculate: "format(datum.Share_Pct, '.1f') + '%'", as: "Share_Label" },
-      { calculate: "datum.Share_Pct >= 10 ? datum.Share_Label : ''", as: "Ribbon_Label" },
-      { calculate: "datum.Share_Pct >= 10 ? datum.Purpose : ''", as: "Ribbon_Purpose" },
-      { calculate: "'Top activity: ' + datum.Activity_1", as: "Activity_Label" }
+      { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_2024", order: "descending" }] },
+      { calculate: "format(datum.Share_2024, '.1f') + '%'", as: "Share_Label" },
+      { calculate: "(datum.Growth_Pct > 0 ? '+' : '') + format(datum.Growth_Pct, '.1f') + '%'", as: "Growth_Label" },
+      { calculate: "datum.Mode + '  ' + datum.Share_Label", as: "Donut_Label" },
+      { calculate: "datum.Growth_Label + ' YoY'", as: "Growth_Text" }
     ],
-    vconcat: [
+    hconcat: [
       {
-        width,
-        height: 92,
+        width: donutWidth,
+        height: 310,
         layer: [
           {
-            mark: { type: "bar", cornerRadius: 8, height: 42, stroke: "#ffffff", strokeWidth: 2 },
+            mark: { type: "arc", innerRadius: 82, outerRadius: 132, stroke: "#ffffff", strokeWidth: 3 },
             encoding: {
-              x: {
-                field: "Share_Pct",
-                type: "quantitative",
-                stack: "zero",
-                title: null,
-                axis: { orient: "top", format: ".0f", labelExpr: "datum.label + '%'", tickCount: 6 },
-                scale: { domain: [0, 100] }
-              },
-              y: { datum: "All domestic trips", type: "nominal", title: null, axis: null },
+              theta: { field: "Share_2024", type: "quantitative", stack: true },
               order: { field: "Rank", type: "quantitative" },
               color: {
-                field: "Purpose",
+                field: "Mode",
                 type: "nominal",
                 legend: null,
-                scale: { domain: Object.keys(purposeColors), range: Object.values(purposeColors) }
+                scale: { domain: Object.keys(transportColors), range: Object.values(transportColors) }
               },
               tooltip: [
-                { field: "Purpose", title: "Purpose" },
-                { field: "Share_Pct", title: "Share %", format: ".1f" },
-                { field: "Activity_1", title: "Top activity" }
+                { field: "Mode", title: "Mode" },
+                { field: "Visitors_2024", title: "Visitors 2024", format: "," },
+                { field: "Share_2024", title: "Share 2024", format: ".1f" },
+                { field: "Growth_Pct", title: "Growth vs 2023", format: "+.1f" }
               ]
             }
           },
           {
-            mark: { type: "text", baseline: "middle", fontSize: 14, fontWeight: 900, color: "#ffffff" },
+            transform: [{ filter: "datum.Share_2024 >= 3" }],
+            mark: { type: "text", radius: 156, fontSize: 12, fontWeight: 900, color: colors.text },
             encoding: {
-              x: { field: "Share_Pct", type: "quantitative", stack: "center" },
-              y: { datum: "All domestic trips", type: "nominal" },
+              theta: { field: "Share_2024", type: "quantitative", stack: "center" },
               order: { field: "Rank", type: "quantitative" },
-              text: { field: "Ribbon_Label" }
+              text: { field: "Donut_Label" }
             }
           },
           {
-            mark: { type: "text", baseline: "top", dy: 27, fontSize: 11, fontWeight: 800, color: "#34445c", limit: 175 },
-            encoding: {
-              x: { field: "Share_Pct", type: "quantitative", stack: "center" },
-              y: { datum: "All domestic trips", type: "nominal" },
-              order: { field: "Rank", type: "quantitative" },
-              text: { field: "Ribbon_Purpose" }
-            }
+            data: { values: [{ label: "LAND" }] },
+            mark: { type: "text", align: "center", baseline: "middle", dy: -24, fontSize: 25, fontWeight: 900, color: "#2E8B57" },
+            encoding: { text: { field: "label" } }
+          },
+          {
+            data: { values: [{ label: "66.1%" }] },
+            mark: { type: "text", align: "center", baseline: "middle", dy: 12, fontSize: 36, fontWeight: 900, color: colors.text },
+            encoding: { text: { field: "label" } }
+          },
+          {
+            data: { values: [{ label: "of 2024 arrivals" }] },
+            mark: { type: "text", align: "center", baseline: "middle", dy: 45, fontSize: 12, fontWeight: 800, color: colors.muted },
+            encoding: { text: { field: "label" } }
           }
         ]
       },
       {
-        width,
-        height: 250,
+        width: growthWidth,
+        height: 310,
         layer: [
           {
-            mark: { type: "bar", cornerRadiusEnd: 8, height: { band: 0.62 }, opacity: 0.92 },
+            mark: { type: "rule", color: "#cbd8e6", strokeWidth: 1.2 },
+            encoding: {
+              x: { datum: 0, type: "quantitative" }
+            }
+          },
+          {
+            mark: { type: "bar", cornerRadiusEnd: 7, height: { band: 0.54 }, opacity: 0.88 },
             encoding: {
               x: {
-                field: "Share_Pct",
+                field: "Growth_Pct",
                 type: "quantitative",
-                title: "Share of trips (%)",
-                scale: { domain: [0, 39] },
-                axis: { tickCount: 6, grid: true }
+                title: "Growth vs 2023 (%)",
+                scale: { domain: [-8, 44] },
+                axis: { tickCount: 6, grid: true, format: "+.0f" }
               },
               y: {
-                field: "Purpose",
+                field: "Mode",
                 type: "nominal",
                 title: null,
-                sort: { field: "Share_Pct", order: "descending" },
-                axis: { labelLimit: 230, labelFontWeight: 800 }
+                sort: { field: "Share_2024", order: "descending" },
+                axis: { labelFontWeight: 900, labelFontSize: 13 }
               },
               color: {
-                field: "Purpose",
-                type: "nominal",
-                legend: null,
-                scale: { domain: Object.keys(purposeColors), range: Object.values(purposeColors) }
+                condition: { test: "datum.Growth_Pct < 0", value: "#D84C4C" },
+                value: "#2E9B9B"
               },
               tooltip: [
-                { field: "Purpose", title: "Purpose" },
-                { field: "Share_Pct", title: "Share %", format: ".1f" },
-                { field: "Activity_1", title: "Top activity" },
-                { field: "Activity_2", title: "Also common" }
+                { field: "Mode", title: "Mode" },
+                { field: "Growth_Pct", title: "Growth vs 2023", format: "+.1f" },
+                { field: "Share_2024", title: "Share 2024", format: ".1f" },
+                { field: "Visitors_2024", title: "Visitors 2024", format: "," }
               ]
             }
           },
           {
             mark: { type: "text", align: "left", baseline: "middle", dx: 8, fontSize: 13, fontWeight: 900, color: colors.text },
             encoding: {
-              x: { field: "Share_Pct", type: "quantitative" },
-              y: { field: "Purpose", type: "nominal", sort: { field: "Share_Pct", order: "descending" } },
-              text: { field: "Share_Label" }
+              x: { field: "Growth_Pct", type: "quantitative" },
+              y: { field: "Mode", type: "nominal", sort: { field: "Share_2024", order: "descending" } },
+              text: { field: "Growth_Text" }
             }
           },
           {
-            mark: { type: "text", align: "right", baseline: "middle", fontSize: 11, fontWeight: 700, color: colors.muted, limit: 230 },
+            mark: { type: "text", align: "right", baseline: "middle", fontSize: 12, fontWeight: 800, color: colors.muted },
             encoding: {
-              x: { datum: 38.5, type: "quantitative" },
-              y: { field: "Purpose", type: "nominal", sort: { field: "Share_Pct", order: "descending" } },
-              text: { field: "Activity_Label" }
+              x: { datum: 43, type: "quantitative" },
+              y: { field: "Mode", type: "nominal", sort: { field: "Share_2024", order: "descending" } },
+              text: { field: "Share_Label" }
             }
           }
         ]
       }
     ],
-    spacing: 18,
+    spacing: 34,
     resolve: { scale: { x: "independent", y: "independent" } },
     config: baseConfig()
   };
