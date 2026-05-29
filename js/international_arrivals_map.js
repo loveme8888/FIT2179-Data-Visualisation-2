@@ -1625,62 +1625,141 @@ function renderDomesticStateVisitorsRanking() {
 }
 
 function domesticPurposeSpec() {
+  const width = chartWidth("#domestic-purpose-chart", 760, 650);
+  const purposeColors = {
+    "Visiting relatives & friends": "#D9A441",
+    "Shopping": "#2E6DA4",
+    "Holiday/ leisure/ relaxation": "#5A8CCF",
+    "Incentive travel/ others": "#2E9B9B",
+    "Entertainment/ attending special event/ sports": "#E86F22",
+    "Medical treatment/ wellness": "#7E6AAE",
+    "Religious worship/ visit places of worship": "#8EA4BD",
+    "Official business/ business/ education": "#B9C6D6"
+  };
+
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#domestic-purpose-chart", 760, 650),
-    height: 330,
     title: {
       text: "Purpose of Domestic Trips",
-      subtitle: "Bubble grid; circle size represents share of trips in 2024",
+      subtitle: "100% trip-mix ribbon with ranked purpose lanes, 2024",
       fontSize: 24,
       subtitleFontSize: 14
     },
     data: { url: "data/domestic_trip_purpose_2024.csv" },
     transform: [
       { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
-      { calculate: "(datum.Rank - 1) % 4", as: "Grid_X" },
-      { calculate: "floor((datum.Rank - 1) / 4)", as: "Grid_Y" },
-      { calculate: "datum.Share_Pct + '%'", as: "Share_Label" }
+      { calculate: "format(datum.Share_Pct, '.1f') + '%'", as: "Share_Label" },
+      { calculate: "datum.Share_Pct >= 10 ? datum.Share_Label : ''", as: "Ribbon_Label" },
+      { calculate: "datum.Share_Pct >= 10 ? datum.Purpose : ''", as: "Ribbon_Purpose" },
+      { calculate: "'Top activity: ' + datum.Activity_1", as: "Activity_Label" }
     ],
-    layer: [
+    vconcat: [
       {
-        mark: { type: "circle", opacity: 0.86, stroke: "#ffffff", strokeWidth: 2 },
-        encoding: {
-          x: { field: "Grid_X", type: "ordinal", title: null, axis: null },
-          y: { field: "Grid_Y", type: "ordinal", title: null, axis: null, sort: "ascending" },
-          size: { field: "Share_Pct", type: "quantitative", legend: null, scale: { range: [450, 8200] } },
-          color: {
-            condition: [
-              { test: "datum.Purpose == 'Visiting relatives & friends'", value: "#D9A441" },
-              { test: "datum.Purpose == 'Shopping'", value: "#2E6DA4" },
-              { test: "datum.Purpose == 'Holiday/ leisure/ relaxation'", value: "#5A8CCF" }
-            ],
-            value: "#DCE6F2"
+        width,
+        height: 92,
+        layer: [
+          {
+            mark: { type: "bar", cornerRadius: 8, height: 42, stroke: "#ffffff", strokeWidth: 2 },
+            encoding: {
+              x: {
+                field: "Share_Pct",
+                type: "quantitative",
+                stack: "zero",
+                title: null,
+                axis: { orient: "top", format: ".0f", labelExpr: "datum.label + '%'", tickCount: 6 },
+                scale: { domain: [0, 100] }
+              },
+              y: { datum: "All domestic trips", type: "nominal", title: null, axis: null },
+              order: { field: "Rank", type: "quantitative" },
+              color: {
+                field: "Purpose",
+                type: "nominal",
+                legend: null,
+                scale: { domain: Object.keys(purposeColors), range: Object.values(purposeColors) }
+              },
+              tooltip: [
+                { field: "Purpose", title: "Purpose" },
+                { field: "Share_Pct", title: "Share %", format: ".1f" },
+                { field: "Activity_1", title: "Top activity" }
+              ]
+            }
           },
-          tooltip: [
-            { field: "Purpose", title: "Purpose" },
-            { field: "Share_Pct", title: "Share %", format: ".1f" },
-            { field: "Activity_1", title: "Top activity" }
-          ]
-        }
+          {
+            mark: { type: "text", baseline: "middle", fontSize: 14, fontWeight: 900, color: "#ffffff" },
+            encoding: {
+              x: { field: "Share_Pct", type: "quantitative", stack: "center" },
+              y: { datum: "All domestic trips", type: "nominal" },
+              order: { field: "Rank", type: "quantitative" },
+              text: { field: "Ribbon_Label" }
+            }
+          },
+          {
+            mark: { type: "text", baseline: "top", dy: 27, fontSize: 11, fontWeight: 800, color: "#34445c", limit: 175 },
+            encoding: {
+              x: { field: "Share_Pct", type: "quantitative", stack: "center" },
+              y: { datum: "All domestic trips", type: "nominal" },
+              order: { field: "Rank", type: "quantitative" },
+              text: { field: "Ribbon_Purpose" }
+            }
+          }
+        ]
       },
       {
-        mark: { type: "text", align: "center", baseline: "middle", dy: -5, fontSize: 16, fontWeight: 900, color: "#152238" },
-        encoding: {
-          x: { field: "Grid_X", type: "ordinal" },
-          y: { field: "Grid_Y", type: "ordinal", sort: "ascending" },
-          text: { field: "Share_Label" }
-        }
-      },
-      {
-        mark: { type: "text", align: "center", baseline: "top", dy: 16, fontSize: 12, fontWeight: 800, color: "#34445c", limit: 145 },
-        encoding: {
-          x: { field: "Grid_X", type: "ordinal" },
-          y: { field: "Grid_Y", type: "ordinal", sort: "ascending" },
-          text: { field: "Purpose" }
-        }
+        width,
+        height: 250,
+        layer: [
+          {
+            mark: { type: "bar", cornerRadiusEnd: 8, height: { band: 0.62 }, opacity: 0.92 },
+            encoding: {
+              x: {
+                field: "Share_Pct",
+                type: "quantitative",
+                title: "Share of trips (%)",
+                scale: { domain: [0, 39] },
+                axis: { tickCount: 6, grid: true }
+              },
+              y: {
+                field: "Purpose",
+                type: "nominal",
+                title: null,
+                sort: { field: "Share_Pct", order: "descending" },
+                axis: { labelLimit: 230, labelFontWeight: 800 }
+              },
+              color: {
+                field: "Purpose",
+                type: "nominal",
+                legend: null,
+                scale: { domain: Object.keys(purposeColors), range: Object.values(purposeColors) }
+              },
+              tooltip: [
+                { field: "Purpose", title: "Purpose" },
+                { field: "Share_Pct", title: "Share %", format: ".1f" },
+                { field: "Activity_1", title: "Top activity" },
+                { field: "Activity_2", title: "Also common" }
+              ]
+            }
+          },
+          {
+            mark: { type: "text", align: "left", baseline: "middle", dx: 8, fontSize: 13, fontWeight: 900, color: colors.text },
+            encoding: {
+              x: { field: "Share_Pct", type: "quantitative" },
+              y: { field: "Purpose", type: "nominal", sort: { field: "Share_Pct", order: "descending" } },
+              text: { field: "Share_Label" }
+            }
+          },
+          {
+            mark: { type: "text", align: "right", baseline: "middle", fontSize: 11, fontWeight: 700, color: colors.muted, limit: 230 },
+            encoding: {
+              x: { datum: 38.5, type: "quantitative" },
+              y: { field: "Purpose", type: "nominal", sort: { field: "Share_Pct", order: "descending" } },
+              text: { field: "Activity_Label" }
+            }
+          }
+        ]
       }
     ],
+    spacing: 18,
+    resolve: { scale: { x: "independent", y: "independent" } },
     config: baseConfig()
   };
 }
