@@ -1755,133 +1755,185 @@ function domesticPurposeSpec() {
   };
 }
 
-function domesticStructureSpec() {
-  const width = chartWidth("#domestic-structure-chart", 760, 650);
-  const isCompact = width < 560;
-  const flowerWidth = Math.min(width, 820);
-  const centerRadius = isCompact ? 48 : 74;
-  const petalInnerRadius = centerRadius + 2;
-  const petalRadiusRange = isCompact ? [72, 122] : [112, 230];
-  const valueLabelRadius = isCompact ? 88 : 140;
-  const outerLabelRadius = isCompact ? 146 : 256;
-  const outerLabelFontSize = isCompact ? 10 : 12;
-  const petalColors = [
-    "#F54E62",
-    "#F9793A",
-    "#F3A712",
-    "#B9C532",
-    "#53B76B",
-    "#55BDB8",
-    "#73A9DE",
-    "#8B62C8"
-  ];
+function parseCsvRows(text) {
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let inQuotes = false;
 
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      cell += '"';
+      i += 1;
+    } else if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === "," && !inQuotes) {
+      row.push(cell);
+      cell = "";
+    } else if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && next === "\n") i += 1;
+      row.push(cell);
+      if (row.some((value) => value !== "")) rows.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+
+  if (cell || row.length) {
+    row.push(cell);
+    rows.push(row);
+  }
+
+  const headers = rows.shift() || [];
+  return rows.map((values) =>
+    Object.fromEntries(headers.map((header, index) => [header, values[index] || ""]))
+  );
+}
+
+function polarPoint(cx, cy, radius, angleDeg) {
+  const angle = (Math.PI / 180) * angleDeg;
   return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: flowerWidth,
-    height: isCompact ? 430 : 540,
-    padding: { left: 24, right: 24, top: 20, bottom: 20 },
-    title: {
-      text: "Purpose of Domestic Trips in 2024",
-      subtitle: "Share of domestic trips by main purpose (%)",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    layer: [
-      {
-        data: { values: [{ value: 1 }] },
-        mark: { type: "arc", innerRadius: 0, outerRadius: centerRadius, color: "#ffffff", stroke: "#e4edf5", strokeWidth: 2 },
-        encoding: { theta: { field: "value", type: "quantitative" } }
-      },
-      {
-        data: { url: "data/domestic_trip_purpose_2024.csv" },
-        transform: [
-          { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
-          { calculate: "1", as: "Petal" }
-        ],
-        mark: {
-          type: "arc",
-          innerRadius: petalInnerRadius,
-          cornerRadius: isCompact ? 20 : 34,
-          opacity: 0.78,
-          stroke: "#ffffff",
-          strokeWidth: isCompact ? 4 : 7
-        },
-        encoding: {
-          theta: { field: "Petal", type: "quantitative", stack: true },
-          radius: {
-            field: "Share_Pct",
-            type: "quantitative",
-            scale: { domain: [0, 35], range: petalRadiusRange },
-            legend: null
-          },
-          order: { field: "Rank", type: "quantitative" },
-          color: {
-            field: "Purpose",
-            type: "nominal",
-            legend: null,
-            scale: { range: petalColors }
-          },
-          tooltip: [
-            { field: "Purpose", title: "Purpose" },
-            { field: "Share_Pct", title: "Share of trips", format: ".1f" },
-            { field: "Activity_1", title: "Top activity" },
-            { field: "Activity_2", title: "Second activity" }
-          ]
-        }
-      },
-      {
-        data: { url: "data/domestic_trip_purpose_2024.csv" },
-        transform: [
-          { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
-          { calculate: "1", as: "Petal" },
-          { calculate: "format(datum.Share_Pct, '.1f') + '%'", as: "Share_Label" },
-          { filter: "datum.Share_Pct >= 3" }
-        ],
-        mark: { type: "text", radius: valueLabelRadius, fontSize: isCompact ? 13 : 19, fontWeight: 900, color: colors.text },
-        encoding: {
-          theta: { field: "Petal", type: "quantitative", stack: "center" },
-          order: { field: "Rank", type: "quantitative" },
-          text: { field: "Share_Label" }
-        }
-      },
-      {
-        data: { url: "data/domestic_trip_purpose_2024.csv" },
-        transform: [
-          { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_Pct", order: "descending" }] },
-          { calculate: "1", as: "Petal" },
-          {
-            calculate: "datum.Purpose == 'Visiting relatives & friends' ? 'Visiting relatives\\n& friends' : datum.Purpose == 'Holiday/ leisure/ relaxation' ? 'Holiday / leisure\\n/ relaxation' : datum.Purpose == 'Incentive travel/ others' ? 'Incentive travel\\n/ others' : datum.Purpose == 'Entertainment/ attending special event/ sports' ? 'Entertainment\\n/ events' : datum.Purpose == 'Medical treatment/ wellness' ? 'Medical treatment\\n/ wellness' : datum.Purpose == 'Religious worship/ visit places of worship' ? 'Religious worship\\n/ visit' : datum.Purpose == 'Official business/ business/ education' ? 'Official business\\n/ education' : datum.Purpose",
-            as: "Purpose_Label"
-          },
-          { calculate: "datum.Purpose_Label + '\\n' + format(datum.Share_Pct, '.1f') + '%'", as: "Outer_Label" }
-        ],
-        mark: { type: "text", radius: outerLabelRadius, fontSize: outerLabelFontSize, fontWeight: 900, color: colors.text, lineBreak: "\n", lineHeight: isCompact ? 12 : 15 },
-        encoding: {
-          theta: { field: "Petal", type: "quantitative", stack: "center" },
-          order: { field: "Rank", type: "quantitative" },
-          text: { field: "Outer_Label" },
-          color: {
-            field: "Purpose",
-            type: "nominal",
-            legend: null,
-            scale: { range: petalColors }
-          }
-        }
-      },
-      {
-        data: { values: [{ label: "Domestic" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: isCompact ? -7 : -9, fontSize: isCompact ? 12 : 16, fontWeight: 900, color: colors.text },
-        encoding: { text: { field: "label" } }
-      },
-      {
-        data: { values: [{ label: "Trips" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: isCompact ? 11 : 14, fontSize: isCompact ? 12 : 16, fontWeight: 900, color: colors.text },
-        encoding: { text: { field: "label" } }
-      }
-    ],
-    config: baseConfig()
+    x: cx + radius * Math.cos(angle),
+    y: cy + radius * Math.sin(angle)
   };
+}
+
+function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
+  const innerLeft = polarPoint(cx, cy, innerRadius, angleDeg - halfAngle);
+  const outerLeft = polarPoint(cx, cy, outerRadius, angleDeg - halfAngle);
+  const outerTip = polarPoint(cx, cy, outerRadius + 16, angleDeg);
+  const outerRight = polarPoint(cx, cy, outerRadius, angleDeg + halfAngle);
+  const innerRight = polarPoint(cx, cy, innerRadius, angleDeg + halfAngle);
+  const innerMid = polarPoint(cx, cy, innerRadius - 18, angleDeg);
+
+  return [
+    `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
+    `L ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
+    `Q ${outerTip.x.toFixed(1)} ${outerTip.y.toFixed(1)} ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
+    `L ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
+    `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
+    "Z"
+  ].join(" ");
+}
+
+function labelForPurpose(purpose) {
+  const labels = {
+    "Visiting relatives & friends": ["Visiting relatives", "& friends"],
+    Shopping: ["Shopping"],
+    "Holiday/ leisure/ relaxation": ["Holiday / leisure", "/ relaxation"],
+    "Incentive travel/ others": ["Incentive travel", "/ others"],
+    "Entertainment/ attending special event/ sports": ["Entertainment", "/ events"],
+    "Medical treatment/ wellness": ["Medical treatment", "/ wellness"],
+    "Religious worship/ visit places of worship": ["Religious worship", "/ visit"],
+    "Official business/ business/ education": ["Official business", "/ education"]
+  };
+  return labels[purpose] || [purpose];
+}
+
+async function renderDomesticTripPurposeFlower() {
+  const container = document.querySelector("#domestic-structure-chart");
+  if (!container) return;
+
+  const response = await fetch("data/domestic_trip_purpose_2024.csv");
+  const rows = parseCsvRows(await response.text())
+    .map((row) => ({ ...row, Share_Pct: Number(row.Share_Pct) }))
+    .filter((row) => Number.isFinite(row.Share_Pct));
+
+  const width = Math.max(680, chartWidth("#domestic-structure-chart", 860, 650));
+  const height = 620;
+  const cx = width / 2;
+  const cy = 330;
+  const innerRadius = 62;
+  const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
+  const colorsByPurpose = {
+    "Visiting relatives & friends": "#F85A70",
+    Shopping: "#F47A35",
+    "Holiday/ leisure/ relaxation": "#F2B134",
+    "Incentive travel/ others": "#B7C437",
+    "Entertainment/ attending special event/ sports": "#55B96C",
+    "Medical treatment/ wellness": "#58BFB8",
+    "Religious worship/ visit places of worship": "#78AEE5",
+    "Official business/ business/ education": "#9270CF"
+  };
+  const anglesByPurpose = {
+    "Visiting relatives & friends": -76,
+    Shopping: -28,
+    "Holiday/ leisure/ relaxation": 20,
+    "Incentive travel/ others": 68,
+    "Entertainment/ attending special event/ sports": 116,
+    "Medical treatment/ wellness": 164,
+    "Religious worship/ visit places of worship": 212,
+    "Official business/ business/ education": 260
+  };
+
+  const petals = rows.map((row) => {
+    const angle = anglesByPurpose[row.Purpose] ?? -90;
+    const length = 74 + (row.Share_Pct / maxShare) * 148;
+    const outerRadius = innerRadius + length;
+    const labelPoint = polarPoint(cx, cy, outerRadius + 38, angle);
+    const valuePoint = polarPoint(cx, cy, innerRadius + length * 0.58, angle);
+    const color = colorsByPurpose[row.Purpose] || colors.teal;
+    const labelLines = [...labelForPurpose(row.Purpose), `${row.Share_Pct.toFixed(1)}%`];
+    const textAnchor = Math.cos((Math.PI / 180) * angle) > 0.25
+      ? "start"
+      : Math.cos((Math.PI / 180) * angle) < -0.25
+        ? "end"
+        : "middle";
+
+    return { ...row, angle, outerRadius, labelPoint, valuePoint, color, labelLines, textAnchor };
+  });
+
+  const labelMarkup = petals.map((petal) => `
+    <text class="flower-label" x="${petal.labelPoint.x.toFixed(1)}" y="${petal.labelPoint.y.toFixed(1)}"
+      text-anchor="${petal.textAnchor}" style="fill:${petal.color}">
+      ${petal.labelLines.map((line, index) => `
+        <tspan x="${petal.labelPoint.x.toFixed(1)}" dy="${index === 0 ? 0 : 17}">${line}</tspan>
+      `).join("")}
+    </text>
+  `).join("");
+
+  const valueMarkup = petals
+    .filter((petal) => petal.Share_Pct >= 4)
+    .map((petal) => `
+      <text class="flower-value" x="${petal.valuePoint.x.toFixed(1)}" y="${petal.valuePoint.y.toFixed(1)}"
+        text-anchor="middle" dominant-baseline="middle">${petal.Share_Pct.toFixed(1)}%</text>
+    `).join("");
+
+  container.innerHTML = `
+    <svg class="flower-chart-svg" viewBox="0 0 ${width} ${height}" role="img"
+      aria-label="Purpose of domestic trips in 2024">
+      <text class="flower-title" x="12" y="34">PURPOSE OF DOMESTIC TRIPS IN 2024</text>
+      <text class="flower-subtitle" x="12" y="62">Share of domestic trips by main purpose (%)</text>
+      <g class="flower-petals">
+        ${petals.map((petal) => `
+          <path d="${petalPath(cx, cy, innerRadius, petal.outerRadius, petal.angle, 17)}"
+            fill="${petal.color}" opacity="0.68">
+            <title>${petal.Purpose}: ${petal.Share_Pct.toFixed(1)}%</title>
+          </path>
+        `).join("")}
+      </g>
+      <circle cx="${cx}" cy="${cy}" r="${innerRadius + 7}" fill="#ffffff" stroke="#e5edf5" stroke-width="2"/>
+      <g class="flower-center-icon" transform="translate(${cx - 30}, ${cy - 40})">
+        <circle cx="30" cy="15" r="10"></circle>
+        <circle cx="10" cy="24" r="8"></circle>
+        <circle cx="50" cy="24" r="8"></circle>
+        <path d="M16 58v-9c0-10 7-17 14-17s14 7 14 17v9"></path>
+        <path d="M0 58v-7c0-8 5-14 11-14"></path>
+        <path d="M60 58v-7c0-8-5-14-11-14"></path>
+      </g>
+      <text class="flower-center-text" x="${cx}" y="${cy + 34}" text-anchor="middle">
+        <tspan x="${cx}" dy="0">Domestic</tspan>
+        <tspan x="${cx}" dy="22">Trips</tspan>
+      </text>
+      ${valueMarkup}
+      ${labelMarkup}
+    </svg>
+  `;
 }
 
 function domesticODSpec() {
@@ -2093,7 +2145,6 @@ const charts = [
   ["#receipts-scatter-chart", receiptsScatterSpec],
   ["#arrivals-map", mapSpec],
   ["#domestic-purpose-chart", domesticPurposeSpec],
-  ["#domestic-structure-chart", domesticStructureSpec],
   ["#domestic-od-chart", domesticODSpec],
   ["#state-guests-chart", stateGuestsSpec]
 ];
@@ -2103,6 +2154,7 @@ async function renderAll() {
     applyFigureNarratives();
     renderDomesticStateVisitorsRanking();
     renderSuitcaseExpenditure();
+    await renderDomesticTripPurposeFlower();
 
     if (!window.vega || !window.vegaLite || !window.vegaEmbed) {
       showStatus("Vega libraries did not load. Please check the internet connection and refresh the page.");
