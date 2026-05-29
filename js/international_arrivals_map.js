@@ -1797,7 +1797,7 @@ function domesticStructureSpec() {
         }
       },
       {
-        mark: { type: "circle", opacity: 0.86, stroke: "#ffffff", strokeWidth: 1.5 },
+        mark: { type: "circle", opacity: 0.74, stroke: "#ffffff", strokeWidth: 1.3 },
         encoding: {
           x: {
             field: "Rooms_2024",
@@ -1817,7 +1817,7 @@ function domesticStructureSpec() {
             field: "Hotels_2024",
             type: "quantitative",
             title: "Hotels",
-            scale: { range: [140, 2500] },
+            scale: { range: [80, 1350] },
             legend: { orient: "bottom", title: "Hotels, 2024" }
           },
           color: {
@@ -1838,9 +1838,9 @@ function domesticStructureSpec() {
       },
       {
         transform: [
-          { filter: "datum.State == 'Kuala Lumpur' || datum.State == 'Pahang' || datum.State == 'Johor' || datum.State == 'Pulau Pinang' || datum.State == 'Sabah' || datum.State == 'Selangor'" }
+          { filter: "datum.State == 'Pahang'" }
         ],
-        mark: { type: "text", dy: -14, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
+        mark: { type: "text", dy: -20, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
         encoding: {
           x: { field: "Rooms_2024", type: "quantitative" },
           y: { field: "AOR_2024", type: "quantitative" },
@@ -1848,7 +1848,40 @@ function domesticStructureSpec() {
         }
       },
       {
-        data: { values: [{ x: 66500, y: 77, text: "High occupancy" }] },
+        transform: [
+          { filter: "datum.State == 'Kuala Lumpur'" }
+        ],
+        mark: { type: "text", align: "right", dx: -12, dy: -18, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
+        encoding: {
+          x: { field: "Rooms_2024", type: "quantitative" },
+          y: { field: "AOR_2024", type: "quantitative" },
+          text: { field: "State" }
+        }
+      },
+      {
+        transform: [
+          { filter: "datum.State == 'Pulau Pinang'" }
+        ],
+        mark: { type: "text", align: "right", dx: -8, dy: -18, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
+        encoding: {
+          x: { field: "Rooms_2024", type: "quantitative" },
+          y: { field: "AOR_2024", type: "quantitative" },
+          text: { field: "State" }
+        }
+      },
+      {
+        transform: [
+          { filter: "datum.State == 'Selangor'" }
+        ],
+        mark: { type: "text", align: "left", dx: 14, dy: -8, fontSize: 12, fontWeight: 900, color: colors.text, limit: 120 },
+        encoding: {
+          x: { field: "Rooms_2024", type: "quantitative" },
+          y: { field: "AOR_2024", type: "quantitative" },
+          text: { field: "State" }
+        }
+      },
+      {
+        data: { values: [{ x: 66500, y: 76, text: "High occupancy" }] },
         mark: { type: "text", align: "right", fontSize: 12, fontWeight: 800, color: "#5b6d86" },
         encoding: {
           x: { field: "x", type: "quantitative" },
