@@ -1863,6 +1863,8 @@ function labelForPurpose(purpose) {
 }
 
 
+
+
 async function renderDomesticTripPurposeFlower() {
   const container = document.querySelector("#domestic-purpose-chart");
   if (!container) return;
@@ -1875,10 +1877,10 @@ async function renderDomesticTripPurposeFlower() {
   rows.push({ Purpose: "Others / Not stated", Share_Pct: 3.8 });
 
   const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
-  const height = 820;
+  const height = 840;
 
-  const cx = width * 0.64;
-  const cy = 440;
+  const cx = width * 0.58;
+  const cy = 450;
 
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
 
@@ -1911,13 +1913,14 @@ async function renderDomesticTripPurposeFlower() {
   const startAngle = -90;
   const maxArc = 300;
   const trackWidth = 18;
-  const trackGap = 25;
-  const innerRadius = 62;
+  const trackGap = 22;
+  const innerRadius = 56;
 
-  const labelX = 88;
-  const valueX = 330;
-  const firstLabelY = 205;
-  const labelGap = 72;
+  const labelX = 86;
+  const textX = 142;
+  const valueX = 375;
+  const firstLabelY = 215;
+  const labelGap = 66;
 
   const arcPath = (cx, cy, radius, startDeg, endDeg) => {
     const start = polarPoint(cx, cy, radius, startDeg);
@@ -1933,25 +1936,22 @@ async function renderDomesticTripPurposeFlower() {
 
     return `
       <g>
-        <circle cx="${labelX}" cy="${y - 8}" r="25" fill="${color}" opacity="0.9"></circle>
-        <g transform="translate(${labelX}, ${y - 8}) scale(0.68)" style="--icon-color:#ffffff">
+        <circle cx="${labelX}" cy="${y - 8}" r="24" fill="${color}" opacity="0.9"></circle>
+        <g transform="translate(${labelX}, ${y - 8}) scale(0.66)" style="--icon-color:#ffffff">
           ${purposeIconMarkup(iconByPurpose[row.Purpose])}
         </g>
 
-        <text x="${labelX + 52}" y="${y - 22}" class="flower-label" text-anchor="start">
+        <text x="${textX}" y="${y - 17}" class="flower-label" text-anchor="start"
+          style="font-size:18px; font-weight:900;">
           ${labelLines.map((line, lineIndex) => `
-            <tspan x="${labelX + 52}" dy="${lineIndex === 0 ? 0 : 18}">${line}</tspan>
+            <tspan x="${textX}" dy="${lineIndex === 0 ? 0 : 18}">${line}</tspan>
           `).join("")}
         </text>
 
-        <text x="${valueX}" y="${y + 2}" text-anchor="end"
-          style="font-family:'Bebas Neue', sans-serif; font-size:32px; font-weight:900; fill:${color};">
+        <text x="${valueX}" y="${y + 1}" text-anchor="end"
+          style="font-family:'Bebas Neue', sans-serif; font-size:34px; font-weight:900; fill:${color};">
           ${row.Share_Pct.toFixed(1)}%
         </text>
-
-        <circle cx="${valueX + 24}" cy="${y - 8}" r="4.5" fill="${color}"></circle>
-        <line x1="${valueX + 32}" y1="${y - 8}" x2="${cx - 235}" y2="${y - 8}"
-          stroke="#cbd3de" stroke-width="1.1"></line>
       </g>
     `;
   }).join("");
@@ -1964,7 +1964,7 @@ async function renderDomesticTripPurposeFlower() {
         stroke="#DDE6F0"
         stroke-width="1"
         stroke-dasharray="3 5"
-        opacity="0.7"></path>
+        opacity="0.65"></path>
     `;
   }).join("");
 
@@ -2009,10 +2009,10 @@ async function renderDomesticTripPurposeFlower() {
         ${guideMarkup}
         ${trackMarkup}
 
-        <circle cx="${cx}" cy="${cy}" r="92" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
+        <circle cx="${cx}" cy="${cy}" r="80" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
           filter="drop-shadow(0 6px 12px rgba(21, 34, 56, 0.12))"></circle>
 
-        <g class="flower-center-icon" transform="translate(${cx - 34}, ${cy - 72}) scale(1.05)">
+        <g class="flower-center-icon" transform="translate(${cx - 30}, ${cy - 60}) scale(0.92)">
           <circle cx="30" cy="15" r="11"></circle>
           <circle cx="10" cy="24" r="9"></circle>
           <circle cx="50" cy="24" r="9"></circle>
@@ -2021,28 +2021,23 @@ async function renderDomesticTripPurposeFlower() {
           <path d="M60 60v-8c0-9-5-15-11-15"></path>
         </g>
 
-        <text x="${cx}" y="${cy + 30}" text-anchor="middle"
-          style="font-family:'Bebas Neue', sans-serif; font-size:58px; font-weight:900; fill:#152238;">
+        <text x="${cx}" y="${cy + 26}" text-anchor="middle"
+          style="font-family:'Bebas Neue', sans-serif; font-size:52px; font-weight:900; fill:#152238;">
           100%
         </text>
 
-        <text x="${cx}" y="${cy + 72}" text-anchor="middle"
-          style="font-family:'Inter', sans-serif; font-size:18px; font-weight:850; fill:#152238;">
+        <text x="${cx}" y="${cy + 64}" text-anchor="middle"
+          style="font-family:'Inter', sans-serif; font-size:16px; font-weight:850; fill:#152238;">
           <tspan x="${cx}" dy="0">Domestic Trips</tspan>
-          <tspan x="${cx}" dy="22">in 2024</tspan>
+          <tspan x="${cx}" dy="20">in 2024</tspan>
         </text>
       </g>
-        <text x="40" y="${height - 20}"
-          style="
-            font-family:'Inter', sans-serif;
-            font-size:14px;
-            fill:#5A6B84;
-          ">
-          Visiting relatives and friends dominates domestic travel demand, followed by shopping and leisure activities.
-        </text>
     </svg>
   `;
 }
+
+
+
 
 
 
