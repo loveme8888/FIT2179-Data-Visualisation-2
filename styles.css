@@ -458,6 +458,7 @@ h1 {
 .figure-card-source-markets-chart .figure-copy h3 {
   color: #07175f;
   max-width: 360px;
+  font-size: 32px;
   font-weight: 900;
   line-height: 1.14;
 }
@@ -466,6 +467,7 @@ h1 {
   max-width: 350px;
   margin-top: 28px;
   color: #273455;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.48;
 }
@@ -525,6 +527,7 @@ h1 {
 
 .figure-card-receipts-scatter-chart .figure-copy h3 {
   max-width: 760px;
+  font-size: 32px;
   font-weight: 900;
   line-height: 1.08;
 }
@@ -532,6 +535,7 @@ h1 {
 .figure-card-receipts-scatter-chart .figure-copy p {
   max-width: 900px;
   margin-top: 14px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.45;
 }
@@ -733,6 +737,7 @@ h1 {
 .figure-card-domestic-state-visitors-chart .figure-copy h3 {
   max-width: 340px;
   color: #07175f;
+  font-size: 32px;
   font-weight: 900;
   line-height: 1.13;
 }
@@ -741,6 +746,7 @@ h1 {
   max-width: 350px;
   margin-top: 30px;
   color: #18264a;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.52;
 }
@@ -834,6 +840,7 @@ h1 {
 .figure-card-expenditure-chart .figure-copy h3 {
   max-width: 360px;
   color: #07175f;
+  font-size: 32px;
   font-weight: 900;
   line-height: 1.13;
 }
@@ -842,6 +849,7 @@ h1 {
   max-width: 360px;
   margin-top: 30px;
   color: #243151;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.52;
 }
@@ -1353,6 +1361,7 @@ h1 {
 .figure-card-expenditure-chart .figure-copy h3 {
   max-width: 250px;
   color: #0a1630;
+  font-size: 32px;
   font-weight: 900;
   line-height: 1.1;
 }
@@ -1361,6 +1370,7 @@ h1 {
   max-width: 255px;
   margin-top: 16px;
   color: #263654;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.45;
 }
