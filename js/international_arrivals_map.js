@@ -1876,8 +1876,8 @@ async function renderDomesticTripPurposeFlower() {
   const height = 850;
   const cx = width * 0.51;
   const cy = 470;
-  const innerRadius = 98;
-  const centerRadius = 112;
+  const innerRadius = 72;
+  const centerRadius = 82;
   const petalHalfAngle = 19.3;
   const firstPetalAngle = -75;
   const petalStepAngle = 40;
@@ -1921,7 +1921,7 @@ async function renderDomesticTripPurposeFlower() {
 
   const petals = rows.map((row) => {
     const angle = anglesByPurpose[row.Purpose] ?? -90;
-    const length = 72 + (row.Share_Pct / maxShare) * 208;
+    const length = 98 + (row.Share_Pct / maxShare) * 208;
     const outerRadius = innerRadius + length;
     const labelRadius = outerRadius + (row.Purpose === "Visiting relatives & friends" ? 46 : row.Share_Pct >= 20 ? 74 : 58);
     const labelPoint = polarPoint(cx, cy, labelRadius, angle);
