@@ -1854,10 +1854,13 @@ async function renderDomesticTripPurposeFlower() {
   rows.push({ Purpose: "Others / Not stated", Share_Pct: 3.8 });
 
   const width = Math.max(760, chartWidth("#domestic-purpose-chart", 1080, 720));
-  const height = 780;
+  const height = 850;
   const cx = width * 0.51;
-  const cy = 420;
+  const cy = 470;
   const innerRadius = 78;
+  const petalHalfAngle = 17;
+  const firstPetalAngle = -75;
+  const petalStepAngle = 40;
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
   const colorsByPurpose = {
     "Visiting relatives & friends": "#F85A70",
@@ -1870,17 +1873,9 @@ async function renderDomesticTripPurposeFlower() {
     "Official business/ business/ education": "#9270CF",
     "Others / Not stated": "#9673D2"
   };
-  const anglesByPurpose = {
-    "Visiting relatives & friends": -75,
-    Shopping: -25,
-    "Holiday/ leisure/ relaxation": 24,
-    "Incentive travel/ others": 67,
-    "Entertainment/ attending special event/ sports": 100,
-    "Medical treatment/ wellness": 138,
-    "Religious worship/ visit places of worship": 178,
-    "Official business/ business/ education": 213,
-    "Others / Not stated": 247
-  };
+  const anglesByPurpose = Object.fromEntries(
+    rows.map((row, index) => [row.Purpose, firstPetalAngle + index * petalStepAngle])
+  );
   const iconByPurpose = {
     "Visiting relatives & friends": "family",
     Shopping: "bag",
@@ -1897,7 +1892,7 @@ async function renderDomesticTripPurposeFlower() {
     const angle = anglesByPurpose[row.Purpose] ?? -90;
     const length = 90 + (row.Share_Pct / maxShare) * 210;
     const outerRadius = innerRadius + length;
-    const labelRadius = outerRadius + (row.Share_Pct >= 20 ? 92 : 72);
+    const labelRadius = outerRadius + (row.Purpose === "Visiting relatives & friends" ? 54 : row.Share_Pct >= 20 ? 92 : 72);
     const labelPoint = polarPoint(cx, cy, labelRadius, angle);
     const valuePoint = polarPoint(cx, cy, innerRadius + length * 0.58, angle);
     const iconPoint = polarPoint(cx, cy, innerRadius + length * 0.36, angle);
@@ -1948,7 +1943,7 @@ async function renderDomesticTripPurposeFlower() {
       <text class="flower-subtitle" x="8" y="132">Share of domestic trips by main purpose (%)</text>
       <g class="flower-petals">
         ${petals.map((petal) => `
-          <path d="${petalPath(cx, cy, innerRadius, petal.outerRadius, petal.angle, 17)}"
+          <path d="${petalPath(cx, cy, innerRadius, petal.outerRadius, petal.angle, petalHalfAngle)}"
             fill="${petal.color}" opacity="0.68">
             <title>${petal.Purpose}: ${petal.Share_Pct.toFixed(1)}%</title>
           </path>
