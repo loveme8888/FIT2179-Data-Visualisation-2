@@ -215,52 +215,47 @@ function mapSpec() {
     {
       State: "Kuala Lumpur",
       Region: "Peninsular",
-      Label: "(1) Kuala Lumpur\n12.1M",
+      Label: "① Kuala Lumpur\n12.1M",
       Lon: 101.6869,
       Lat: 3.139,
       Dx: -6,
-      Dy: 34,
-      FontSize: 16
+      Dy: 34
     },
     {
       State: "Selangor",
       Region: "Peninsular",
-      Label: "(2) Selangor\n3.4M",
+      Label: "② Selangor\n3.4M",
       Lon: 101.5183,
       Lat: 3.0738,
       Dx: -40,
-      Dy: -32,
-      FontSize: 14
+      Dy: -32
     },
     {
       State: "Sabah",
       Region: "Borneo",
-      Label: "(3) Sabah\n3.1M",
+      Label: "③ Sabah\n3.1M",
       Lon: 116.0753,
       Lat: 5.9788,
       Dx: 30,
-      Dy: -16,
-      FontSize: 14
+      Dy: -16
     },
     {
       State: "Penang",
       Region: "Peninsular",
-      Label: "(4) Penang\n3.0M",
+      Label: "④ Penang\n3.0M",
       Lon: 100.3288,
       Lat: 5.4164,
       Dx: -18,
-      Dy: -20,
-      FontSize: 14
+      Dy: -20
     },
     {
       State: "Johor",
       Region: "Peninsular",
-      Label: "(5) Johor\n3.0M",
+      Label: "⑤ Johor\n3.0M",
       Lon: 103.7618,
       Lat: 1.4854,
       Dx: 28,
-      Dy: 12,
-      FontSize: 14
+      Dy: 12
     }
   ];
 
@@ -272,9 +267,10 @@ function mapSpec() {
       align: "center",
       baseline: "middle",
       font: "Inter",
-      fontWeight: 950,
+      fontWeight: 850,
+      fontSize: 15,
       lineBreak: "\n",
-      lineHeight: 18
+      lineHeight: 15
     },
     encoding: {
       longitude: { field: "Lon", type: "quantitative" },
@@ -282,8 +278,7 @@ function mapSpec() {
       text: { field: "Label" },
       color: { value: "#0B2A6F" },
       dx: { field: "Dx" },
-      dy: { field: "Dy" },
-      size: { field: "FontSize", type: "quantitative", legend: null }
+      dy: { field: "Dy" }
     }
   });
 
