@@ -1815,12 +1815,13 @@ function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
   });
   const angularWidth = outerRadius * Math.sin((Math.PI / 180) * halfAngle);
   const petalHalfWidth = Math.max(28, Math.min(96, angularWidth * 0.78, length * 0.38));
-  const baseHalfWidth = Math.max(7, Math.min(13, petalHalfWidth * 0.18));
+  const baseAngularWidth = (innerRadius + 18) * Math.sin((Math.PI / 180) * halfAngle);
+  const baseHalfWidth = Math.max(18, Math.min(27, baseAngularWidth * 0.9, petalHalfWidth * 0.46));
   const capLift = Math.max(18, length * 0.12);
   const innerLeft = point(innerRadius, -baseHalfWidth);
   const innerRight = point(innerRadius, baseHalfWidth);
-  const leftWaist = point(innerRadius + length * 0.24, -petalHalfWidth * 0.34);
-  const rightWaist = point(innerRadius + length * 0.24, petalHalfWidth * 0.34);
+  const leftRootShoulder = point(innerRadius + length * 0.1, -petalHalfWidth * 0.62);
+  const rightRootShoulder = point(innerRadius + length * 0.1, petalHalfWidth * 0.62);
   const leftBelly = point(innerRadius + length * 0.58, -petalHalfWidth * 0.9);
   const rightBelly = point(innerRadius + length * 0.58, petalHalfWidth * 0.9);
   const outerLeft = point(innerRadius + length * 0.82, -petalHalfWidth * 0.86);
@@ -1831,9 +1832,9 @@ function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
 
   return [
     `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
-    `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftBelly.x.toFixed(1)} ${leftBelly.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
+    `C ${leftRootShoulder.x.toFixed(1)} ${leftRootShoulder.y.toFixed(1)} ${leftBelly.x.toFixed(1)} ${leftBelly.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
     `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
-    `C ${rightBelly.x.toFixed(1)} ${rightBelly.y.toFixed(1)} ${rightWaist.x.toFixed(1)} ${rightWaist.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
+    `C ${rightBelly.x.toFixed(1)} ${rightBelly.y.toFixed(1)} ${rightRootShoulder.x.toFixed(1)} ${rightRootShoulder.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
     `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     "Z"
   ].join(" ");
