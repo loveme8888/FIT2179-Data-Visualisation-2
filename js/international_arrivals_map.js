@@ -1804,23 +1804,38 @@ function polarPoint(cx, cy, radius, angleDeg) {
 
 function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
   const length = outerRadius - innerRadius;
-  const baseHalfAngle = halfAngle * 0.34;
-  const shoulderHalfAngle = halfAngle * 1.04;
-  const innerLeft = polarPoint(cx, cy, innerRadius, angleDeg - baseHalfAngle);
-  const innerRight = polarPoint(cx, cy, innerRadius, angleDeg + baseHalfAngle);
-  const outerRadiusWithCap = outerRadius + 8;
-  const outerLeft = polarPoint(cx, cy, outerRadiusWithCap, angleDeg - shoulderHalfAngle);
-  const outerRight = polarPoint(cx, cy, outerRadiusWithCap, angleDeg + shoulderHalfAngle);
-  const leftWaist = polarPoint(cx, cy, innerRadius + length * 0.42, angleDeg - halfAngle * 0.78);
-  const rightWaist = polarPoint(cx, cy, innerRadius + length * 0.42, angleDeg + halfAngle * 0.78);
-  const leftShoulder = polarPoint(cx, cy, innerRadius + length * 0.82, angleDeg - halfAngle * 1.08);
-  const rightShoulder = polarPoint(cx, cy, innerRadius + length * 0.82, angleDeg + halfAngle * 1.08);
-  const innerMid = polarPoint(cx, cy, innerRadius - 10, angleDeg);
+  const angle = (Math.PI / 180) * angleDeg;
+  const ux = Math.cos(angle);
+  const uy = Math.sin(angle);
+  const px = -uy;
+  const py = ux;
+  const point = (distance, offset = 0) => ({
+    x: cx + ux * distance + px * offset,
+    y: cy + uy * distance + py * offset
+  });
+  const capLength = Math.max(22, length * 0.16);
+  const outerHalfWidth = Math.max(30, Math.min(108, length * 0.43));
+  const innerHalfWidth = Math.max(9, Math.min(17, length * 0.08));
+  const outerDistance = outerRadius - capLength * 0.28;
+  const tipDistance = outerRadius + capLength * 0.72;
+  const innerLeft = point(innerRadius, -innerHalfWidth);
+  const innerRight = point(innerRadius, innerHalfWidth);
+  const outerLeft = point(outerDistance, -outerHalfWidth * 0.82);
+  const outerRight = point(outerDistance, outerHalfWidth * 0.82);
+  const tip = point(tipDistance, 0);
+  const leftWaist = point(innerRadius + length * 0.36, -outerHalfWidth * 0.5);
+  const rightWaist = point(innerRadius + length * 0.36, outerHalfWidth * 0.5);
+  const leftShoulder = point(innerRadius + length * 0.74, -outerHalfWidth);
+  const rightShoulder = point(innerRadius + length * 0.74, outerHalfWidth);
+  const leftCapControl = point(tipDistance - capLength * 0.12, -outerHalfWidth * 0.88);
+  const rightCapControl = point(tipDistance - capLength * 0.12, outerHalfWidth * 0.88);
+  const innerMid = point(innerRadius - 12, 0);
 
   return [
     `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftShoulder.x.toFixed(1)} ${leftShoulder.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
-    `A ${outerRadiusWithCap.toFixed(1)} ${outerRadiusWithCap.toFixed(1)} 0 0 1 ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
+    `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${tip.x.toFixed(1)} ${tip.y.toFixed(1)} ${tip.x.toFixed(1)} ${tip.y.toFixed(1)}`,
+    `C ${tip.x.toFixed(1)} ${tip.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
     `C ${rightShoulder.x.toFixed(1)} ${rightShoulder.y.toFixed(1)} ${rightWaist.x.toFixed(1)} ${rightWaist.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
     `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     "Z"
