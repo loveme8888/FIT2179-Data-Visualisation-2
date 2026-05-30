@@ -1879,7 +1879,7 @@ async function renderDomesticTripPurposeFlower() {
   const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
   const height = 840;
 
-  const cx = width * 0.74;
+  const cx = width * 0.76;
   const cy = 440;
 
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
@@ -1908,6 +1908,18 @@ async function renderDomesticTripPurposeFlower() {
     "Others / Not stated": "dots"
   };
 
+  const shortLabelByPurpose = {
+    "Visiting relatives & friends": ["Visiting relatives", "& friends"],
+    Shopping: ["Shopping"],
+    "Holiday/ leisure/ relaxation": ["Holiday / Leisure"],
+    "Incentive travel/ others": ["Incentive travel"],
+    "Entertainment/ attending special event/ sports": ["Entertainment"],
+    "Medical treatment/ wellness": ["Medical / Wellness"],
+    "Religious worship/ visit places of worship": ["Religious visit"],
+    "Official business/ business/ education": ["Business"],
+    "Others / Not stated": ["Others"]
+  };
+
   const rankedRows = [...rows].sort((a, b) => b.Share_Pct - a.Share_Pct);
 
   const startAngle = -90;
@@ -1916,9 +1928,9 @@ async function renderDomesticTripPurposeFlower() {
   const trackGap = 17;
   const innerRadius = 72;
 
-  const labelX = 395;
-  const textX = 445;
-  const valueX = 675;
+  const labelX = 390;
+  const textX = 440;
+  const valueX = 590;
   const firstLabelY = 215;
   const labelGap = 57;
 
@@ -1932,7 +1944,7 @@ async function renderDomesticTripPurposeFlower() {
   const labelMarkup = rankedRows.map((row, index) => {
     const color = colorsByPurpose[row.Purpose] || colors.teal;
     const y = firstLabelY + index * labelGap;
-    const labelLines = labelForPurpose(row.Purpose);
+    const labelLines = shortLabelByPurpose[row.Purpose] || labelForPurpose(row.Purpose);
 
     return `
       <g>
@@ -1942,14 +1954,14 @@ async function renderDomesticTripPurposeFlower() {
         </g>
 
         <text x="${textX}" y="${y - 16}" class="flower-label" text-anchor="start"
-          style="font-size:17px; font-weight:900;">
+          style="font-size:16px; font-weight:900;">
           ${labelLines.map((line, lineIndex) => `
             <tspan x="${textX}" dy="${lineIndex === 0 ? 0 : 17}">${line}</tspan>
           `).join("")}
         </text>
 
         <text x="${valueX}" y="${y + 1}" text-anchor="end"
-          style="font-family:'Bebas Neue', sans-serif; font-size:31px; font-weight:900; fill:${color};">
+          style="font-family:'Bebas Neue', sans-serif; font-size:30px; font-weight:900; fill:${color};">
           ${row.Share_Pct.toFixed(1)}%
         </text>
       </g>
@@ -2049,7 +2061,6 @@ async function renderDomesticTripPurposeFlower() {
     </svg>
   `;
 }
-
 
 
 
