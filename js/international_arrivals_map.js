@@ -62,18 +62,13 @@ const figureNarratives = {
     title: "Domestic trips are mostly social and shopping-led",
     body: "Visiting relatives and friends is the largest trip purpose, followed by shopping and holiday or leisure travel."
   },
-  "domestic-structure-chart": {
-    number: "FIGURE 09",
-    title: "Domestic trips are mostly social and shopping-led",
-    body: "Visiting relatives and friends is the largest trip purpose, followed by shopping and holiday or leisure travel."
-  },
   "domestic-od-chart": {
-    number: "FIGURE 10",
+    number: "FIGURE 09",
     title: "Origin-destination flows reveal state-to-state travel corridors",
     body: "The heatmap shows where domestic tourists came from and which destination states they visited in 2024."
   },
   "state-guests-chart": {
-    number: "FIGURE 11",
+    number: "FIGURE 10",
     title: "Growth opportunities appear beyond the largest bases",
     body: "State growth rates identify where foreign hotel guest momentum strengthened most sharply year on year."
   }
