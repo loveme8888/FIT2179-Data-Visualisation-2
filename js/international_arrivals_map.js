@@ -220,8 +220,10 @@ function mapSpec() {
       Value: "12.1M",
       Lon: 101.6869,
       Lat: 3.139,
-      Callout_Lon: 100.45,
-      Callout_Lat: 2.75
+      Callout_Lon: 99.25,
+      Callout_Lat: 2.75,
+      CardSize: 12000,
+      BadgeSize: 900
     },
     {
       State: "Selangor",
@@ -231,8 +233,10 @@ function mapSpec() {
       Value: "3.4M",
       Lon: 101.5183,
       Lat: 3.0738,
-      Callout_Lon: 100.25,
-      Callout_Lat: 3.75
+      Callout_Lon: 99.15,
+      Callout_Lat: 3.85,
+      CardSize: 7800,
+      BadgeSize: 650
     },
     {
       State: "Sabah",
@@ -242,8 +246,10 @@ function mapSpec() {
       Value: "3.1M",
       Lon: 116.0753,
       Lat: 5.9788,
-      Callout_Lon: 118.3,
-      Callout_Lat: 6.35
+      Callout_Lon: 118.45,
+      Callout_Lat: 6.45,
+      CardSize: 7800,
+      BadgeSize: 650
     },
     {
       State: "Penang",
@@ -253,8 +259,10 @@ function mapSpec() {
       Value: "3.0M",
       Lon: 100.3288,
       Lat: 5.4164,
-      Callout_Lon: 99.55,
-      Callout_Lat: 5.55
+      Callout_Lon: 99.15,
+      Callout_Lat: 5.55,
+      CardSize: 7000,
+      BadgeSize: 600
     },
     {
       State: "Johor",
@@ -264,8 +272,10 @@ function mapSpec() {
       Value: "3.0M",
       Lon: 103.7618,
       Lat: 1.4854,
-      Callout_Lon: 102.55,
-      Callout_Lat: 1.2
+      Callout_Lon: 102.45,
+      Callout_Lat: 0.95,
+      CardSize: 7000,
+      BadgeSize: 600
     }
   ];
 
@@ -333,8 +343,8 @@ function mapSpec() {
         mark: {
           type: "rule",
           stroke: "#0B5CAD",
-          strokeWidth: 1.4,
-          opacity: 0.9
+          strokeWidth: 1.5,
+          opacity: 0.85
         },
         encoding: {
           longitude: { field: "Lon", type: "quantitative" },
@@ -368,14 +378,14 @@ function mapSpec() {
           type: "point",
           shape: "square",
           filled: true,
-          size: 8500,
           color: "#ffffff",
           stroke: "#1D78C8",
           strokeWidth: 2
         },
         encoding: {
           longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" }
+          latitude: { field: "Callout_Lat", type: "quantitative" },
+          size: { field: "CardSize", type: "quantitative", legend: null }
         }
       },
 
@@ -385,16 +395,16 @@ function mapSpec() {
         mark: {
           type: "point",
           filled: true,
-          size: 720,
           color: "#0B2A6F",
           stroke: "#ffffff",
           strokeWidth: 2,
-          dx: -55,
+          dx: -48,
           dy: -8
         },
         encoding: {
           longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" }
+          latitude: { field: "Callout_Lat", type: "quantitative" },
+          size: { field: "BadgeSize", type: "quantitative", legend: null }
         }
       },
 
@@ -406,10 +416,10 @@ function mapSpec() {
           align: "center",
           baseline: "middle",
           font: "Inter",
-          fontSize: 16,
+          fontSize: 15,
           fontWeight: 900,
           color: "#ffffff",
-          dx: -55,
+          dx: -48,
           dy: -8
         },
         encoding: {
@@ -421,17 +431,19 @@ function mapSpec() {
 
       {
         data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
+        transform: [
+          { filter: `datum.Region == '${region}' && datum.Rank == '1'` }
+        ],
         mark: {
           type: "text",
           align: "left",
           baseline: "middle",
           font: "Inter",
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: 900,
           color: "#152238",
-          dx: -30,
-          dy: -18
+          dx: -20,
+          dy: -20
         },
         encoding: {
           longitude: { field: "Callout_Lon", type: "quantitative" },
@@ -442,17 +454,65 @@ function mapSpec() {
 
       {
         data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
+        transform: [
+          { filter: `datum.Region == '${region}' && datum.Rank != '1'` }
+        ],
+        mark: {
+          type: "text",
+          align: "left",
+          baseline: "middle",
+          font: "Inter",
+          fontSize: 13,
+          fontWeight: 900,
+          color: "#152238",
+          dx: -20,
+          dy: -16
+        },
+        encoding: {
+          longitude: { field: "Callout_Lon", type: "quantitative" },
+          latitude: { field: "Callout_Lat", type: "quantitative" },
+          text: { field: "Name" }
+        }
+      },
+
+      {
+        data: { values: topCallouts },
+        transform: [
+          { filter: `datum.Region == '${region}' && datum.Rank == '1'` }
+        ],
         mark: {
           type: "text",
           align: "left",
           baseline: "middle",
           font: "Bebas Neue",
-          fontSize: 28,
+          fontSize: 34,
           fontWeight: 900,
           color: "#0B5CAD",
-          dx: -30,
-          dy: 14
+          dx: -20,
+          dy: 15
+        },
+        encoding: {
+          longitude: { field: "Callout_Lon", type: "quantitative" },
+          latitude: { field: "Callout_Lat", type: "quantitative" },
+          text: { field: "Value" }
+        }
+      },
+
+      {
+        data: { values: topCallouts },
+        transform: [
+          { filter: `datum.Region == '${region}' && datum.Rank != '1'` }
+        ],
+        mark: {
+          type: "text",
+          align: "left",
+          baseline: "middle",
+          font: "Bebas Neue",
+          fontSize: 25,
+          fontWeight: 900,
+          color: "#0B5CAD",
+          dx: -20,
+          dy: 13
         },
         encoding: {
           longitude: { field: "Callout_Lon", type: "quantitative" },
