@@ -211,6 +211,54 @@ function mapSpec() {
   const halfWidth = Math.floor((width - 4) / 2);
   const mapHeight = 350;
 
+  const topCallouts = [
+    {
+      State: "Kuala Lumpur",
+      Region: "Peninsular",
+      Label: "① Kuala Lumpur 12.1M",
+      Lon: 101.6869,
+      Lat: 3.139,
+      Dx: -95,
+      Dy: 28
+    },
+    {
+      State: "Selangor",
+      Region: "Peninsular",
+      Label: "② Selangor 3.4M",
+      Lon: 101.5183,
+      Lat: 3.0738,
+      Dx: -105,
+      Dy: -28
+    },
+    {
+      State: "Sabah",
+      Region: "Borneo",
+      Label: "③ Sabah 3.1M",
+      Lon: 116.0753,
+      Lat: 5.9788,
+      Dx: 65,
+      Dy: -18
+    },
+    {
+      State: "Penang",
+      Region: "Peninsular",
+      Label: "④ Penang 3.0M",
+      Lon: 100.3288,
+      Lat: 5.4164,
+      Dx: -80,
+      Dy: -12
+    },
+    {
+      State: "Johor",
+      Region: "Peninsular",
+      Label: "⑤ Johor 3.0M",
+      Lon: 103.7618,
+      Lat: 1.4854,
+      Dx: -45,
+      Dy: 36
+    }
+  ];
+
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
     height: mapHeight,
@@ -265,8 +313,70 @@ function mapSpec() {
           ]
         }
       },
+
       labelLayer(region, true),
-      labelLayer(region, false)
+      labelLayer(region, false),
+
+      {
+        data: { values: topCallouts },
+        transform: [{ filter: `datum.Region == '${region}'` }],
+        mark: {
+          type: "point",
+          filled: true,
+          size: 120,
+          color: "#0B2A6F",
+          stroke: "#ffffff",
+          strokeWidth: 2.5
+        },
+        encoding: {
+          longitude: { field: "Lon", type: "quantitative" },
+          latitude: { field: "Lat", type: "quantitative" }
+        }
+      },
+
+      {
+        data: { values: topCallouts },
+        transform: [{ filter: `datum.Region == '${region}'` }],
+        mark: {
+          type: "text",
+          align: "left",
+          baseline: "middle",
+          font: "Inter",
+          fontSize: 14,
+          fontWeight: 900,
+          color: "#ffffff",
+          stroke: "#ffffff",
+          strokeWidth: 5
+        },
+        encoding: {
+          longitude: { field: "Lon", type: "quantitative" },
+          latitude: { field: "Lat", type: "quantitative" },
+          text: { field: "Label" },
+          dx: { field: "Dx" },
+          dy: { field: "Dy" }
+        }
+      },
+
+      {
+        data: { values: topCallouts },
+        transform: [{ filter: `datum.Region == '${region}'` }],
+        mark: {
+          type: "text",
+          align: "left",
+          baseline: "middle",
+          font: "Inter",
+          fontSize: 14,
+          fontWeight: 900,
+          color: "#0B2A6F"
+        },
+        encoding: {
+          longitude: { field: "Lon", type: "quantitative" },
+          latitude: { field: "Lat", type: "quantitative" },
+          text: { field: "Label" },
+          dx: { field: "Dx" },
+          dy: { field: "Dy" }
+        }
+      }
     ]
   });
 
