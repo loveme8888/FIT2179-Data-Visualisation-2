@@ -2121,21 +2121,13 @@ function domesticODSpec() {
 }
 
 function receiptsScatterSpec() {
-  const width = chartWidth("#receipts-scatter-chart", 1180, 760);
+  const width = chartWidth("#receipts-scatter-chart", 1280, 900);
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
-    height: 430,
-    padding: { left: 150, right: 90, top: 34, bottom: 44 },
-    title: {
-      text: "Top tourism receipt markets in 2024",
-      subtitle: "Total receipts by source market, RM billion",
-      fontSize: 25,
-      subtitleFontSize: 15,
-      anchor: "start",
-      offset: 14
-    },
+    height: 390,
+    padding: { left: 190, right: 90, top: 8, bottom: 42 },
     data: { url: "data/visitor_receipts_by_country_2024_2023.csv" },
     transform: [
       { calculate: "toNumber(datum.Rank)", as: "Receipt_Rank" },
@@ -2150,71 +2142,130 @@ function receiptsScatterSpec() {
       { filter: "datum.Receipt_Rank <= 12" },
       { calculate: "isValid(datum.Rank) ? toNumber(datum.Rank) : null", as: "Arrival_Rank" },
       { calculate: "datum.Receipts_2024_RM_Mil / 1000", as: "Receipts_RM_Bil" },
+      { calculate: "0", as: "Zero" },
       { calculate: "'RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
       { calculate: "isValid(datum.Flag) ? datum.Flag + '  ' + datum.Country : datum.Country", as: "Market_Label" },
       { calculate: "isValid(datum.Arrival_Rank) ? 'arrival rank #' + datum.Arrival_Rank : 'not in top arrivals'", as: "Arrival_Label" }
     ],
     layer: [
       {
-        mark: { type: "bar", cornerRadiusEnd: 6, height: { band: 0.62 } },
+        mark: { type: "rule", strokeWidth: 4, opacity: 0.88 },
         encoding: {
           x: {
-            field: "Receipts_RM_Bil",
+            field: "Zero",
             type: "quantitative",
             title: "Total tourism receipts (RM billion)",
             scale: { domain: [0, 30] },
             axis: {
               values: [0, 5, 10, 15, 20, 25, 30],
               grid: true,
-              gridColor: "rgba(120,150,190,0.18)",
+              gridColor: "rgba(120,150,190,0.20)",
               domain: false,
-              tickColor: "#ccd8e6"
+              tickColor: "#ccd8e6",
+              labelColor: "#34445c",
+              labelFontWeight: 700,
+              titleColor: "#34445c",
+              titleFontWeight: 800
             }
           },
+          x2: { field: "Receipts_RM_Bil" },
           y: {
             field: "Market_Label",
             type: "nominal",
             sort: { field: "Receipt_Rank", order: "ascending" },
             title: null,
             axis: {
-              labelFontSize: 15,
-              labelFontWeight: 800,
+              labelFontSize: 14,
+              labelFontWeight: 850,
               labelColor: "#152238",
               domain: false,
-              ticks: false
+              ticks: false,
+              labelLimit: 180
             }
           },
           color: {
             condition: [
               { test: "datum.Country === 'Singapore'", value: "#0B2A6F" },
-              { test: "datum.Country === 'China'", value: "#1A36D6" }
+              { test: "datum.Country === 'China'", value: "#263FE0" }
             ],
             value: "#C7D5F0"
+          }
+        }
+      },
+      {
+        mark: {
+          type: "circle",
+          stroke: "#ffffff",
+          strokeWidth: 3
+        },
+        encoding: {
+          x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
+          y: {
+            field: "Market_Label",
+            type: "nominal",
+            sort: { field: "Receipt_Rank", order: "ascending" }
+          },
+          size: {
+            condition: [
+              { test: "datum.Country === 'Singapore'", value: 1150 },
+              { test: "datum.Country === 'China'", value: 1000 }
+            ],
+            value: 520
+          },
+          color: {
+            condition: [
+              { test: "datum.Country === 'Singapore'", value: "#0B2A6F" },
+              { test: "datum.Country === 'China'", value: "#263FE0" }
+            ],
+            value: "#9FB6DF"
           },
           tooltip: [
             { field: "Country", title: "Country" },
-            { field: "Receipt_Rank", title: "2024 total receipts rank" },
-            { field: "Arrival_Rank", title: "2024 arrivals rank" },
+            { field: "Receipt_Rank", title: "Receipt rank" },
+            { field: "Arrival_Rank", title: "Arrival rank" },
             { field: "Receipts_RM_Bil", title: "Receipts (RM bil.)", format: ".1f" }
           ]
         }
       },
       {
-        mark: { type: "text", align: "left", baseline: "middle", dx: 10, fontSize: 14, fontWeight: 900, color: "#152238" },
+        mark: {
+          type: "text",
+          align: "left",
+          baseline: "middle",
+          dx: 13,
+          fontSize: 14,
+          fontWeight: 900,
+          color: "#152238"
+        },
         encoding: {
           x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
-          y: { field: "Market_Label", type: "nominal", sort: { field: "Receipt_Rank", order: "ascending" } },
+          y: {
+            field: "Market_Label",
+            type: "nominal",
+            sort: { field: "Receipt_Rank", order: "ascending" }
+          },
           text: { field: "Receipt_Label" }
         }
       },
       {
         transform: [{ filter: "datum.Country === 'Singapore' || datum.Country === 'China'" }],
-        mark: { type: "text", align: "left", baseline: "middle", dx: 72, fontSize: 12.5, fontWeight: 800, color: "#5b6d86" },
+        mark: {
+          type: "text",
+          align: "left",
+          baseline: "middle",
+          dx: 75,
+          fontSize: 11.5,
+          fontWeight: 800,
+          color: "#5b6d86"
+        },
         encoding: {
           x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
-          y: { field: "Market_Label", type: "nominal", sort: { field: "Receipt_Rank", order: "ascending" } },
-          text: { field: "Arrival_Label", type: "nominal" },
-          opacity: { value: 0.9 }
+          y: {
+            field: "Market_Label",
+            type: "nominal",
+            sort: { field: "Receipt_Rank", order: "ascending" }
+          },
+          text: { field: "Arrival_Label" }
         }
       }
     ],
