@@ -218,17 +218,45 @@ function mapSpec() {
     { Region: "Peninsular", Label: "Perak\n1.0M", Lon: 101.05, Lat: 4.65, Dx: 0, Dy: 0 },
     { Region: "Peninsular", Label: "Pahang\n2.9M", Lon: 102.55, Lat: 3.75, Dx: 0, Dy: 0 },
     { Region: "Peninsular", Label: "Melaka\n1.5M", Lon: 102.25, Lat: 2.25, Dx: 0, Dy: 0 },
-    { Region: "Borneo", Label: "Labuan\n0.1M", Lon: 115.25, Lat: 5.55, Dx: -8, Dy: 0 },
+    { Region: "Borneo", Label: "Labuan\n0.1M", Lon: 115.25, Lat: 5.55, Dx: -14, Dy: 0 },
     { Region: "Borneo", Label: "Sarawak\n1.4M", Lon: 113.2, Lat: 2.65, Dx: 0, Dy: 0 }
   ];
 
   const topLabels = [
-    { Region: "Peninsular", Label: "① Kuala Lumpur\n12.1M", Lon: 101.6869, Lat: 3.139, Dx: 10, Dy: 22, FontSize: 11 },
-    { Region: "Peninsular", Label: "② Selangor\n3.4M", Lon: 101.5183, Lat: 3.0738, Dx: -34, Dy: -28, FontSize: 10.5 },
-    { Region: "Borneo", Label: "③ Sabah\n3.1M", Lon: 116.0753, Lat: 5.9788, Dx: 28, Dy: -12, FontSize: 10.5 },
-    { Region: "Peninsular", Label: "④ Penang\n3.0M", Lon: 100.3288, Lat: 5.4164, Dx: -22, Dy: -12, FontSize: 10.5 },
-    { Region: "Peninsular", Label: "⑤ Johor\n3.0M", Lon: 103.7618, Lat: 1.4854, Dx: 20, Dy: 14, FontSize: 10.5 }
+    { Region: "Peninsular", Label: "① Kuala Lumpur\n12.1M", Lon: 101.6869, Lat: 3.139, Dx: 58, Dy: 34, FontSize: 10.5 },
+    { Region: "Peninsular", Label: "② Selangor\n3.4M", Lon: 101.5183, Lat: 3.0738, Dx: -58, Dy: -42, FontSize: 10 },
+    { Region: "Peninsular", Label: "④ Penang\n3.0M", Lon: 100.3288, Lat: 5.4164, Dx: -46, Dy: -10, FontSize: 10 },
+    { Region: "Peninsular", Label: "⑤ Johor\n3.0M", Lon: 103.7618, Lat: 1.4854, Dx: 34, Dy: 24, FontSize: 10 },
+    { Region: "Borneo", Label: "③ Sabah\n3.1M", Lon: 116.0753, Lat: 5.9788, Dx: 72, Dy: -16, FontSize: 10 }
   ];
+
+  const textLayer = (values, region, strokeLayer, isTop) => ({
+    data: { values },
+    transform: [{ filter: `datum.Region == '${region}'` }],
+    mark: {
+      type: "text",
+      align: "center",
+      baseline: "middle",
+      font: "Inter",
+      fontSize: isTop ? undefined : 9,
+      fontWeight: isTop ? 900 : 800,
+      lineBreak: "\n",
+      lineHeight: isTop ? 12 : 11,
+      stroke: strokeLayer ? "#ffffff" : null,
+      strokeWidth: strokeLayer ? 3 : 0
+    },
+    encoding: {
+      longitude: { field: "Lon", type: "quantitative" },
+      latitude: { field: "Lat", type: "quantitative" },
+      text: { field: "Label" },
+      color: { value: strokeLayer ? "#ffffff" : isTop ? "#0B2A6F" : "#152238" },
+      dx: { field: "Dx" },
+      dy: { field: "Dy" },
+      ...(isTop
+        ? { size: { field: "FontSize", type: "quantitative", legend: null, scale: null } }
+        : {})
+    }
+  });
 
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
@@ -285,99 +313,11 @@ function mapSpec() {
         }
       },
 
-      {
-        data: { values: normalLabels },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "text",
-          align: "center",
-          baseline: "middle",
-          font: "Inter",
-          fontSize: 9,
-          fontWeight: 800,
-          lineBreak: "\n",
-          lineHeight: 11,
-          stroke: "#ffffff",
-          strokeWidth: 3
-        },
-        encoding: {
-          longitude: { field: "Lon", type: "quantitative" },
-          latitude: { field: "Lat", type: "quantitative" },
-          text: { field: "Label" },
-          color: { value: "#ffffff" },
-          dx: { field: "Dx" },
-          dy: { field: "Dy" }
-        }
-      },
-      {
-        data: { values: normalLabels },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "text",
-          align: "center",
-          baseline: "middle",
-          font: "Inter",
-          fontSize: 9,
-          fontWeight: 800,
-          lineBreak: "\n",
-          lineHeight: 11
-        },
-        encoding: {
-          longitude: { field: "Lon", type: "quantitative" },
-          latitude: { field: "Lat", type: "quantitative" },
-          text: { field: "Label" },
-          color: { value: "#152238" },
-          dx: { field: "Dx" },
-          dy: { field: "Dy" }
-        }
-      },
+      textLayer(normalLabels, region, true, false),
+      textLayer(normalLabels, region, false, false),
 
-      {
-        data: { values: topLabels },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "text",
-          align: "center",
-          baseline: "middle",
-          font: "Inter",
-          fontWeight: 900,
-          lineBreak: "\n",
-          lineHeight: 12,
-          stroke: "#ffffff",
-          strokeWidth: 3
-        },
-        encoding: {
-          longitude: { field: "Lon", type: "quantitative" },
-          latitude: { field: "Lat", type: "quantitative" },
-          text: { field: "Label" },
-          color: { value: "#ffffff" },
-          dx: { field: "Dx" },
-          dy: { field: "Dy" },
-          size: { field: "FontSize", type: "quantitative", legend: null, scale: null }
-        }
-      },
-      {
-        data: { values: topLabels },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "text",
-          align: "center",
-          baseline: "middle",
-          font: "Inter",
-          fontWeight: 900,
-          lineBreak: "\n",
-          lineHeight: 12
-        },
-        encoding: {
-          longitude: { field: "Lon", type: "quantitative" },
-          latitude: { field: "Lat", type: "quantitative" },
-          text: { field: "Label" },
-          color: { value: "#0B2A6F" },
-          dx: { field: "Dx" },
-          dy: { field: "Dy" },
-          size: { field: "FontSize", type: "quantitative", legend: null, scale: null }
-        }
-      }
+      textLayer(topLabels, region, true, true),
+      textLayer(topLabels, region, false, true)
     ]
   });
 
