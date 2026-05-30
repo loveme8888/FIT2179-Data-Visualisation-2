@@ -52,25 +52,25 @@ const figureNarratives = {
     title: "Domestic tourism remains concentrated in key states",
     body: "Selangor and Kuala Lumpur continue to dominate domestic tourism activity, while nature-based destinations such as Sabah and Pahang remain highly attractive among Malaysian travelers."
   },
-  "expenditure-chart": {
+  "state-guests-chart": {
     number: "FIGURE 07",
+    title: "Growth opportunities appear beyond the largest bases",
+    body: "State growth rates identify where foreign hotel guest momentum strengthened most sharply year on year."
+  },
+  "expenditure-chart": {
+    number: "FIGURE 08",
     title: "Shopping is the largest international visitor spend category",
     body: "International visitors spent the most on shopping, making up more than one-third of total expenditure in 2024, followed by accommodation and food & beverages."
   },
   "domestic-purpose-chart": {
-    number: "FIGURE 08",
+    number: "FIGURE 09",
     title: "Domestic trips are mostly social and shopping-led",
     body: "Visiting relatives and friends is the largest trip purpose, followed by shopping and holiday or leisure travel."
   },
   "domestic-od-chart": {
-    number: "FIGURE 09",
+    number: "FIGURE 10",
     title: "Origin-destination flows reveal state-to-state travel corridors",
     body: "The heatmap shows where domestic tourists came from and which destination states they visited in 2024."
-  },
-  "state-guests-chart": {
-    number: "FIGURE 10",
-    title: "Growth opportunities appear beyond the largest bases",
-    body: "State growth rates identify where foreign hotel guest momentum strengthened most sharply year on year."
   }
 };
 
@@ -1999,7 +1999,7 @@ async function renderDomesticTripPurposeFlower() {
     <svg class="flower-chart-svg" viewBox="0 0 ${width} ${height}" role="img"
       aria-label="Purpose of domestic trips in 2024">
       <rect class="flower-figure-pill" x="8" y="8" width="128" height="34" rx="17"></rect>
-      <text class="flower-figure-label" x="72" y="31" text-anchor="middle">FIGURE 08</text>
+      <text class="flower-figure-label" x="72" y="31" text-anchor="middle">FIGURE 09</text>
 
       <text x="8" y="100"
         style="font-family:'Inter', sans-serif; font-size:38px; font-weight:500; fill:#152238;">
