@@ -1879,7 +1879,7 @@ async function renderDomesticTripPurposeFlower() {
   const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
   const height = 840;
 
-  const cx = width * 0.76;
+  const cx = width * 0.78;
   const cy = 440;
 
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
@@ -1912,12 +1912,12 @@ async function renderDomesticTripPurposeFlower() {
     "Visiting relatives & friends": ["Visiting relatives", "& friends"],
     Shopping: ["Shopping"],
     "Holiday/ leisure/ relaxation": ["Holiday / Leisure"],
-    "Incentive travel/ others": ["Incentive travel"],
-    "Entertainment/ attending special event/ sports": ["Entertainment"],
-    "Medical treatment/ wellness": ["Medical / Wellness"],
-    "Religious worship/ visit places of worship": ["Religious visit"],
+    "Incentive travel/ others": ["Incentive travel", "/ Others"],
+    "Entertainment/ attending special event/ sports": ["Entertainment", "/ Events"],
+    "Medical treatment/ wellness": ["Medical", "/ Wellness"],
+    "Religious worship/ visit places of worship": ["Religious", "visit"],
     "Official business/ business/ education": ["Business"],
-    "Others / Not stated": ["Others"]
+    "Others / Not stated": ["Others", "/ Not stated"]
   };
 
   const rankedRows = [...rows].sort((a, b) => b.Share_Pct - a.Share_Pct);
@@ -1930,7 +1930,7 @@ async function renderDomesticTripPurposeFlower() {
 
   const labelX = 390;
   const textX = 440;
-  const valueX = 590;
+  const valueX = 535;
   const firstLabelY = 215;
   const labelGap = 57;
 
@@ -1961,7 +1961,7 @@ async function renderDomesticTripPurposeFlower() {
         </text>
 
         <text x="${valueX}" y="${y + 1}" text-anchor="end"
-          style="font-family:'Bebas Neue', sans-serif; font-size:30px; font-weight:900; fill:${color};">
+          style="font-family:'Bebas Neue', sans-serif; font-size:28px; font-weight:900; fill:${color};">
           ${row.Share_Pct.toFixed(1)}%
         </text>
       </g>
