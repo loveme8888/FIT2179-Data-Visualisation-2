@@ -211,73 +211,83 @@ function mapSpec() {
   const halfWidth = Math.floor((width - 4) / 2);
   const mapHeight = 350;
 
-  const topCallouts = [
+  const topLabels = [
     {
       State: "Kuala Lumpur",
       Region: "Peninsular",
-      Rank: "1",
-      Name: "Kuala Lumpur",
-      Value: "12.1M",
+      Label: "(1) Kuala Lumpur\n12.1M",
       Lon: 101.6869,
       Lat: 3.139,
-      Callout_Lon: 99.25,
-      Callout_Lat: 2.75,
-      CardSize: 12000,
-      BadgeSize: 900
+      Dx: -10,
+      Dy: 32,
+      FontSize: 16
     },
     {
       State: "Selangor",
       Region: "Peninsular",
-      Rank: "2",
-      Name: "Selangor",
-      Value: "3.4M",
+      Label: "(2) Selangor\n3.4M",
       Lon: 101.5183,
       Lat: 3.0738,
-      Callout_Lon: 99.15,
-      Callout_Lat: 3.85,
-      CardSize: 7800,
-      BadgeSize: 650
+      Dx: -38,
+      Dy: -30,
+      FontSize: 14
     },
     {
       State: "Sabah",
       Region: "Borneo",
-      Rank: "3",
-      Name: "Sabah",
-      Value: "3.1M",
+      Label: "(3) Sabah\n3.1M",
       Lon: 116.0753,
       Lat: 5.9788,
-      Callout_Lon: 118.45,
-      Callout_Lat: 6.45,
-      CardSize: 7800,
-      BadgeSize: 650
+      Dx: 28,
+      Dy: -16,
+      FontSize: 14
     },
     {
       State: "Penang",
       Region: "Peninsular",
-      Rank: "4",
-      Name: "Penang",
-      Value: "3.0M",
+      Label: "(4) Penang\n3.0M",
       Lon: 100.3288,
       Lat: 5.4164,
-      Callout_Lon: 99.15,
-      Callout_Lat: 5.55,
-      CardSize: 7000,
-      BadgeSize: 600
+      Dx: -20,
+      Dy: -18,
+      FontSize: 14
     },
     {
       State: "Johor",
       Region: "Peninsular",
-      Rank: "5",
-      Name: "Johor",
-      Value: "3.0M",
+      Label: "(5) Johor\n3.0M",
       Lon: 103.7618,
       Lat: 1.4854,
-      Callout_Lon: 102.45,
-      Callout_Lat: 0.95,
-      CardSize: 7000,
-      BadgeSize: 600
+      Dx: 26,
+      Dy: 18,
+      FontSize: 14
     }
   ];
+
+  const topLabelLayer = (region, strokeLayer) => ({
+    data: { values: topLabels },
+    transform: [{ filter: `datum.Region == '${region}'` }],
+    mark: {
+      type: "text",
+      align: "center",
+      baseline: "middle",
+      font: "Inter",
+      fontWeight: 950,
+      lineBreak: "\n",
+      lineHeight: 17,
+      stroke: strokeLayer ? "#ffffff" : null,
+      strokeWidth: strokeLayer ? 5 : 0
+    },
+    encoding: {
+      longitude: { field: "Lon", type: "quantitative" },
+      latitude: { field: "Lat", type: "quantitative" },
+      text: { field: "Label" },
+      color: { value: strokeLayer ? "#ffffff" : "#0B2A6F" },
+      dx: { field: "Dx" },
+      dy: { field: "Dy" },
+      size: { field: "FontSize", type: "quantitative", legend: null }
+    }
+  });
 
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
@@ -337,189 +347,8 @@ function mapSpec() {
       labelLayer(region, true),
       labelLayer(region, false),
 
-      {
-        data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "rule",
-          stroke: "#0B5CAD",
-          strokeWidth: 1.5,
-          opacity: 0.85
-        },
-        encoding: {
-          longitude: { field: "Lon", type: "quantitative" },
-          latitude: { field: "Lat", type: "quantitative" },
-          longitude2: { field: "Callout_Lon" },
-          latitude2: { field: "Callout_Lat" }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "point",
-          filled: true,
-          size: 110,
-          color: "#1D78C8",
-          stroke: "#ffffff",
-          strokeWidth: 2.5
-        },
-        encoding: {
-          longitude: { field: "Lon", type: "quantitative" },
-          latitude: { field: "Lat", type: "quantitative" }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "point",
-          shape: "square",
-          filled: true,
-          color: "#ffffff",
-          stroke: "#1D78C8",
-          strokeWidth: 2
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          size: { field: "CardSize", type: "quantitative", legend: null }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "point",
-          filled: true,
-          color: "#0B2A6F",
-          stroke: "#ffffff",
-          strokeWidth: 2,
-          dx: -48,
-          dy: -8
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          size: { field: "BadgeSize", type: "quantitative", legend: null }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [{ filter: `datum.Region == '${region}'` }],
-        mark: {
-          type: "text",
-          align: "center",
-          baseline: "middle",
-          font: "Inter",
-          fontSize: 15,
-          fontWeight: 900,
-          color: "#ffffff",
-          dx: -48,
-          dy: -8
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          text: { field: "Rank" }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [
-          { filter: `datum.Region == '${region}' && datum.Rank == '1'` }
-        ],
-        mark: {
-          type: "text",
-          align: "left",
-          baseline: "middle",
-          font: "Inter",
-          fontSize: 16,
-          fontWeight: 900,
-          color: "#152238",
-          dx: -20,
-          dy: -20
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          text: { field: "Name" }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [
-          { filter: `datum.Region == '${region}' && datum.Rank != '1'` }
-        ],
-        mark: {
-          type: "text",
-          align: "left",
-          baseline: "middle",
-          font: "Inter",
-          fontSize: 13,
-          fontWeight: 900,
-          color: "#152238",
-          dx: -20,
-          dy: -16
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          text: { field: "Name" }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [
-          { filter: `datum.Region == '${region}' && datum.Rank == '1'` }
-        ],
-        mark: {
-          type: "text",
-          align: "left",
-          baseline: "middle",
-          font: "Bebas Neue",
-          fontSize: 34,
-          fontWeight: 900,
-          color: "#0B5CAD",
-          dx: -20,
-          dy: 15
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          text: { field: "Value" }
-        }
-      },
-
-      {
-        data: { values: topCallouts },
-        transform: [
-          { filter: `datum.Region == '${region}' && datum.Rank != '1'` }
-        ],
-        mark: {
-          type: "text",
-          align: "left",
-          baseline: "middle",
-          font: "Bebas Neue",
-          fontSize: 25,
-          fontWeight: 900,
-          color: "#0B5CAD",
-          dx: -20,
-          dy: 13
-        },
-        encoding: {
-          longitude: { field: "Callout_Lon", type: "quantitative" },
-          latitude: { field: "Callout_Lat", type: "quantitative" },
-          text: { field: "Value" }
-        }
-      }
+      topLabelLayer(region, true),
+      topLabelLayer(region, false)
     ]
   });
 
