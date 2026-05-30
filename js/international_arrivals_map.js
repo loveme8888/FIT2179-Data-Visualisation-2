@@ -1862,6 +1862,7 @@ function labelForPurpose(purpose) {
   return labels[purpose] || [purpose];
 }
 
+
 async function renderDomesticTripPurposeFlower() {
   const container = document.querySelector("#domestic-purpose-chart");
   if (!container) return;
@@ -1873,41 +1874,26 @@ async function renderDomesticTripPurposeFlower() {
 
   rows.push({ Purpose: "Others / Not stated", Share_Pct: 3.8 });
 
-  const width = Math.max(1040, chartWidth("#domestic-purpose-chart", 1080, 720));
-  const height = 880;
-  const cx = width * 0.51;
-  const cy = 460;
-  const innerRadius = 76;
-  const centerRadius = 88;
-  const petalHalfAngle = 20;
-  const firstPetalAngle = -75;
-  const petalStepAngle = 40;
+  const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
+  const height = 820;
+
+  const cx = width * 0.68;
+  const cy = 440;
+
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
+
   const colorsByPurpose = {
-    "Visiting relatives & friends": "#E89DB5",
-    Shopping: "#EAB89F",
-    "Holiday/ leisure/ relaxation": "#E6CA74",
-    "Incentive travel/ others": "#D5E187",
-    "Entertainment/ attending special event/ sports": "#A8D4A2",
-    "Medical treatment/ wellness": "#96D5D0",
-    "Religious worship/ visit places of worship": "#8FC5E3",
-    "Official business/ business/ education": "#B5A8D9",
-    "Others / Not stated": "#D0B3E0"
-  };
-  const accentsByPurpose = {
-    "Visiting relatives & friends": "#D85973",
-    Shopping: "#D87248",
-    "Holiday/ leisure/ relaxation": "#BFA825",
-    "Incentive travel/ others": "#A0B922",
-    "Entertainment/ attending special event/ sports": "#5FA87F",
-    "Medical treatment/ wellness": "#54AEAA",
-    "Religious worship/ visit places of worship": "#6B9DC4",
-    "Official business/ business/ education": "#8560A8",
+    "Visiting relatives & friends": "#F05A7A",
+    Shopping: "#F26B2A",
+    "Holiday/ leisure/ relaxation": "#F2B705",
+    "Incentive travel/ others": "#A8C51F",
+    "Entertainment/ attending special event/ sports": "#48B86E",
+    "Medical treatment/ wellness": "#3BB8AE",
+    "Religious worship/ visit places of worship": "#6FA8DC",
+    "Official business/ business/ education": "#7A61C9",
     "Others / Not stated": "#9B75C4"
   };
-  const anglesByPurpose = Object.fromEntries(
-    rows.map((row, index) => [row.Purpose, firstPetalAngle + index * petalStepAngle])
-  );
+
   const iconByPurpose = {
     "Visiting relatives & friends": "family",
     Shopping: "bag",
@@ -1920,96 +1906,135 @@ async function renderDomesticTripPurposeFlower() {
     "Others / Not stated": "dots"
   };
 
-  const petals = rows.map((row) => {
-    const angle = anglesByPurpose[row.Purpose] ?? -90;
-    const length = 102 + (row.Share_Pct / maxShare) * 216;
-    const outerRadius = innerRadius + length;
-    const labelRadius = outerRadius + (row.Purpose === "Visiting relatives & friends" ? 52 : row.Share_Pct >= 20 ? 80 : 64);
-    const labelPoint = polarPoint(cx, cy, labelRadius, angle);
-    const valuePoint = polarPoint(cx, cy, innerRadius + length * 0.56, angle);
-    const iconPoint = polarPoint(cx, cy, innerRadius + length * 0.35, angle);
+  const rankedRows = [...rows].sort((a, b) => b.Share_Pct - a.Share_Pct);
+
+  const startAngle = -90;
+  const maxArc = 300;
+  const trackWidth = 18;
+  const trackGap = 28;
+  const innerRadius = 62;
+
+  const labelX = 88;
+  const valueX = 330;
+  const firstLabelY = 205;
+  const labelGap = 72;
+
+  const arcPath = (cx, cy, radius, startDeg, endDeg) => {
+    const start = polarPoint(cx, cy, radius, startDeg);
+    const end = polarPoint(cx, cy, radius, endDeg);
+    const largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+    return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} A ${radius} ${radius} 0 ${largeArc} 1 ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+  };
+
+  const labelMarkup = rankedRows.map((row, index) => {
     const color = colorsByPurpose[row.Purpose] || colors.teal;
-    const accent = accentsByPurpose[row.Purpose] || colors.teal;
+    const y = firstLabelY + index * labelGap;
     const labelLines = labelForPurpose(row.Purpose);
-    const textAnchor = Math.cos((Math.PI / 180) * angle) > 0.25
-      ? "start"
-      : Math.cos((Math.PI / 180) * angle) < -0.25
-        ? "end"
-        : "middle";
 
-    return { ...row, angle, outerRadius, labelPoint, valuePoint, iconPoint, color, accent, icon: iconByPurpose[row.Purpose], labelLines, textAnchor };
-  });
+    return `
+      <g>
+        <circle cx="${labelX}" cy="${y - 8}" r="25" fill="${color}" opacity="0.9"></circle>
+        <g transform="translate(${labelX}, ${y - 8}) scale(0.68)" style="--icon-color:#ffffff">
+          ${purposeIconMarkup(iconByPurpose[row.Purpose])}
+        </g>
 
-  const labelMarkup = petals.map((petal) => `
-    <path class="flower-leader" d="${leaderPath(cx, cy, petal.outerRadius + 8, petal.outerRadius + 30, petal.angle, petal.labelPoint.x)}"
-      stroke="${petal.accent}"></path>
-    <circle class="flower-leader-dot" cx="${polarPoint(cx, cy, petal.outerRadius + 30, petal.angle).x.toFixed(1)}"
-      cy="${polarPoint(cx, cy, petal.outerRadius + 30, petal.angle).y.toFixed(1)}" r="4.5" fill="${petal.accent}"></circle>
-    <text class="flower-label" x="${petal.labelPoint.x.toFixed(1)}" y="${petal.labelPoint.y.toFixed(1)}"
-      text-anchor="${petal.textAnchor}">
-      ${petal.labelLines.map((line, index) => `
-        <tspan x="${petal.labelPoint.x.toFixed(1)}" dy="${index === 0 ? 0 : 17}">${line}</tspan>
-      `).join("")}
-    </text>
-  `).join("");
+        <text x="${labelX + 52}" y="${y - 22}" class="flower-label" text-anchor="start">
+          ${labelLines.map((line, lineIndex) => `
+            <tspan x="${labelX + 52}" dy="${lineIndex === 0 ? 0 : 18}">${line}</tspan>
+          `).join("")}
+        </text>
 
-  const valueMarkup = petals
-    .filter((petal) => petal.Share_Pct >= 0.8)
-    .map((petal) => `
-      <text class="flower-value" x="${petal.valuePoint.x.toFixed(1)}" y="${petal.valuePoint.y.toFixed(1)}"
-        text-anchor="middle" dominant-baseline="middle">${petal.Share_Pct.toFixed(1)}%</text>
-    `).join("");
+        <text x="${valueX}" y="${y + 2}" text-anchor="end"
+          style="font-family:'Bebas Neue', sans-serif; font-size:32px; font-weight:900; fill:${color};">
+          ${row.Share_Pct.toFixed(1)}%
+        </text>
 
-  const iconMarkup = petals.map((petal) => `
-    <g class="flower-purpose-icon" transform="translate(${petal.iconPoint.x.toFixed(1)}, ${petal.iconPoint.y.toFixed(1)}) scale(${petal.Share_Pct >= 20 ? 1.15 : 1})"
-      style="--icon-color:${petal.accent}">
-      ${purposeIconMarkup(petal.icon)}
-    </g>
-  `).join("");
+        <circle cx="${valueX + 24}" cy="${y - 8}" r="4.5" fill="${color}"></circle>
+        <line x1="${valueX + 32}" y1="${y - 8}" x2="${cx - 235}" y2="${y - 8}"
+          stroke="#cbd3de" stroke-width="1.1"></line>
+      </g>
+    `;
+  }).join("");
 
-  const gradientMarkup = petals.map((petal, index) => `
-    <radialGradient id="purpose-petal-${index}" cx="32%" cy="28%" r="76%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"></stop>
-      <stop offset="52%" stop-color="${petal.color}" stop-opacity="0.92"></stop>
-      <stop offset="100%" stop-color="${petal.color}" stop-opacity="1"></stop>
-    </radialGradient>
-  `).join("");
+  const guideMarkup = rankedRows.map((_, index) => {
+    const radius = innerRadius + (rankedRows.length - index) * trackGap;
+    return `
+      <path d="${arcPath(cx, cy, radius, startAngle, startAngle + maxArc)}"
+        fill="none"
+        stroke="#DDE6F0"
+        stroke-width="1"
+        stroke-dasharray="3 5"
+        opacity="0.7"></path>
+    `;
+  }).join("");
+
+  const trackMarkup = rankedRows.map((row, index) => {
+    const color = colorsByPurpose[row.Purpose] || colors.teal;
+    const radius = innerRadius + (rankedRows.length - index) * trackGap;
+    const endAngle = startAngle + (row.Share_Pct / maxShare) * maxArc;
+    const endPoint = polarPoint(cx, cy, radius, endAngle);
+
+    return `
+      <path d="${arcPath(cx, cy, radius, startAngle, startAngle + maxArc)}"
+        fill="none"
+        stroke="#F1F5F9"
+        stroke-width="${trackWidth}"
+        stroke-linecap="round"></path>
+
+      <path d="${arcPath(cx, cy, radius, startAngle, endAngle)}"
+        fill="none"
+        stroke="${color}"
+        stroke-width="${trackWidth}"
+        stroke-linecap="round"
+        opacity="0.72">
+        <title>${row.Purpose}: ${row.Share_Pct.toFixed(1)}%</title>
+      </path>
+
+      <circle cx="${endPoint.x.toFixed(1)}" cy="${endPoint.y.toFixed(1)}" r="8"
+        fill="${color}" stroke="#ffffff" stroke-width="3"></circle>
+    `;
+  }).join("");
 
   container.innerHTML = `
     <svg class="flower-chart-svg" viewBox="0 0 ${width} ${height}" role="img"
       aria-label="Purpose of domestic trips in 2024">
-      <defs>${gradientMarkup}</defs>
       <rect class="flower-figure-pill" x="8" y="8" width="128" height="34" rx="17"></rect>
       <text class="flower-figure-label" x="72" y="31" text-anchor="middle">FIGURE 08</text>
       <text class="flower-title" x="8" y="94">PURPOSE OF DOMESTIC TRIPS IN 2024</text>
       <text class="flower-subtitle" x="8" y="132">Share of domestic trips by main purpose (%)</text>
-      <g class="flower-petals">
-        ${petals.map((petal, index) => `
-          <path d="${petalPath(cx, cy, innerRadius, petal.outerRadius, petal.angle, petalHalfAngle)}"
-            fill="url(#purpose-petal-${index})">
-            <title>${petal.Purpose}: ${petal.Share_Pct.toFixed(1)}%</title>
-          </path>
-        `).join("")}
-      </g>
-      <circle cx="${cx}" cy="${cy}" r="${centerRadius}" fill="#ffffff" stroke="#e8eff8" stroke-width="3" filter="drop-shadow(0 4px 8px rgba(21, 34, 56, 0.08))"/>
-      ${iconMarkup}
-      <g class="flower-center-icon" transform="translate(${cx - 34}, ${cy - 50}) scale(1.2)">
-        <circle cx="30" cy="15" r="11"></circle>
-        <circle cx="10" cy="24" r="9"></circle>
-        <circle cx="50" cy="24" r="9"></circle>
-        <path d="M16 60v-10c0-11 7-18 14-18s14 7 14 18v10"></path>
-        <path d="M0 60v-8c0-9 5-15 11-15"></path>
-        <path d="M60 60v-8c0-9-5-15-11-15"></path>
-      </g>
-      <text class="flower-center-text" x="${cx}" y="${cy + 42}" text-anchor="middle">
-        <tspan x="${cx}" dy="0">Domestic</tspan>
-        <tspan x="${cx}" dy="24">Trips</tspan>
-      </text>
-      ${valueMarkup}
+
       ${labelMarkup}
+
+      <g>
+        ${guideMarkup}
+        ${trackMarkup}
+
+        <circle cx="${cx}" cy="${cy}" r="92" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
+          filter="drop-shadow(0 6px 12px rgba(21, 34, 56, 0.12))"></circle>
+
+        <g class="flower-center-icon" transform="translate(${cx - 34}, ${cy - 58}) scale(1.15)">
+          <circle cx="30" cy="15" r="11"></circle>
+          <circle cx="10" cy="24" r="9"></circle>
+          <circle cx="50" cy="24" r="9"></circle>
+          <path d="M16 60v-10c0-11 7-18 14-18s14 7 14 18v10"></path>
+          <path d="M0 60v-8c0-9 5-15 11-15"></path>
+          <path d="M60 60v-8c0-9-5-15-11-15"></path>
+        </g>
+
+        <text x="${cx}" y="${cy + 18}" text-anchor="middle"
+          style="font-family:'Bebas Neue', sans-serif; font-size:50px; font-weight:900; fill:#152238;">100%</text>
+
+        <text x="${cx}" y="${cy + 48}" text-anchor="middle"
+          style="font-family:'Inter', sans-serif; font-size:18px; font-weight:850; fill:#152238;">
+          <tspan x="${cx}" dy="0">Domestic Trips</tspan>
+          <tspan x="${cx}" dy="22">in 2024</tspan>
+        </text>
+      </g>
     </svg>
   `;
 }
+
+
 
 function purposeIconMarkup(icon) {
   const icons = {
