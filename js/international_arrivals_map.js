@@ -1879,8 +1879,8 @@ async function renderDomesticTripPurposeFlower() {
   const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
   const height = 840;
 
-  const cx = width * 0.58;
-  const cy = 450;
+  const cx = width * 0.70;
+  const cy = 420;
 
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
 
@@ -1912,14 +1912,14 @@ async function renderDomesticTripPurposeFlower() {
 
   const startAngle = -90;
   const maxArc = 300;
-  const trackWidth = 18;
-  const trackGap = 22;
-  const innerRadius = 56;
+  const trackWidth = 16;
+  const trackGap = 18;
+  const innerRadius = 48;
 
   const labelX = 86;
   const textX = 142;
   const valueX = 375;
-  const firstLabelY = 215;
+  const firstLabelY = 270;
   const labelGap = 66;
 
   const arcPath = (cx, cy, radius, startDeg, endDeg) => {
@@ -1990,7 +1990,7 @@ async function renderDomesticTripPurposeFlower() {
         <title>${row.Purpose}: ${row.Share_Pct.toFixed(1)}%</title>
       </path>
 
-      <circle cx="${endPoint.x.toFixed(1)}" cy="${endPoint.y.toFixed(1)}" r="8"
+      <circle cx="${endPoint.x.toFixed(1)}" cy="${endPoint.y.toFixed(1)}" r="7"
         fill="${color}" stroke="#ffffff" stroke-width="3"></circle>
     `;
   }).join("");
@@ -2003,16 +2003,23 @@ async function renderDomesticTripPurposeFlower() {
       <text class="flower-title" x="8" y="94">PURPOSE OF DOMESTIC TRIPS IN 2024</text>
       <text class="flower-subtitle" x="8" y="132">Share of domestic trips by main purpose (%)</text>
 
+      <text x="8" y="190"
+        style="font-family:'Inter', sans-serif; font-size:20px; font-weight:500; fill:#5A6B84;">
+        <tspan x="8" dy="0">Social visits and shopping dominate</tspan>
+        <tspan x="8" dy="30">domestic travel demand, together</tspan>
+        <tspan x="8" dy="30">accounting for more than 60% of trips.</tspan>
+      </text>
+
       ${labelMarkup}
 
       <g>
         ${guideMarkup}
         ${trackMarkup}
 
-        <circle cx="${cx}" cy="${cy}" r="80" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
+        <circle cx="${cx}" cy="${cy}" r="72" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
           filter="drop-shadow(0 6px 12px rgba(21, 34, 56, 0.12))"></circle>
 
-        <g class="flower-center-icon" transform="translate(${cx - 30}, ${cy - 60}) scale(0.92)">
+        <g class="flower-center-icon" transform="translate(${cx - 28}, ${cy - 54}) scale(0.84)">
           <circle cx="30" cy="15" r="11"></circle>
           <circle cx="10" cy="24" r="9"></circle>
           <circle cx="50" cy="24" r="9"></circle>
@@ -2021,15 +2028,15 @@ async function renderDomesticTripPurposeFlower() {
           <path d="M60 60v-8c0-9-5-15-11-15"></path>
         </g>
 
-        <text x="${cx}" y="${cy + 26}" text-anchor="middle"
-          style="font-family:'Bebas Neue', sans-serif; font-size:52px; font-weight:900; fill:#152238;">
+        <text x="${cx}" y="${cy + 24}" text-anchor="middle"
+          style="font-family:'Bebas Neue', sans-serif; font-size:46px; font-weight:900; fill:#152238;">
           100%
         </text>
 
-        <text x="${cx}" y="${cy + 64}" text-anchor="middle"
-          style="font-family:'Inter', sans-serif; font-size:16px; font-weight:850; fill:#152238;">
+        <text x="${cx}" y="${cy + 58}" text-anchor="middle"
+          style="font-family:'Inter', sans-serif; font-size:15px; font-weight:850; fill:#152238;">
           <tspan x="${cx}" dy="0">Domestic Trips</tspan>
-          <tspan x="${cx}" dy="20">in 2024</tspan>
+          <tspan x="${cx}" dy="19">in 2024</tspan>
         </text>
       </g>
     </svg>
