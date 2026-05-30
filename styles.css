@@ -2073,7 +2073,7 @@ h1 {
 }
 
 .flower-petals path {
-  filter: drop-shadow(0 13px 22px rgba(21, 34, 56, 0.1));
+  filter: drop-shadow(0 7px 13px rgba(21, 34, 56, 0.045));
 }
 
 .flower-value {
@@ -2090,21 +2090,21 @@ h1 {
 
 .flower-leader {
   fill: none;
-  stroke-width: 1.6;
+  stroke-width: 1.45;
 }
 
 .flower-purpose-icon {
   fill: none;
   stroke: var(--icon-color);
-  stroke-width: 4;
+  stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.95;
+  opacity: 0.9;
 }
 
 .flower-center-text {
   fill: var(--text);
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 900;
 }
 

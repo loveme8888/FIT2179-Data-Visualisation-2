@@ -1804,20 +1804,23 @@ function polarPoint(cx, cy, radius, angleDeg) {
 
 function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
   const length = outerRadius - innerRadius;
-  const innerLeft = polarPoint(cx, cy, innerRadius, angleDeg - halfAngle);
-  const innerRight = polarPoint(cx, cy, innerRadius, angleDeg + halfAngle);
-  const outerLeft = polarPoint(cx, cy, outerRadius + 12, angleDeg - halfAngle);
-  const outerRight = polarPoint(cx, cy, outerRadius + 12, angleDeg + halfAngle);
-  const leftWaist = polarPoint(cx, cy, innerRadius + length * 0.44, angleDeg - halfAngle * 0.88);
-  const rightWaist = polarPoint(cx, cy, innerRadius + length * 0.44, angleDeg + halfAngle * 0.88);
-  const leftShoulder = polarPoint(cx, cy, outerRadius + 8, angleDeg - halfAngle * 0.98);
-  const rightShoulder = polarPoint(cx, cy, outerRadius + 8, angleDeg + halfAngle * 0.98);
-  const innerMid = polarPoint(cx, cy, innerRadius - 12, angleDeg);
+  const baseHalfAngle = halfAngle * 0.34;
+  const shoulderHalfAngle = halfAngle * 1.04;
+  const innerLeft = polarPoint(cx, cy, innerRadius, angleDeg - baseHalfAngle);
+  const innerRight = polarPoint(cx, cy, innerRadius, angleDeg + baseHalfAngle);
+  const outerRadiusWithCap = outerRadius + 8;
+  const outerLeft = polarPoint(cx, cy, outerRadiusWithCap, angleDeg - shoulderHalfAngle);
+  const outerRight = polarPoint(cx, cy, outerRadiusWithCap, angleDeg + shoulderHalfAngle);
+  const leftWaist = polarPoint(cx, cy, innerRadius + length * 0.42, angleDeg - halfAngle * 0.78);
+  const rightWaist = polarPoint(cx, cy, innerRadius + length * 0.42, angleDeg + halfAngle * 0.78);
+  const leftShoulder = polarPoint(cx, cy, innerRadius + length * 0.82, angleDeg - halfAngle * 1.08);
+  const rightShoulder = polarPoint(cx, cy, innerRadius + length * 0.82, angleDeg + halfAngle * 1.08);
+  const innerMid = polarPoint(cx, cy, innerRadius - 10, angleDeg);
 
   return [
     `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftShoulder.x.toFixed(1)} ${leftShoulder.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
-    `A ${(outerRadius + 12).toFixed(1)} ${(outerRadius + 12).toFixed(1)} 0 0 1 ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
+    `A ${outerRadiusWithCap.toFixed(1)} ${outerRadiusWithCap.toFixed(1)} 0 0 1 ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
     `C ${rightShoulder.x.toFixed(1)} ${rightShoulder.y.toFixed(1)} ${rightWaist.x.toFixed(1)} ${rightWaist.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
     `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     "Z"
@@ -1827,7 +1830,7 @@ function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
 function leaderPath(cx, cy, startRadius, endRadius, angleDeg, labelX) {
   const start = polarPoint(cx, cy, startRadius, angleDeg);
   const elbow = polarPoint(cx, cy, endRadius, angleDeg);
-  const horizontal = labelX > cx ? 44 : -44;
+  const horizontal = labelX > cx ? 34 : -34;
   return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} L ${elbow.x.toFixed(1)} ${elbow.y.toFixed(1)} L ${(elbow.x + horizontal).toFixed(1)} ${elbow.y.toFixed(1)}`;
 }
 
@@ -1861,32 +1864,33 @@ async function renderDomesticTripPurposeFlower() {
   const height = 850;
   const cx = width * 0.51;
   const cy = 470;
-  const innerRadius = 78;
-  const petalHalfAngle = 18.5;
+  const innerRadius = 98;
+  const centerRadius = 112;
+  const petalHalfAngle = 19.3;
   const firstPetalAngle = -75;
   const petalStepAngle = 40;
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
   const colorsByPurpose = {
-    "Visiting relatives & friends": "#F9A7B5",
-    Shopping: "#FFC4A9",
-    "Holiday/ leisure/ relaxation": "#F8D58B",
-    "Incentive travel/ others": "#DDE68F",
-    "Entertainment/ attending special event/ sports": "#A7DDB5",
-    "Medical treatment/ wellness": "#A8DFDA",
-    "Religious worship/ visit places of worship": "#B5D5F0",
-    "Official business/ business/ education": "#C4B2EA",
-    "Others / Not stated": "#D4C4EC"
+    "Visiting relatives & friends": "#EFA6AF",
+    Shopping: "#F2BEA4",
+    "Holiday/ leisure/ relaxation": "#EBC977",
+    "Incentive travel/ others": "#CED981",
+    "Entertainment/ attending special event/ sports": "#98CFA5",
+    "Medical treatment/ wellness": "#9DD5CF",
+    "Religious worship/ visit places of worship": "#A7C9E5",
+    "Official business/ business/ education": "#B6A6DC",
+    "Others / Not stated": "#C8B8DF"
   };
   const accentsByPurpose = {
-    "Visiting relatives & friends": "#F24E69",
-    Shopping: "#F27435",
-    "Holiday/ leisure/ relaxation": "#F0A91D",
-    "Incentive travel/ others": "#B6C42A",
-    "Entertainment/ attending special event/ sports": "#4FB466",
-    "Medical treatment/ wellness": "#52BDB6",
-    "Religious worship/ visit places of worship": "#6BA9E4",
-    "Official business/ business/ education": "#8B68CD",
-    "Others / Not stated": "#9270CF"
+    "Visiting relatives & friends": "#D85F73",
+    Shopping: "#D77A49",
+    "Holiday/ leisure/ relaxation": "#C99B2E",
+    "Incentive travel/ others": "#9BA83D",
+    "Entertainment/ attending special event/ sports": "#5FAE70",
+    "Medical treatment/ wellness": "#59AFA8",
+    "Religious worship/ visit places of worship": "#6C9BC9",
+    "Official business/ business/ education": "#8068B8",
+    "Others / Not stated": "#8B72BD"
   };
   const anglesByPurpose = Object.fromEntries(
     rows.map((row, index) => [row.Purpose, firstPetalAngle + index * petalStepAngle])
@@ -1905,12 +1909,12 @@ async function renderDomesticTripPurposeFlower() {
 
   const petals = rows.map((row) => {
     const angle = anglesByPurpose[row.Purpose] ?? -90;
-    const length = 90 + (row.Share_Pct / maxShare) * 210;
+    const length = 72 + (row.Share_Pct / maxShare) * 208;
     const outerRadius = innerRadius + length;
-    const labelRadius = outerRadius + (row.Purpose === "Visiting relatives & friends" ? 54 : row.Share_Pct >= 20 ? 92 : 72);
+    const labelRadius = outerRadius + (row.Purpose === "Visiting relatives & friends" ? 46 : row.Share_Pct >= 20 ? 74 : 58);
     const labelPoint = polarPoint(cx, cy, labelRadius, angle);
     const valuePoint = polarPoint(cx, cy, innerRadius + length * 0.58, angle);
-    const iconPoint = polarPoint(cx, cy, innerRadius + length * 0.36, angle);
+    const iconPoint = polarPoint(cx, cy, innerRadius + length * 0.34, angle);
     const color = colorsByPurpose[row.Purpose] || colors.teal;
     const accent = accentsByPurpose[row.Purpose] || colors.teal;
     const labelLines = labelForPurpose(row.Purpose);
@@ -1924,10 +1928,10 @@ async function renderDomesticTripPurposeFlower() {
   });
 
   const labelMarkup = petals.map((petal) => `
-    <path class="flower-leader" d="${leaderPath(cx, cy, petal.outerRadius + 4, petal.outerRadius + 42, petal.angle, petal.labelPoint.x)}"
+    <path class="flower-leader" d="${leaderPath(cx, cy, petal.outerRadius + 8, petal.outerRadius + 30, petal.angle, petal.labelPoint.x)}"
       stroke="${petal.accent}"></path>
-    <circle class="flower-leader-dot" cx="${polarPoint(cx, cy, petal.outerRadius + 42, petal.angle).x.toFixed(1)}"
-      cy="${polarPoint(cx, cy, petal.outerRadius + 42, petal.angle).y.toFixed(1)}" r="5" fill="${petal.accent}"></circle>
+    <circle class="flower-leader-dot" cx="${polarPoint(cx, cy, petal.outerRadius + 30, petal.angle).x.toFixed(1)}"
+      cy="${polarPoint(cx, cy, petal.outerRadius + 30, petal.angle).y.toFixed(1)}" r="4.5" fill="${petal.accent}"></circle>
     <text class="flower-label" x="${petal.labelPoint.x.toFixed(1)}" y="${petal.labelPoint.y.toFixed(1)}"
       text-anchor="${petal.textAnchor}">
       ${petal.labelLines.map((line, index) => `
@@ -1952,9 +1956,9 @@ async function renderDomesticTripPurposeFlower() {
 
   const gradientMarkup = petals.map((petal, index) => `
     <radialGradient id="purpose-petal-${index}" cx="35%" cy="24%" r="78%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.62"></stop>
-      <stop offset="45%" stop-color="${petal.color}" stop-opacity="0.82"></stop>
-      <stop offset="100%" stop-color="${petal.color}" stop-opacity="0.96"></stop>
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"></stop>
+      <stop offset="58%" stop-color="${petal.color}" stop-opacity="0.9"></stop>
+      <stop offset="100%" stop-color="${petal.color}" stop-opacity="0.98"></stop>
     </radialGradient>
   `).join("");
 
@@ -1974,9 +1978,9 @@ async function renderDomesticTripPurposeFlower() {
           </path>
         `).join("")}
       </g>
-      <circle cx="${cx}" cy="${cy}" r="${innerRadius + 7}" fill="#ffffff" stroke="#e5edf5" stroke-width="2"/>
+      <circle cx="${cx}" cy="${cy}" r="${centerRadius}" fill="#ffffff" stroke="#e4edf5" stroke-width="2.5"/>
       ${iconMarkup}
-      <g class="flower-center-icon" transform="translate(${cx - 30}, ${cy - 40})">
+      <g class="flower-center-icon" transform="translate(${cx - 34}, ${cy - 50}) scale(1.14)">
         <circle cx="30" cy="15" r="10"></circle>
         <circle cx="10" cy="24" r="8"></circle>
         <circle cx="50" cy="24" r="8"></circle>
@@ -1984,9 +1988,9 @@ async function renderDomesticTripPurposeFlower() {
         <path d="M0 58v-7c0-8 5-14 11-14"></path>
         <path d="M60 58v-7c0-8-5-14-11-14"></path>
       </g>
-      <text class="flower-center-text" x="${cx}" y="${cy + 34}" text-anchor="middle">
+      <text class="flower-center-text" x="${cx}" y="${cy + 42}" text-anchor="middle">
         <tspan x="${cx}" dy="0">Domestic</tspan>
-        <tspan x="${cx}" dy="22">Trips</tspan>
+        <tspan x="${cx}" dy="24">Trips</tspan>
       </text>
       ${valueMarkup}
       ${labelMarkup}
