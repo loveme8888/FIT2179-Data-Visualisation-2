@@ -209,7 +209,7 @@ function baseConfig() {
 function mapSpec() {
   const width = chartWidth("#arrivals-map", 720, 700);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 350;
+  const mapHeight = 390;
 
   const topLabels = [
     {
@@ -218,8 +218,8 @@ function mapSpec() {
       Label: "(1) Kuala Lumpur\n12.1M",
       Lon: 101.6869,
       Lat: 3.139,
-      Dx: -10,
-      Dy: 32,
+      Dx: -6,
+      Dy: 34,
       FontSize: 16
     },
     {
@@ -228,8 +228,8 @@ function mapSpec() {
       Label: "(2) Selangor\n3.4M",
       Lon: 101.5183,
       Lat: 3.0738,
-      Dx: -38,
-      Dy: -30,
+      Dx: -40,
+      Dy: -32,
       FontSize: 14
     },
     {
@@ -238,7 +238,7 @@ function mapSpec() {
       Label: "(3) Sabah\n3.1M",
       Lon: 116.0753,
       Lat: 5.9788,
-      Dx: 28,
+      Dx: 30,
       Dy: -16,
       FontSize: 14
     },
@@ -248,8 +248,8 @@ function mapSpec() {
       Label: "(4) Penang\n3.0M",
       Lon: 100.3288,
       Lat: 5.4164,
-      Dx: -20,
-      Dy: -18,
+      Dx: -18,
+      Dy: -20,
       FontSize: 14
     },
     {
@@ -258,13 +258,13 @@ function mapSpec() {
       Label: "(5) Johor\n3.0M",
       Lon: 103.7618,
       Lat: 1.4854,
-      Dx: 26,
-      Dy: 18,
+      Dx: 28,
+      Dy: 12,
       FontSize: 14
     }
   ];
 
-  const topLabelLayer = (region, strokeLayer) => ({
+  const topLabelLayer = (region) => ({
     data: { values: topLabels },
     transform: [{ filter: `datum.Region == '${region}'` }],
     mark: {
@@ -274,15 +274,13 @@ function mapSpec() {
       font: "Inter",
       fontWeight: 950,
       lineBreak: "\n",
-      lineHeight: 17,
-      stroke: strokeLayer ? "#ffffff" : null,
-      strokeWidth: strokeLayer ? 5 : 0
+      lineHeight: 18
     },
     encoding: {
       longitude: { field: "Lon", type: "quantitative" },
       latitude: { field: "Lat", type: "quantitative" },
       text: { field: "Label" },
-      color: { value: strokeLayer ? "#ffffff" : "#0B2A6F" },
+      color: { value: "#0B2A6F" },
       dx: { field: "Dx" },
       dy: { field: "Dy" },
       size: { field: "FontSize", type: "quantitative", legend: null }
@@ -292,6 +290,7 @@ function mapSpec() {
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
     height: mapHeight,
+    view: { stroke: null },
     projection: {
       type: "mercator",
       center: region === "Peninsular" ? [101.65, 4.05] : [115.1, 4.0],
@@ -313,14 +312,23 @@ function mapSpec() {
             from: {
               data: { url: "data/foreign_hotel_guests_by_state_2024.csv" },
               key: "State",
-              fields: ["Display_State", "Foreigner_2024", "Foreigner_2024_Million", "Region"]
+              fields: [
+                "Display_State",
+                "Foreigner_2024",
+                "Foreigner_2024_Million",
+                "Region"
+              ]
             }
           },
           { filter: `datum.Region == '${region}'` },
           { calculate: "toNumber(datum.Foreigner_2024)", as: "Foreigner_2024_Number" },
           { calculate: "toNumber(datum.Foreigner_2024_Million)", as: "Foreigner_2024_Million_Number" }
         ],
-        mark: { type: "geoshape", stroke: "#ffffff", strokeWidth: 1 },
+        mark: {
+          type: "geoshape",
+          stroke: "#ffffff",
+          strokeWidth: 1
+        },
         encoding: {
           color: {
             field: "Foreigner_2024_Million_Number",
@@ -339,7 +347,12 @@ function mapSpec() {
           },
           tooltip: [
             { field: "Display_State", type: "nominal", title: "State" },
-            { field: "Foreigner_2024_Number", type: "quantitative", title: "Foreigner_2024", format: "," }
+            {
+              field: "Foreigner_2024_Number",
+              type: "quantitative",
+              title: "Foreigner_2024",
+              format: ","
+            }
           ]
         }
       },
@@ -347,8 +360,7 @@ function mapSpec() {
       labelLayer(region, true),
       labelLayer(region, false),
 
-      topLabelLayer(region, true),
-      topLabelLayer(region, false)
+      topLabelLayer(region)
     ]
   });
 
@@ -357,7 +369,10 @@ function mapSpec() {
     hconcat: [makeMapLayer("Peninsular", true), makeMapLayer("Borneo", false)],
     spacing: 4,
     resolve: { scale: { color: "shared" } },
-    config: baseConfig()
+    config: {
+      ...baseConfig(),
+      view: { stroke: null, continuousWidth: width, continuousHeight: mapHeight }
+    }
   };
 }
 
