@@ -2808,13 +2808,57 @@ code {
   }
 }
 
-.top5-map-card {
-  margin-top: 26px;
-  padding: 18px 20px;
-  width: 290px;
+/* ===== FIGURE 05 LAYOUT FIX ===== */
+
+.figure05-card {
+  display: block;
+  padding: 34px 38px 18px;
+  overflow: visible;
+}
+
+.figure05-layout {
+  display: grid;
+  grid-template-columns: 390px minmax(0, 1fr);
+  gap: 42px;
+  align-items: start;
+}
+
+.figure05-copy {
+  grid-column: 1;
+  width: 100%;
+  max-width: 390px;
+}
+
+.figure05-copy h3 {
+  max-width: 360px;
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+.figure05-copy p {
+  max-width: 360px;
+  margin: 14px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #4f5e78;
+}
+
+.figure05-card .top5-map-card {
+  margin-top: 32px;
+  width: 360px;
+  padding: 22px 24px;
   border: 1px solid #d8e6f5;
   border-radius: 14px;
   background: #fff;
+}
+
+.figure05-card #arrivals-map {
+  grid-column: 2;
+  width: 100%;
+  min-height: 500px;
+  margin: 0;
 }
 
 .top5-title {

@@ -207,9 +207,9 @@ function baseConfig() {
 }
 
 function mapSpec() {
-  const width = chartWidth("#arrivals-map", 720, 700);
-  const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 350;
+  const width = chartWidth("#arrivals-map", 760, 760);
+  const halfWidth = Math.floor((width - 20) / 2);
+  const mapHeight = 430;
 
   const makeMapLayer = (region, showLegend) => ({
     width: halfWidth,
@@ -217,7 +217,7 @@ function mapSpec() {
     projection: {
       type: "mercator",
       center: region === "Peninsular" ? [101.65, 4.05] : [115.1, 4.0],
-      scale: region === "Peninsular" ? 3300 : 2050,
+      scale: region === "Peninsular" ? 3000 : 1850,
       translate: [
         region === "Peninsular" ? halfWidth / 2 - 36 : halfWidth / 2 + 36,
         mapHeight / 2
@@ -269,7 +269,7 @@ function mapSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     hconcat: [makeMapLayer("Peninsular", true), makeMapLayer("Borneo", false)],
-    spacing: 4,
+    spacing: 20,
     resolve: { scale: { color: "shared" } },
     config: baseConfig()
   };
