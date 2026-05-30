@@ -1813,29 +1813,28 @@ function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
     x: cx + ux * distance + px * offset,
     y: cy + uy * distance + py * offset
   });
-  const capLength = Math.max(22, length * 0.16);
-  const outerHalfWidth = Math.max(30, Math.min(108, length * 0.43));
-  const innerHalfWidth = Math.max(9, Math.min(17, length * 0.08));
-  const outerDistance = outerRadius - capLength * 0.28;
-  const tipDistance = outerRadius + capLength * 0.72;
-  const innerLeft = point(innerRadius, -innerHalfWidth);
-  const innerRight = point(innerRadius, innerHalfWidth);
-  const outerLeft = point(outerDistance, -outerHalfWidth * 0.82);
-  const outerRight = point(outerDistance, outerHalfWidth * 0.82);
-  const tip = point(tipDistance, 0);
-  const leftWaist = point(innerRadius + length * 0.36, -outerHalfWidth * 0.5);
-  const rightWaist = point(innerRadius + length * 0.36, outerHalfWidth * 0.5);
-  const leftShoulder = point(innerRadius + length * 0.74, -outerHalfWidth);
-  const rightShoulder = point(innerRadius + length * 0.74, outerHalfWidth);
-  const leftCapControl = point(tipDistance - capLength * 0.12, -outerHalfWidth * 0.88);
-  const rightCapControl = point(tipDistance - capLength * 0.12, outerHalfWidth * 0.88);
-  const innerMid = point(innerRadius - 12, 0);
+  const angleWidth = outerRadius * Math.sin((Math.PI / 180) * halfAngle);
+  const maxHalfWidth = Math.max(28, Math.min(108, angleWidth * 0.84, length * 0.42));
+  const baseHalfWidth = Math.max(7, Math.min(14, maxHalfWidth * 0.16));
+  const innerLeft = point(innerRadius, -baseHalfWidth);
+  const innerRight = point(innerRadius, baseHalfWidth);
+  const leftWaist = point(innerRadius + length * 0.36, -maxHalfWidth * 0.58);
+  const rightWaist = point(innerRadius + length * 0.36, maxHalfWidth * 0.58);
+  const leftShoulder = point(innerRadius + length * 0.72, -maxHalfWidth);
+  const rightShoulder = point(innerRadius + length * 0.72, maxHalfWidth);
+  const leftCap = point(innerRadius + length * 0.9, -maxHalfWidth * 0.78);
+  const rightCap = point(innerRadius + length * 0.9, maxHalfWidth * 0.78);
+  const capCrownLeft = point(outerRadius + Math.max(8, length * 0.06), -maxHalfWidth * 0.24);
+  const capCrownRight = point(outerRadius + Math.max(8, length * 0.06), maxHalfWidth * 0.24);
+  const leftCapControl = point(outerRadius + Math.max(6, length * 0.05), -maxHalfWidth * 0.7);
+  const rightCapControl = point(outerRadius + Math.max(6, length * 0.05), maxHalfWidth * 0.7);
+  const innerMid = point(innerRadius - 11, 0);
 
   return [
     `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
-    `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftShoulder.x.toFixed(1)} ${leftShoulder.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
-    `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${tip.x.toFixed(1)} ${tip.y.toFixed(1)} ${tip.x.toFixed(1)} ${tip.y.toFixed(1)}`,
-    `C ${tip.x.toFixed(1)} ${tip.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
+    `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftShoulder.x.toFixed(1)} ${leftShoulder.y.toFixed(1)} ${leftCap.x.toFixed(1)} ${leftCap.y.toFixed(1)}`,
+    `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${capCrownLeft.x.toFixed(1)} ${capCrownLeft.y.toFixed(1)} ${capCrownLeft.x.toFixed(1)} ${capCrownLeft.y.toFixed(1)}`,
+    `C ${capCrownRight.x.toFixed(1)} ${capCrownRight.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${rightCap.x.toFixed(1)} ${rightCap.y.toFixed(1)}`,
     `C ${rightShoulder.x.toFixed(1)} ${rightShoulder.y.toFixed(1)} ${rightWaist.x.toFixed(1)} ${rightWaist.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
     `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     "Z"
