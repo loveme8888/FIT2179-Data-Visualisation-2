@@ -1813,29 +1813,27 @@ function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
     x: cx + ux * distance + px * offset,
     y: cy + uy * distance + py * offset
   });
-  const angleWidth = outerRadius * Math.sin((Math.PI / 180) * halfAngle);
-  const maxHalfWidth = Math.max(28, Math.min(108, angleWidth * 0.84, length * 0.42));
-  const baseHalfWidth = Math.max(7, Math.min(14, maxHalfWidth * 0.16));
+  const angularWidth = outerRadius * Math.sin((Math.PI / 180) * halfAngle);
+  const petalHalfWidth = Math.max(28, Math.min(96, angularWidth * 0.78, length * 0.38));
+  const baseHalfWidth = Math.max(7, Math.min(13, petalHalfWidth * 0.18));
+  const capLift = Math.max(18, length * 0.12);
   const innerLeft = point(innerRadius, -baseHalfWidth);
   const innerRight = point(innerRadius, baseHalfWidth);
-  const leftWaist = point(innerRadius + length * 0.36, -maxHalfWidth * 0.58);
-  const rightWaist = point(innerRadius + length * 0.36, maxHalfWidth * 0.58);
-  const leftShoulder = point(innerRadius + length * 0.72, -maxHalfWidth);
-  const rightShoulder = point(innerRadius + length * 0.72, maxHalfWidth);
-  const leftCap = point(innerRadius + length * 0.9, -maxHalfWidth * 0.78);
-  const rightCap = point(innerRadius + length * 0.9, maxHalfWidth * 0.78);
-  const capCrownLeft = point(outerRadius + Math.max(8, length * 0.06), -maxHalfWidth * 0.24);
-  const capCrownRight = point(outerRadius + Math.max(8, length * 0.06), maxHalfWidth * 0.24);
-  const leftCapControl = point(outerRadius + Math.max(6, length * 0.05), -maxHalfWidth * 0.7);
-  const rightCapControl = point(outerRadius + Math.max(6, length * 0.05), maxHalfWidth * 0.7);
+  const leftWaist = point(innerRadius + length * 0.24, -petalHalfWidth * 0.34);
+  const rightWaist = point(innerRadius + length * 0.24, petalHalfWidth * 0.34);
+  const leftBelly = point(innerRadius + length * 0.58, -petalHalfWidth * 0.9);
+  const rightBelly = point(innerRadius + length * 0.58, petalHalfWidth * 0.9);
+  const outerLeft = point(innerRadius + length * 0.82, -petalHalfWidth * 0.86);
+  const outerRight = point(innerRadius + length * 0.82, petalHalfWidth * 0.86);
+  const leftCapControl = point(outerRadius + capLift, -petalHalfWidth * 0.62);
+  const rightCapControl = point(outerRadius + capLift, petalHalfWidth * 0.62);
   const innerMid = point(innerRadius - 11, 0);
 
   return [
     `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
-    `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftShoulder.x.toFixed(1)} ${leftShoulder.y.toFixed(1)} ${leftCap.x.toFixed(1)} ${leftCap.y.toFixed(1)}`,
-    `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${capCrownLeft.x.toFixed(1)} ${capCrownLeft.y.toFixed(1)} ${capCrownLeft.x.toFixed(1)} ${capCrownLeft.y.toFixed(1)}`,
-    `C ${capCrownRight.x.toFixed(1)} ${capCrownRight.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${rightCap.x.toFixed(1)} ${rightCap.y.toFixed(1)}`,
-    `C ${rightShoulder.x.toFixed(1)} ${rightShoulder.y.toFixed(1)} ${rightWaist.x.toFixed(1)} ${rightWaist.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
+    `C ${leftWaist.x.toFixed(1)} ${leftWaist.y.toFixed(1)} ${leftBelly.x.toFixed(1)} ${leftBelly.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
+    `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
+    `C ${rightBelly.x.toFixed(1)} ${rightBelly.y.toFixed(1)} ${rightWaist.x.toFixed(1)} ${rightWaist.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
     `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
     "Z"
   ].join(" ");
