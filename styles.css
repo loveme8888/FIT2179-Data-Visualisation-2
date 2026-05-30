@@ -2807,3 +2807,44 @@ code {
     transform: none;
   }
 }
+
+.top5-map-card {
+  margin-top: 26px;
+  padding: 18px 20px;
+  width: 290px;
+  border: 1px solid #d8e6f5;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.top5-title {
+  font-weight: 900;
+  color: #152238;
+  margin-bottom: 12px;
+}
+
+.top5-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+  color: #152238;
+}
+
+.top5-row span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #0b5cad;
+  color: white;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top5-row strong {
+  color: #0b5cad;
+  font-size: 20px;
+}
