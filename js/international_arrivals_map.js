@@ -1912,12 +1912,12 @@ async function renderDomesticTripPurposeFlower() {
     "Visiting relatives & friends": ["Visiting relatives", "& friends"],
     Shopping: ["Shopping"],
     "Holiday/ leisure/ relaxation": ["Holiday / Leisure"],
-    "Incentive travel/ others": ["Incentive travel", "/ Others"],
-    "Entertainment/ attending special event/ sports": ["Entertainment", "/ Events"],
-    "Medical treatment/ wellness": ["Medical", "/ Wellness"],
-    "Religious worship/ visit places of worship": ["Religious", "visit"],
+    "Incentive travel/ others": ["Incentive travel"],
+    "Entertainment/ attending special event/ sports": ["Entertainment"],
+    "Medical treatment/ wellness": ["Medical / Wellness"],
+    "Religious worship/ visit places of worship": ["Religious visit"],
     "Official business/ business/ education": ["Business"],
-    "Others / Not stated": ["Others", "/ Not stated"]
+    "Others / Not stated": ["Others"]
   };
 
   const rankedRows = [...rows].sort((a, b) => b.Share_Pct - a.Share_Pct);
@@ -1928,9 +1928,9 @@ async function renderDomesticTripPurposeFlower() {
   const trackGap = 17;
   const innerRadius = 72;
 
-  const labelX = 390;
-  const textX = 440;
-  const valueX = 535;
+  const labelX = 385;
+  const textX = 435;
+  const valueX = 625;
   const firstLabelY = 215;
   const labelGap = 57;
 
@@ -1953,10 +1953,10 @@ async function renderDomesticTripPurposeFlower() {
           ${purposeIconMarkup(iconByPurpose[row.Purpose])}
         </g>
 
-        <text x="${textX}" y="${y - 16}" class="flower-label" text-anchor="start"
-          style="font-size:16px; font-weight:900;">
+        <text x="${textX}" y="${y - 15}" class="flower-label" text-anchor="start"
+          style="font-size:15px; font-weight:900;">
           ${labelLines.map((line, lineIndex) => `
-            <tspan x="${textX}" dy="${lineIndex === 0 ? 0 : 17}">${line}</tspan>
+            <tspan x="${textX}" dy="${lineIndex === 0 ? 0 : 16}">${line}</tspan>
           `).join("")}
         </text>
 
