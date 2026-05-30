@@ -1879,7 +1879,7 @@ async function renderDomesticTripPurposeFlower() {
   const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
   const height = 840;
 
-  const cx = width * 0.66;
+  const cx = width * 0.74;
   const cy = 440;
 
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
@@ -1916,10 +1916,10 @@ async function renderDomesticTripPurposeFlower() {
   const trackGap = 17;
   const innerRadius = 72;
 
-  const labelX = 86;
-  const textX = 142;
-  const valueX = 375;
-  const firstLabelY = 320;
+  const labelX = 395;
+  const textX = 445;
+  const valueX = 675;
+  const firstLabelY = 215;
   const labelGap = 57;
 
   const arcPath = (cx, cy, radius, startDeg, endDeg) => {
@@ -2000,14 +2000,21 @@ async function renderDomesticTripPurposeFlower() {
       aria-label="Purpose of domestic trips in 2024">
       <rect class="flower-figure-pill" x="8" y="8" width="128" height="34" rx="17"></rect>
       <text class="flower-figure-label" x="72" y="31" text-anchor="middle">FIGURE 08</text>
-      <text class="flower-title" x="8" y="94">PURPOSE OF DOMESTIC TRIPS IN 2024</text>
-      <text class="flower-subtitle" x="8" y="132">Share of domestic trips by main purpose (%)</text>
 
-      <text x="86" y="185"
+      <text x="8" y="100"
+        style="font-family:'Inter', sans-serif; font-size:38px; font-weight:500; fill:#152238;">
+        Domestic trips are mostly
+      </text>
+      <text x="8" y="148"
+        style="font-family:'Inter', sans-serif; font-size:38px; font-weight:500; fill:#152238;">
+        social and shopping-led
+      </text>
+
+      <text x="8" y="205"
         style="font-family:'Inter', sans-serif; font-size:20px; font-weight:500; fill:#5A6B84;">
-        <tspan x="86" dy="0">Domestic travel is mainly driven by</tspan>
-        <tspan x="86" dy="30">social visits and shopping-related</tspan>
-        <tspan x="86" dy="30">activities in 2024.</tspan>
+        <tspan x="8" dy="0">Domestic travel is mainly driven by</tspan>
+        <tspan x="8" dy="30">social visits and shopping-related</tspan>
+        <tspan x="8" dy="30">activities in 2024.</tspan>
       </text>
 
       ${labelMarkup}
