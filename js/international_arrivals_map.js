@@ -1873,7 +1873,7 @@ async function renderDomesticTripPurposeFlower() {
 
   rows.push({ Purpose: "Others / Not stated", Share_Pct: 3.8 });
 
-  const width = Math.max(760, chartWidth("#domestic-purpose-chart", 1080, 720));
+  const width = Math.max(1040, chartWidth("#domestic-purpose-chart", 1080, 720));
   const height = 880;
   const cx = width * 0.51;
   const cy = 460;
