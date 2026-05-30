@@ -1877,7 +1877,7 @@ async function renderDomesticTripPurposeFlower() {
   const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
   const height = 820;
 
-  const cx = width * 0.68;
+  const cx = width * 0.64;
   const cy = 440;
 
   const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
@@ -1911,7 +1911,7 @@ async function renderDomesticTripPurposeFlower() {
   const startAngle = -90;
   const maxArc = 300;
   const trackWidth = 18;
-  const trackGap = 28;
+  const trackGap = 25;
   const innerRadius = 62;
 
   const labelX = 88;
@@ -2012,7 +2012,7 @@ async function renderDomesticTripPurposeFlower() {
         <circle cx="${cx}" cy="${cy}" r="92" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
           filter="drop-shadow(0 6px 12px rgba(21, 34, 56, 0.12))"></circle>
 
-        <g class="flower-center-icon" transform="translate(${cx - 34}, ${cy - 58}) scale(1.15)">
+        <g class="flower-center-icon" transform="translate(${cx - 34}, ${cy - 72}) scale(1.05)">
           <circle cx="30" cy="15" r="11"></circle>
           <circle cx="10" cy="24" r="9"></circle>
           <circle cx="50" cy="24" r="9"></circle>
@@ -2021,15 +2021,25 @@ async function renderDomesticTripPurposeFlower() {
           <path d="M60 60v-8c0-9-5-15-11-15"></path>
         </g>
 
-        <text x="${cx}" y="${cy + 18}" text-anchor="middle"
-          style="font-family:'Bebas Neue', sans-serif; font-size:50px; font-weight:900; fill:#152238;">100%</text>
+        <text x="${cx}" y="${cy + 30}" text-anchor="middle"
+          style="font-family:'Bebas Neue', sans-serif; font-size:58px; font-weight:900; fill:#152238;">
+          100%
+        </text>
 
-        <text x="${cx}" y="${cy + 48}" text-anchor="middle"
+        <text x="${cx}" y="${cy + 72}" text-anchor="middle"
           style="font-family:'Inter', sans-serif; font-size:18px; font-weight:850; fill:#152238;">
           <tspan x="${cx}" dy="0">Domestic Trips</tspan>
           <tspan x="${cx}" dy="22">in 2024</tspan>
         </text>
       </g>
+        <text x="40" y="${height - 20}"
+          style="
+            font-family:'Inter', sans-serif;
+            font-size:14px;
+            fill:#5A6B84;
+          ">
+          Visiting relatives and friends dominates domestic travel demand, followed by shopping and leisure activities.
+        </text>
     </svg>
   `;
 }
