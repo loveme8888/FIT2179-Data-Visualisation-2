@@ -229,17 +229,18 @@ function baseConfig() {
 
 function mapSpec() {
   const width = chartWidth("#arrivals-map", 820, 680);
-  const height = 540;
+  const height = 520;
+  const halfWidth = Math.floor((width - 18) / 2);
+  const peninsularCodes = ["KDH", "KTN", "PRK", "PNG", "KUL", "NSN", "MLK", "PLS", "PHG", "TRG", "PJY", "SGR", "JHR"];
 
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width,
+  const guestMapLayer = (region, showLegend) => ({
+    width: halfWidth,
     height,
     projection: {
       type: "mercator",
-      center: [109.2, 4.1],
-      scale: Math.min(1760, Math.max(1240, width * 1.65)),
-      translate: [width / 2, height / 2 - 6]
+      center: region === "Peninsular" ? [101.55, 4.05] : [115.25, 4.15],
+      scale: region === "Peninsular" ? 2850 : 1880,
+      translate: [region === "Peninsular" ? halfWidth / 2 + 10 : halfWidth / 2 + 2, height / 2 - 8]
     },
     layer: [
       {
@@ -256,6 +257,11 @@ function mapSpec() {
               fields: ["Display_State", "Foreigner_2024", "Foreigner_2024_Million", "Region"]
             }
           },
+          {
+            filter: region === "Peninsular"
+              ? `indexof(${JSON.stringify(peninsularCodes)}, datum.properties.state) >= 0`
+              : `indexof(${JSON.stringify(peninsularCodes)}, datum.properties.state) < 0`
+          },
           { calculate: "toNumber(datum.Foreigner_2024)", as: "Foreigner_2024_Number" },
           { calculate: "toNumber(datum.Foreigner_2024_Million)", as: "Foreigner_2024_Million_Number" }
         ],
@@ -266,13 +272,13 @@ function mapSpec() {
             type: "quantitative",
             title: "Foreign Hotel Guests, 2024",
             scale: { scheme: "blues", domain: [0, 12.2] },
-            legend: {
+            legend: showLegend ? {
               orient: "bottom",
               direction: "horizontal",
-              gradientLength: Math.min(420, width - 80),
+              gradientLength: Math.min(520, width - 90),
               gradientThickness: 13,
               format: ".1f"
-            }
+            } : null
           },
           tooltip: [
             { field: "Display_State", title: "State" },
@@ -280,9 +286,16 @@ function mapSpec() {
           ]
         }
       },
-      labelLayer(null, true),
-      labelLayer(null, false)
-    ],
+      labelLayer(region, true),
+      labelLayer(region, false)
+    ]
+  });
+
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    hconcat: [guestMapLayer("Peninsular", true), guestMapLayer("Borneo", false)],
+    spacing: 18,
+    resolve: { scale: { color: "shared" } },
     config: baseConfig()
   };
 }
@@ -743,11 +756,11 @@ const expenditureTiles = [
 
 function expenditureSpec() {
   const width = chartWidth("#expenditure-chart", 780, 650);
-  const height = 590;
+  const height = 548;
   const shellX1 = 6;
   const shellX2 = width - 6;
   const shellY1 = 70;
-  const shellY2 = 540;
+  const shellY2 = height - 8;
   const shellW = shellX2 - shellX1;
   const gridPad = 16;
   const gx = shellX1 + gridPad;
@@ -1019,7 +1032,6 @@ const domesticStateRankings = [
 function domesticStateVisitorsSpec() {
   const width = chartWidth("#domestic-state-visitors-chart", 820, 650);
   const height = 540;
-  const maxVisitors = Math.max(...domesticStateRankings.map((row) => row.visitors));
   const rowTop = 118;
   const rowGap = 88;
   const rankX = 42;
@@ -1029,7 +1041,7 @@ function domesticStateVisitorsSpec() {
   const rowH = 68;
   const values = domesticStateRankings.map((row, index) => {
     const y = rowTop + index * rowGap;
-    const photoW = Math.max(285, (row.visitors / maxVisitors) * maxPhotoW);
+    const photoW = maxPhotoW;
     return {
       ...row,
       y,
@@ -1123,258 +1135,6 @@ function domesticStateVisitorsSpec() {
   };
 }
 
-function domesticPurposeSpec() {
-  const width = chartWidth("#domestic-purpose-chart", 760, 650);
-  const donutWidth = Math.min(360, Math.max(280, Math.floor(width * 0.48)));
-  const growthWidth = Math.max(270, width - donutWidth - 34);
-  const transportColors = {
-    Land: "#2E8B57",
-    Air: "#2E6DA4",
-    Sea: "#6B5FB5",
-    Rail: "#E86F22"
-  };
-
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    title: {
-      text: "International Visitors by Mode of Transport",
-      subtitle: "Donut shows 2024 arrival share; bars show growth vs 2023",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
-    data: { url: "data/mode_of_transport_2024_2023.csv" },
-    transform: [
-      { window: [{ op: "rank", as: "Rank" }], sort: [{ field: "Share_2024", order: "descending" }] },
-      { calculate: "format(datum.Share_2024, '.1f') + '%'", as: "Share_Label" },
-      { calculate: "(datum.Growth_Pct > 0 ? '+' : '') + format(datum.Growth_Pct, '.1f') + '%'", as: "Growth_Label" },
-      { calculate: "datum.Mode + '  ' + datum.Share_Label", as: "Donut_Label" },
-      { calculate: "datum.Growth_Label + ' YoY'", as: "Growth_Text" }
-    ],
-    hconcat: [
-      {
-        width: donutWidth,
-        height: 310,
-        layer: [
-          {
-            mark: { type: "arc", innerRadius: 82, outerRadius: 132, stroke: "#ffffff", strokeWidth: 3 },
-            encoding: {
-              theta: { field: "Share_2024", type: "quantitative", stack: true },
-              order: { field: "Rank", type: "quantitative" },
-              color: {
-                field: "Mode",
-                type: "nominal",
-                legend: null,
-                scale: { domain: Object.keys(transportColors), range: Object.values(transportColors) }
-              },
-              tooltip: [
-                { field: "Mode", title: "Mode" },
-                { field: "Visitors_2024", title: "Visitors 2024", format: "," },
-                { field: "Share_2024", title: "Share 2024", format: ".1f" },
-                { field: "Growth_Pct", title: "Growth vs 2023", format: "+.1f" }
-              ]
-            }
-          },
-          {
-            transform: [{ filter: "datum.Share_2024 >= 3" }],
-            mark: { type: "text", radius: 156, fontSize: 12, fontWeight: 900, color: colors.text },
-            encoding: {
-              theta: { field: "Share_2024", type: "quantitative", stack: "center" },
-              order: { field: "Rank", type: "quantitative" },
-              text: { field: "Donut_Label" }
-            }
-          },
-          {
-            data: { values: [{ label: "LAND" }] },
-            mark: { type: "text", align: "center", baseline: "middle", dy: -24, fontSize: 25, fontWeight: 900, color: "#2E8B57" },
-            encoding: { text: { field: "label" } }
-          },
-          {
-            data: { values: [{ label: "66.1%" }] },
-            mark: { type: "text", align: "center", baseline: "middle", dy: 12, fontSize: 36, fontWeight: 900, color: colors.text },
-            encoding: { text: { field: "label" } }
-          },
-          {
-            data: { values: [{ label: "of 2024 arrivals" }] },
-            mark: { type: "text", align: "center", baseline: "middle", dy: 45, fontSize: 12, fontWeight: 800, color: colors.muted },
-            encoding: { text: { field: "label" } }
-          }
-        ]
-      },
-      {
-        width: growthWidth,
-        height: 310,
-        layer: [
-          {
-            mark: { type: "rule", color: "#cbd8e6", strokeWidth: 1.2 },
-            encoding: {
-              x: { datum: 0, type: "quantitative" }
-            }
-          },
-          {
-            mark: { type: "bar", cornerRadiusEnd: 7, height: { band: 0.54 }, opacity: 0.88 },
-            encoding: {
-              x: {
-                field: "Growth_Pct",
-                type: "quantitative",
-                title: "Growth vs 2023 (%)",
-                scale: { domain: [-8, 44] },
-                axis: { tickCount: 6, grid: true, format: "+.0f" }
-              },
-              y: {
-                field: "Mode",
-                type: "nominal",
-                title: null,
-                sort: { field: "Share_2024", order: "descending" },
-                axis: { labelFontWeight: 900, labelFontSize: 13 }
-              },
-              color: {
-                condition: { test: "datum.Growth_Pct < 0", value: "#D84C4C" },
-                value: "#2E9B9B"
-              },
-              tooltip: [
-                { field: "Mode", title: "Mode" },
-                { field: "Growth_Pct", title: "Growth vs 2023", format: "+.1f" },
-                { field: "Share_2024", title: "Share 2024", format: ".1f" },
-                { field: "Visitors_2024", title: "Visitors 2024", format: "," }
-              ]
-            }
-          },
-          {
-            mark: { type: "text", align: "left", baseline: "middle", dx: 8, fontSize: 13, fontWeight: 900, color: colors.text },
-            encoding: {
-              x: { field: "Growth_Pct", type: "quantitative" },
-              y: { field: "Mode", type: "nominal", sort: { field: "Share_2024", order: "descending" } },
-              text: { field: "Growth_Text" }
-            }
-          },
-          {
-            mark: { type: "text", align: "right", baseline: "middle", fontSize: 12, fontWeight: 800, color: colors.muted },
-            encoding: {
-              x: { datum: 43, type: "quantitative" },
-              y: { field: "Mode", type: "nominal", sort: { field: "Share_2024", order: "descending" } },
-              text: { field: "Share_Label" }
-            }
-          }
-        ]
-      }
-    ],
-    spacing: 34,
-    resolve: { scale: { x: "independent", y: "independent" } },
-    config: baseConfig()
-  };
-}
-
-function parseCsvRows(text) {
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i];
-    const next = text[i + 1];
-
-    if (char === '"' && inQuotes && next === '"') {
-      cell += '"';
-      i += 1;
-    } else if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === "," && !inQuotes) {
-      row.push(cell);
-      cell = "";
-    } else if ((char === "\n" || char === "\r") && !inQuotes) {
-      if (char === "\r" && next === "\n") i += 1;
-      row.push(cell);
-      if (row.some((value) => value !== "")) rows.push(row);
-      row = [];
-      cell = "";
-    } else {
-      cell += char;
-    }
-  }
-
-  if (cell || row.length) {
-    row.push(cell);
-    rows.push(row);
-  }
-
-  const headers = rows.shift() || [];
-  return rows.map((values) =>
-    Object.fromEntries(headers.map((header, index) => [header, values[index] || ""]))
-  );
-}
-
-function polarPoint(cx, cy, radius, angleDeg) {
-  const angle = (Math.PI / 180) * angleDeg;
-  return {
-    x: cx + radius * Math.cos(angle),
-    y: cy + radius * Math.sin(angle)
-  };
-}
-
-function petalPath(cx, cy, innerRadius, outerRadius, angleDeg, halfAngle) {
-  const length = outerRadius - innerRadius;
-  const angle = (Math.PI / 180) * angleDeg;
-  const ux = Math.cos(angle);
-  const uy = Math.sin(angle);
-  const px = -uy;
-  const py = ux;
-  const point = (distance, offset = 0) => ({
-    x: cx + ux * distance + px * offset,
-    y: cy + uy * distance + py * offset
-  });
-  const angularWidth = outerRadius * Math.sin((Math.PI / 180) * halfAngle);
-  const petalHalfWidth = Math.max(32, Math.min(110, angularWidth * 0.85, length * 0.42));
-  const baseAngularWidth = (innerRadius + 14) * Math.sin((Math.PI / 180) * halfAngle);
-  const baseHalfWidth = Math.max(16, Math.min(28, baseAngularWidth * 0.95, petalHalfWidth * 0.42));
-  const capLift = Math.max(22, length * 0.14);
-  const innerLeft = point(innerRadius, -baseHalfWidth);
-  const innerRight = point(innerRadius, baseHalfWidth);
-  const leftRootShoulder = point(innerRadius + length * 0.12, -petalHalfWidth * 0.68);
-  const rightRootShoulder = point(innerRadius + length * 0.12, petalHalfWidth * 0.68);
-  const leftBelly = point(innerRadius + length * 0.55, -petalHalfWidth * 0.95);
-  const rightBelly = point(innerRadius + length * 0.55, petalHalfWidth * 0.95);
-  const outerLeft = point(innerRadius + length * 0.85, -petalHalfWidth * 0.88);
-  const outerRight = point(innerRadius + length * 0.85, petalHalfWidth * 0.88);
-  const leftCapControl = point(outerRadius + capLift, -petalHalfWidth * 0.54);
-  const rightCapControl = point(outerRadius + capLift, petalHalfWidth * 0.54);
-  const innerMid = point(innerRadius - 12, 0);
-
-  return [
-    `M ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
-    `C ${leftRootShoulder.x.toFixed(1)} ${leftRootShoulder.y.toFixed(1)} ${leftBelly.x.toFixed(1)} ${leftBelly.y.toFixed(1)} ${outerLeft.x.toFixed(1)} ${outerLeft.y.toFixed(1)}`,
-    `C ${leftCapControl.x.toFixed(1)} ${leftCapControl.y.toFixed(1)} ${rightCapControl.x.toFixed(1)} ${rightCapControl.y.toFixed(1)} ${outerRight.x.toFixed(1)} ${outerRight.y.toFixed(1)}`,
-    `C ${rightBelly.x.toFixed(1)} ${rightBelly.y.toFixed(1)} ${rightRootShoulder.x.toFixed(1)} ${rightRootShoulder.y.toFixed(1)} ${innerRight.x.toFixed(1)} ${innerRight.y.toFixed(1)}`,
-    `Q ${innerMid.x.toFixed(1)} ${innerMid.y.toFixed(1)} ${innerLeft.x.toFixed(1)} ${innerLeft.y.toFixed(1)}`,
-    "Z"
-  ].join(" ");
-}
-
-function leaderPath(cx, cy, startRadius, endRadius, angleDeg, labelX) {
-  const start = polarPoint(cx, cy, startRadius, angleDeg);
-  const elbow = polarPoint(cx, cy, endRadius, angleDeg);
-  const horizontal = labelX > cx ? 34 : -34;
-  return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} L ${elbow.x.toFixed(1)} ${elbow.y.toFixed(1)} L ${(elbow.x + horizontal).toFixed(1)} ${elbow.y.toFixed(1)}`;
-}
-
-function labelForPurpose(purpose) {
-  const labels = {
-    "Visiting relatives & friends": ["Visiting relatives", "& friends"],
-    Shopping: ["Shopping"],
-    "Holiday/ leisure/ relaxation": ["Holiday / Leisure /", "Relaxation"],
-    "Incentive travel/ others": ["Incentive travel /", "Others"],
-    "Entertainment/ attending special event/ sports": ["Entertainment /", "Attend events"],
-    "Medical treatment/ wellness": ["Medical treatment /", "Wellness"],
-    "Religious worship/ visit places of worship": ["Religious worship /", "Visit"],
-    "Official business/ business/ education": ["Official business /", "Business"],
-    "Others / Not stated": ["Others /", "Not stated"]
-  };
-  return labels[purpose] || [purpose];
-}
-
-
-
-
 function domesticPurposeArcSpec() {
   const width = chartWidth("#domestic-purpose-chart", 760, 620);
   const height = 600;
@@ -1455,25 +1215,6 @@ function domesticPurposeArcSpec() {
 
 
 
-
-function purposeIconMarkup(icon) {
-  const icons = {
-    family: `
-      <circle cx="-8" cy="-18" r="6"></circle><path d="M-14 14v-18c0-8 12-8 12 0v18"></path>
-      <circle cx="15" cy="-10" r="5"></circle><path d="M8 14v-13c0-7 14-7 14 0v13"></path>
-      <circle cx="2" cy="-4" r="4"></circle><path d="M-3 15V5c0-5 10-5 10 0v10"></path>
-    `,
-    bag: `<path d="M-15 -9h30l-2 27h-26z"></path><path d="M-7 -9v-4c0-8 14-8 14 0v4"></path>`,
-    sun: `<path d="M-18 10c8-11 28-11 36 0"></path><path d="M-10 16h20"></path><circle cx="10" cy="-12" r="6"></circle><path d="M10 -25v-6M10 7v6M-3 -12h-6M23 -12h6M0 -22l-4-4M20 -22l4-4M0 -2l-4 4M20 -2l4 4"></path>`,
-    ticket: `<path d="M-18 -15h36v30h-36z"></path><path d="M-8 -6h8M-8 2h14M-8 10h10"></path>`,
-    masks: `<path d="M-18 -8c8 2 15 0 22-5 3 17-4 27-16 27-7 0-10-9-6-22z"></path><path d="M4 -2c6 1 11 0 16-4 2 12-3 20-12 20-5 0-7-7-4-16z"></path><path d="M-10 4c3 3 7 3 10 0"></path>`,
-    medical: `<path d="M-16 -14h32v28h-32z"></path><path d="M0 -7v14M-7 0h14"></path>`,
-    worship: `<path d="M-18 16h36"></path><path d="M-13 16v-24l13-12 13 12v24"></path><path d="M-7 16V3c0-8 14-8 14 0v13"></path>`,
-    briefcase: `<path d="M-18 -9h36v25h-36z"></path><path d="M-8 -9v-7h16v7M-18 0h36"></path>`,
-    dots: `<circle cx="-12" cy="0" r="4"></circle><circle cx="0" cy="0" r="4"></circle><circle cx="12" cy="0" r="4"></circle>`
-  };
-  return icons[icon] || icons.dots;
-}
 
 function domesticODSpec() {
   return {

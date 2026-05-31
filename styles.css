@@ -332,14 +332,6 @@ h1 {
   line-height: 1.35;
 }
 
-.section-lede {
-  max-width: 960px;
-  margin: 0 0 14px 52px;
-  color: #3f5069;
-  font-size: 15px;
-  line-height: 1.55;
-}
-
 .narrative-grid {
   display: none;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -376,11 +368,6 @@ h1 {
 
 .chart-card-full {
   width: 100%;
-}
-
-.support-panel {
-  width: min(920px, 100%);
-  margin: 0 auto;
 }
 
 .viz-card,
@@ -439,6 +426,7 @@ h1 {
 .figure-copy {
   position: relative;
   z-index: 2;
+  grid-row: 1 / span 2;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -484,6 +472,7 @@ h1 {
 
 .chart {
   grid-column: 2;
+  grid-row: 1 / span 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -538,6 +527,42 @@ h1 {
 
 .figure05-card {
   display: grid;
+}
+
+.figure-card .chart-heading {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+}
+
+.figure-card .chart-heading + .chart {
+  grid-row: 2;
+  align-self: start;
+}
+
+.figure-card-source-markets-chart {
+  min-height: 620px;
+}
+
+.figure-card-source-markets-chart .source-chart {
+  min-height: 500px;
+}
+
+.figure-card-state-guests-chart .figure-copy {
+  grid-row: 1;
+  min-height: 0;
+}
+
+.figure-card-state-guests-chart .chart {
+  grid-row: 1 / span 2;
+}
+
+.figure-card-state-guests-chart .ranking-box {
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-columns: 1fr;
+  align-self: end;
+  margin-top: 18px;
 }
 
 .top5-map-card,
@@ -849,15 +874,6 @@ h1 {
   font-weight: 500;
 }
 
-.chart-note {
-  grid-column: 1 / -1;
-  margin: 10px 0 0;
-  color: #2f405a;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
 .insight-box {
   display: none;
   grid-template-columns: 42px minmax(0, 1fr);
@@ -953,6 +969,7 @@ code {
   }
 
   .figure-copy {
+    grid-row: auto;
     min-height: 0;
     max-width: none;
     padding-right: 0;
@@ -963,9 +980,9 @@ code {
 
   .chart,
   .ranking-box,
-  .source-note,
-  .chart-note {
+  .source-note {
     grid-column: 1;
+    grid-row: auto;
   }
 
   .chart,
@@ -1040,10 +1057,6 @@ code {
 
   .section-heading {
     grid-template-columns: 42px 1fr;
-  }
-
-  .section-lede {
-    margin-left: 0;
   }
 
   .figure-label {
