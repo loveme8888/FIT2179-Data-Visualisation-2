@@ -79,11 +79,6 @@ function applyFigureNarratives() {
     const chart = document.getElementById(chartId);
     const card = chart?.closest(".viz-card");
     if (!chart || !card || card.querySelector(".figure-copy")) return;
-    if (chartId === "domestic-purpose-chart") {
-      card.classList.add("purpose-flower-card");
-      return;
-    }
-
     card.classList.add("figure-card", `figure-card-${chartId}`);
 
     const copy = document.createElement("div");
@@ -163,6 +158,19 @@ function applyFigureNarratives() {
           </p>
         </div>
       ` : ""}
+      ${chartId === "domestic-purpose-chart" ? `
+        <div class="purpose-legend-card" aria-label="Domestic trip purpose ranking">
+          <div class="purpose-legend-row" style="--purpose-color:#F05A7A"><span>1</span><b>Visiting relatives & friends</b><strong>34.6%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#F26B2A"><span>2</span><b>Shopping</b><strong>27.6%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#F2B705"><span>3</span><b>Holiday / Leisure</b><strong>14.6%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#A8C51F"><span>4</span><b>Incentive travel</b><strong>10.7%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#48B86E"><span>5</span><b>Entertainment</b><strong>5.7%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#3BB8AE"><span>6</span><b>Medical / Wellness</b><strong>4.5%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#9B75C4"><span>7</span><b>Others</b><strong>3.8%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#6FA8DC"><span>8</span><b>Religious visit</b><strong>1.5%</strong></div>
+          <div class="purpose-legend-row" style="--purpose-color:#7A61C9"><span>9</span><b>Business</b><strong>0.8%</strong></div>
+        </div>
+      ` : ""}
     `;
     card.insertBefore(copy, card.firstElementChild);
   });
@@ -183,11 +191,20 @@ function baseConfig() {
       color: colors.text,
       subtitleFont: "Inter",
       subtitleColor: colors.muted,
-      anchor: "start"
+      anchor: "start",
+      fontSize: 24,
+      fontWeight: 400,
+      subtitleFontSize: 15,
+      subtitleFontWeight: 600,
+      offset: 10
     },
     axis: {
       labelFont: "Inter",
       titleFont: "Inter",
+      labelFontSize: 12,
+      titleFontSize: 12,
+      labelFontWeight: 700,
+      titleFontWeight: 700,
       labelColor: "#34445c",
       titleColor: "#34445c",
       gridColor: "#e7eef5",
@@ -197,6 +214,10 @@ function baseConfig() {
     legend: {
       labelFont: "Inter",
       titleFont: "Inter",
+      labelFontSize: 12,
+      titleFontSize: 12,
+      labelFontWeight: 700,
+      titleFontWeight: 800,
       labelColor: "#34445c",
       titleColor: "#34445c"
     },
@@ -207,21 +228,18 @@ function baseConfig() {
 }
 
 function mapSpec() {
-  const width = chartWidth("#arrivals-map", 760, 760);
-  const halfWidth = Math.floor((width - 20) / 2);
-  const mapHeight = 430;
+  const width = chartWidth("#arrivals-map", 820, 680);
+  const height = 540;
 
-  const makeMapLayer = (region, showLegend) => ({
-    width: halfWidth,
-    height: mapHeight,
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width,
+    height,
     projection: {
       type: "mercator",
-      center: region === "Peninsular" ? [101.65, 4.05] : [115.1, 4.0],
-      scale: region === "Peninsular" ? 3000 : 1850,
-      translate: [
-        region === "Peninsular" ? halfWidth / 2 - 36 : halfWidth / 2 + 36,
-        mapHeight / 2
-      ]
+      center: [109.2, 4.1],
+      scale: Math.min(1760, Math.max(1240, width * 1.65)),
+      translate: [width / 2, height / 2 - 6]
     },
     layer: [
       {
@@ -238,39 +256,33 @@ function mapSpec() {
               fields: ["Display_State", "Foreigner_2024", "Foreigner_2024_Million", "Region"]
             }
           },
-          { filter: `datum.Region == '${region}'` },
           { calculate: "toNumber(datum.Foreigner_2024)", as: "Foreigner_2024_Number" },
           { calculate: "toNumber(datum.Foreigner_2024_Million)", as: "Foreigner_2024_Million_Number" }
         ],
-        mark: { type: "geoshape", stroke: "#ffffff", strokeWidth: 1 },
+        mark: { type: "geoshape", stroke: "#ffffff", strokeWidth: 1.2 },
         encoding: {
           color: {
             field: "Foreigner_2024_Million_Number",
             type: "quantitative",
             title: "Foreign Hotel Guests, 2024",
             scale: { scheme: "blues", domain: [0, 12.2] },
-            legend: showLegend
-              ? {
-                  orient: "bottom",
-                  direction: "horizontal",
-                  gradientLength: Math.min(440, width - 100),
-                  gradientThickness: 14,
-                  format: ".1f"
-                }
-              : null
-          }
+            legend: {
+              orient: "bottom",
+              direction: "horizontal",
+              gradientLength: Math.min(420, width - 80),
+              gradientThickness: 13,
+              format: ".1f"
+            }
+          },
+          tooltip: [
+            { field: "Display_State", title: "State" },
+            { field: "Foreigner_2024_Million_Number", title: "Hotel guests (M)", format: ".1f" }
+          ]
         }
       },
-      labelLayer(region, true),
-      labelLayer(region, false)
-    ]
-  });
-
-  return {
-    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    hconcat: [makeMapLayer("Peninsular", true), makeMapLayer("Borneo", false)],
-    spacing: 20,
-    resolve: { scale: { color: "shared" } },
+      labelLayer(null, true),
+      labelLayer(null, false)
+    ],
     config: baseConfig()
   };
 }
@@ -279,7 +291,7 @@ function labelLayer(region, halo) {
   return {
     data: { url: "data/foreign_hotel_guests_by_state_2024.csv" },
     transform: [
-      { filter: `datum.Region == '${region}' && datum.Show_Label == 'true'` },
+      { filter: region ? `datum.Region == '${region}' && datum.Show_Label == 'true'` : "datum.Show_Label == 'true'" },
       {
         calculate: "datum.Display_State + '\\n' + format(toNumber(datum.Foreigner_2024_Million), '.1f') + 'M'",
         as: "Label"
@@ -290,13 +302,13 @@ function labelLayer(region, halo) {
       align: "center",
       baseline: "middle",
       font: "Arial",
-      fontSize: 10.5,
+      fontSize: 9.5,
       fontWeight: "bold",
       lineBreak: "\n",
-      lineHeight: 14,
+      lineHeight: 11.5,
       color: colors.text,
       stroke: halo ? "#ffffff" : null,
-      strokeWidth: halo ? 3 : 0
+      strokeWidth: halo ? 2.3 : 0
     },
     encoding: {
       longitude: { field: "Label_Lon", type: "quantitative" },
@@ -492,823 +504,161 @@ function sourceMarketsSpec() {
 function monthlyTrendSpec() {
   const availableWidth = chartWidth("#monthly-trend-chart", 760, 650);
   const isMobile = window.innerWidth < 760;
-  const size = isMobile
-    ? Math.min(Math.max(250, availableWidth - 78), 300)
-    : Math.min(Math.max(390, availableWidth - 300), 500);
-  const calloutRail = isMobile ? 0 : 224;
-  const width = size + calloutRail;
-  const height = size + (isMobile ? 190 : 68);
-  return {
-    $schema: "https://vega.github.io/schema/vega/v5.json",
-    width,
-    height,
-    padding: { top: 18, right: isMobile ? 18 : 28, bottom: 12, left: isMobile ? 18 : 28 },
-    signals: [
-      { name: "plotSize", value: size },
-      { name: "hasCalloutRail", value: !isMobile },
-      { name: "cx", update: "plotSize / 2 + (hasCalloutRail ? 8 : 0)" },
-      { name: "cy", update: "plotSize / 2 + (plotSize < 340 ? 34 : 42)" },
-      { name: "innerRadius", value: 10 },
-      { name: "outerRadius", update: "plotSize * (plotSize < 340 ? 0.31 : 0.34)" },
-      { name: "legendCardWidth", update: "plotSize < 340 ? 190 : 134" },
-      { name: "maxVisitors", value: 4 },
-      {
-        name: "selectedYear",
-        value: null,
-        on: [
-          { events: "@legend2023:click, @area2023:click, @hit2023:click, @line2023:click, @points2023:click", update: "selectedYear === '2023' ? null : '2023'" },
-          { events: "@legend2024:click, @area2024:click, @hit2024:click, @line2024:click, @points2024:click", update: "selectedYear === '2024' ? null : '2024'" }
-        ]
-      }
-    ],
-    data: [
-      {
-        name: "legendControls",
-        values: [
-          { year: "2023", offset: -72, color: "#2E6DA4" },
-          { year: "2024", offset: 8, color: "#E85D04" }
-        ]
-      },
-      {
-        name: "monthly",
-        url: "data/foreign_visitors_monthly_2024_2023.csv",
-        format: {
-          type: "csv",
-          parse: {
-            Month_Num: "number",
-            Visitors_2023: "number",
-            Visitors_2024: "number",
-            Growth_Pct: "number"
-          }
-        },
-        transform: [
-          { type: "formula", as: "Month_Abbr", expr: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.Month_Num - 1]" },
-          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
-          { type: "formula", as: "isBottom", expr: "sin(datum.angle) > 0.72" }
-        ]
-      },
-      {
-        name: "visitors",
-        source: "monthly",
-        transform: [
-          { type: "fold", fields: ["Visitors_2023", "Visitors_2024"], as: ["Year_Field", "Visitors"] },
-          { type: "formula", as: "Year_Label", expr: "datum.Year_Field === 'Visitors_2024' ? '2024' : '2023'" },
-          { type: "formula", as: "Visitors_Million", expr: "datum.Visitors / 1000000" },
-          { type: "formula", as: "r", expr: "innerRadius + min(datum.Visitors_Million, maxVisitors) / maxVisitors * (outerRadius - innerRadius)" },
-          { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
-          { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" }
-        ]
-      },
-      {
-        name: "visitors2023",
-        source: "visitors",
-        transform: [
-          { type: "filter", expr: "datum.Year_Label === '2023'" }
-        ]
-      },
-      {
-        name: "visitors2024",
-        source: "visitors",
-        transform: [
-          { type: "filter", expr: "datum.Year_Label === '2024'" }
-        ]
-      },
-      {
-        name: "monthLabels",
-        source: "monthly",
-        transform: [
-          { type: "formula", as: "x", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
-          { type: "formula", as: "y", expr: "cy + (outerRadius + 34) * sin(datum.angle)" },
-          { type: "formula", as: "valueX", expr: "cx + (outerRadius + 34) * cos(datum.angle)" },
-          { type: "formula", as: "valueY", expr: "cy + (outerRadius + 34) * sin(datum.angle) + (sin(datum.angle) < -0.75 ? -22 : (datum.isBottom ? 26 : 24))" },
-          { type: "formula", as: "Visitors_2024_Million", expr: "datum.Visitors_2024 / 1000000" },
-          { type: "formula", as: "Visitors_2024_Label", expr: "format(datum.Visitors_2024_Million, '.1f') + 'M'" },
-          { type: "formula", as: "align", expr: "abs(cos(datum.angle)) < 0.15 ? 'center' : cos(datum.angle) > 0 ? 'left' : 'right'" },
-          { type: "formula", as: "baseline", expr: "abs(sin(datum.angle)) < 0.15 ? 'middle' : sin(datum.angle) > 0 ? 'top' : 'bottom'" }
-        ]
-      },
-      {
-        name: "spokes",
-        source: "monthly",
-        transform: [
-          { type: "formula", as: "x1", expr: "cx + 8 * cos(datum.angle)" },
-          { type: "formula", as: "y1", expr: "cy + 8 * sin(datum.angle)" },
-          { type: "formula", as: "x2", expr: "cx + outerRadius * cos(datum.angle)" },
-          { type: "formula", as: "y2", expr: "cy + outerRadius * sin(datum.angle)" }
-        ]
-      },
-      {
-        name: "eventLegend",
-        values: [
-          { color: "#2E8B57", label: "Dec: year-end\\nholiday peak", legendX: 0.17, legendRow: 0, bg: "#E8F3EC" },
-          { color: "#F4A000", label: "Aug: mid-year\\nschool holidays", legendX: 0.50, legendRow: 1, bg: "#FFF3D8" },
-          { color: "#E85D04", label: "Jun: school holidays\\ntravel boost", legendX: 0.83, legendRow: 2, bg: "#FDE9DC" }
-        ],
-        transform: [
-          { type: "formula", as: "legendCenterX", expr: "plotSize < 340 ? width / 2 : width * datum.legendX" },
-          { type: "formula", as: "legendY", expr: "plotSize < 340 ? height - 112 + datum.legendRow * 38 : height - 26" }
-        ]
-      },
-      {
-        name: "eventCallouts",
-        values: [
-          {
-            Month_Num: 12,
-            value: 3.805306,
-            color: "#2E8B57",
-            bg: "#E8F3EC",
-            icon: "🎄",
-            title: "DECEMBER\\nPEAK",
-            detail: "Highest: 3.8M",
-            anchor: "topLeft"
-          },
-          {
-            Month_Num: 6,
-            value: 3.40929,
-            color: "#E85D04",
-            bg: "#FDE9DC",
-            icon: "🚌",
-            title: "JUNE\\nSCHOOL HOLIDAY\\nSURGE",
-            detail: "Holiday travel\\nboosted arrivals",
-            anchor: "rightBottom"
-          }
-        ],
-        transform: [
-          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
-          { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
-          { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
-          { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" },
-          { type: "formula", as: "cardW", expr: "datum.anchor === 'topLeft' ? 146 : 190" },
-          { type: "formula", as: "cardH", expr: "datum.anchor === 'topLeft' ? 58 : 80" },
-          { type: "formula", as: "cardX", expr: "datum.anchor === 'topLeft' ? 2 : width - datum.cardW - 2" },
-          { type: "formula", as: "cardY", expr: "datum.anchor === 'topLeft' ? 4 : (datum.anchor === 'rightMiddle' ? cy + 46 : cy + 136)" },
-          { type: "formula", as: "leaderX", expr: "datum.anchor === 'topLeft' ? datum.cardX + datum.cardW - 8 : datum.cardX + 2" },
-          { type: "formula", as: "leaderY", expr: "datum.anchor === 'rightMiddle' ? datum.cardY + datum.cardH - 12 : datum.cardY + datum.cardH / 2" }
-        ]
-      },
-      {
-        name: "eventHighlights",
-        values: [
-          { Month_Num: 12, value: 3.805306, color: "#2E8B57" },
-          { Month_Num: 8, value: 3.662108, color: "#F4A000" },
-          { Month_Num: 6, value: 3.40929, color: "#E85D04" }
-        ],
-        transform: [
-          { type: "formula", as: "angle", expr: "(datum.Month_Num - 1) / 12 * 2 * PI - PI / 2" },
-          { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
-          { type: "formula", as: "x", expr: "cx + datum.r * cos(datum.angle)" },
-          { type: "formula", as: "y", expr: "cy + datum.r * sin(datum.angle)" }
-        ]
-      },
-      {
-        name: "rings",
-        values: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
-        transform: [
-          { type: "formula", as: "r", expr: "innerRadius + datum.value / maxVisitors * (outerRadius - innerRadius)" },
-          { type: "formula", as: "labelX", expr: "cx + 7" },
-          { type: "formula", as: "labelY", expr: "cy - datum.r + 1" }
-        ]
-      }
-    ],
-    scales: [
-      { name: "yearColor", type: "ordinal", domain: ["2023", "2024"], range: [colors.blue, "#E85D04"] }
-    ],
-    marks: [
-      {
-        type: "rule",
-        from: { data: "legendControls" },
-        encode: {
-          enter: {
-            y: { value: 22 },
-            x: { signal: "cx + datum.offset" },
-            x2: { signal: "cx + datum.offset + 22" },
-            stroke: { field: "color" },
-            strokeWidth: { value: 3 },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            strokeWidth: { signal: "selectedYear === datum.year ? 4 : 3" },
-            opacity: { signal: "!selectedYear || selectedYear === datum.year ? 1 : 0.25" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "legendControls" },
-        encode: {
-          enter: {
-            y: { value: 23 },
-            x: { signal: "cx + datum.offset + 32" },
-            text: { field: "year" },
-            font: { value: "Inter" },
-            fontSize: { value: 13 },
-            fill: { value: "#34445c" },
-            align: { value: "left" },
-            baseline: { value: "middle" },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            fontWeight: { signal: "selectedYear === datum.year ? 800 : 400" },
-            opacity: { signal: "!selectedYear || selectedYear === datum.year ? 1 : 0.35" }
-          }
-        }
-      },
-      {
-        name: "legend2023",
-        type: "rect",
-        encode: {
-          enter: {
-            x: { signal: "cx - 78" },
-            y: { value: 10 },
-            width: { value: 72 },
-            height: { value: 24 },
-            fill: { value: "#ffffff" },
-            fillOpacity: { value: 0.001 },
-            cursor: { value: "pointer" }
-          }
-        }
-      },
-      {
-        name: "legend2024",
-        type: "rect",
-        encode: {
-          enter: {
-            x: { signal: "cx + 2" },
-            y: { value: 10 },
-            width: { value: 72 },
-            height: { value: 24 },
-            fill: { value: "#ffffff" },
-            fillOpacity: { value: 0.001 },
-            cursor: { value: "pointer" }
-          }
-        }
-      },
-      {
-        type: "arc",
-        from: { data: "rings" },
-        encode: {
-          enter: {
-            x: { signal: "cx" },
-            y: { signal: "cy" },
-            startAngle: { value: 0 },
-            endAngle: { signal: "2 * PI" },
-            fill: { value: null },
-            stroke: { value: "#dbe6f2" },
-            strokeWidth: { value: 1.5 }
-          },
-          update: {
-            innerRadius: { field: "r" },
-            outerRadius: { signal: "datum.r + 0.6" }
-          }
-        }
-      },
-      {
-        type: "rule",
-        from: { data: "spokes" },
-        encode: {
-          enter: {
-            stroke: { value: "#e8f0f8" },
-            strokeWidth: { value: 1.2 }
-          },
-          update: {
-            x: { field: "x1" },
-            y: { field: "y1" },
-            x2: { field: "x2" },
-            y2: { field: "y2" }
-          }
-        }
-      },
-      {
-        name: "area2023",
-        type: "line",
-        from: { data: "visitors2023" },
-        sort: { field: "Month_Num" },
-        encode: {
-          enter: {
-            interpolate: { value: "linear-closed" },
-            fill: { value: colors.blue },
-            fillOpacity: { value: 0.1 },
-            stroke: { value: null },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            fillOpacity: { signal: "selectedYear === '2023' ? 0.2 : (!selectedYear ? 0.1 : 0.03)" }
-          }
-        }
-      },
-      {
-        name: "area2024",
-        type: "line",
-        from: { data: "visitors2024" },
-        sort: { field: "Month_Num" },
-        encode: {
-          enter: {
-            interpolate: { value: "linear-closed" },
-            fill: { value: "#E85D04" },
-            fillOpacity: { value: 0.1 },
-            stroke: { value: null },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            fillOpacity: { signal: "selectedYear === '2024' ? 0.2 : (!selectedYear ? 0.1 : 0.03)" }
-          }
-        }
-      },
-      {
-        name: "line2023",
-        type: "line",
-        from: { data: "visitors2023" },
-        sort: { field: "Month_Num" },
-        encode: {
-          enter: {
-            interpolate: { value: "linear-closed" },
-            stroke: { value: colors.blue },
-            strokeWidth: { value: 4 },
-            strokeJoin: { value: "round" },
-            fill: { value: null },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            strokeWidth: { signal: "selectedYear === '2023' ? 6 : 4" },
-            opacity: { signal: "!selectedYear || selectedYear === '2023' ? 1 : 0.25" }
-          }
-        }
-      },
-      {
-        name: "hit2023",
-        type: "line",
-        from: { data: "visitors2023" },
-        sort: { field: "Month_Num" },
-        encode: {
-          enter: {
-            interpolate: { value: "linear-closed" },
-            stroke: { value: colors.blue },
-            strokeOpacity: { value: 0.001 },
-            strokeWidth: { value: 22 },
-            strokeJoin: { value: "round" },
-            fill: { value: null },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" }
-          }
-        }
-      },
-      {
-        name: "line2024",
-        type: "line",
-        from: { data: "visitors2024" },
-        sort: { field: "Month_Num" },
-        encode: {
-          enter: {
-            interpolate: { value: "linear-closed" },
-            stroke: { value: "#E85D04" },
-            strokeWidth: { value: 4 },
-            strokeJoin: { value: "round" },
-            fill: { value: null },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            strokeWidth: { signal: "selectedYear === '2024' ? 6 : 4" },
-            opacity: { signal: "!selectedYear || selectedYear === '2024' ? 1 : 0.25" }
-          }
-        }
-      },
-      {
-        name: "hit2024",
-        type: "line",
-        from: { data: "visitors2024" },
-        sort: { field: "Month_Num" },
-        encode: {
-          enter: {
-            interpolate: { value: "linear-closed" },
-            stroke: { value: "#E85D04" },
-            strokeOpacity: { value: 0.001 },
-            strokeWidth: { value: 22 },
-            strokeJoin: { value: "round" },
-            fill: { value: null },
-            cursor: { value: "pointer" }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" }
-          }
-        }
-      },
-      {
-        name: "points2023",
-        type: "symbol",
-        from: { data: "visitors2023" },
-        encode: {
-          enter: {
-            size: { value: 105 },
-            fill: { value: colors.blue },
-            stroke: { value: "#ffffff" },
-            strokeWidth: { value: 1.5 },
-            cursor: { value: "pointer" },
-            tooltip: {
-              signal: "{'Month': datum.Month, 'Year': datum.Year_Label, 'Visitors': format(datum.Visitors, ',.0f'), 'Visitors (million)': format(datum.Visitors_Million, '.2f')}"
-            }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            size: { signal: "selectedYear === '2023' ? 155 : 105" },
-            opacity: { signal: "!selectedYear || selectedYear === '2023' ? 1 : 0.25" }
-          }
-        }
-      },
-      {
-        name: "points2024",
-        type: "symbol",
-        from: { data: "visitors2024" },
-        encode: {
-          enter: {
-            size: { value: 105 },
-            fill: { value: "#E85D04" },
-            stroke: { value: "#ffffff" },
-            strokeWidth: { value: 1.5 },
-            cursor: { value: "pointer" },
-            tooltip: {
-              signal: "{'Month': datum.Month, 'Year': datum.Year_Label, 'Visitors': format(datum.Visitors, ',.0f'), 'Visitors (million)': format(datum.Visitors_Million, '.2f')}"
-            }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            size: { signal: "selectedYear === '2024' ? 155 : 105" },
-            opacity: { signal: "!selectedYear || selectedYear === '2024' ? 1 : 0.25" }
-          }
-        }
-      },
-      {
-        type: "symbol",
-        from: { data: "eventHighlights" },
-        encode: {
-          enter: {
-            shape: { value: "circle" },
-            size: { value: 920 },
-            fill: { field: "color" },
-            fillOpacity: { value: 0.18 },
-            stroke: { value: null }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "symbol",
-        from: { data: "eventHighlights" },
-        encode: {
-          enter: {
-            shape: { value: "circle" },
-            size: { value: 220 },
-            fill: { value: "#E85D04" },
-            stroke: { value: "#ffffff" },
-            strokeWidth: { value: 3 }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "rule",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            stroke: { field: "color" },
-            strokeWidth: { value: 1.4 },
-            strokeOpacity: { value: 0.58 }
-          },
-          update: {
-            x: { field: "leaderX" },
-            y: { field: "leaderY" },
-            x2: { field: "x" },
-            y2: { field: "y" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "monthLabels" },
-        encode: {
-          enter: {
-            text: { field: "Month_Abbr" },
-            font: { value: "Inter" },
-            fontSize: { value: 15 },
-            fontWeight: { value: 700 },
-            fill: { value: colors.text }
-          },
-          update: {
-            x: { field: "x" },
-            y: { field: "y" },
-            align: { field: "align" },
-            baseline: { field: "baseline" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "monthLabels" },
-        encode: {
-          enter: {
-            text: { field: "Visitors_2024_Label" },
-            font: { value: "Inter" },
-            fontSize: { value: 12 },
-            fontWeight: { value: 700 },
-            fill: { value: "#E85D04" }
-          },
-          update: {
-            x: { field: "valueX" },
-            y: { field: "valueY" },
-            align: { field: "align" },
-            baseline: { field: "baseline" },
-            opacity: { signal: "!selectedYear || selectedYear === '2024' ? 1 : 0.25" }
-          }
-        }
-      },
-      {
-        type: "rect",
-        from: { data: "eventLegend" },
-        encode: {
-          enter: {
-            width: { signal: "legendCardWidth" },
-            height: { signal: "width < 340 ? 34 : 40" },
-            cornerRadius: { value: 7 },
-            fill: { field: "bg" },
-            fillOpacity: { value: 0.95 }
-          },
-          update: {
-            x: { signal: "datum.legendCenterX - legendCardWidth / 2" },
-            y: { signal: "datum.legendY - (width < 340 ? 17 : 20)" },
-            opacity: { signal: "width < 340 ? 1 : 0" }
-          }
-        }
-      },
-      {
-        type: "rect",
-        from: { data: "eventLegend" },
-        encode: {
-          enter: {
-            width: { value: 5 },
-            height: { signal: "width < 340 ? 24 : 24" },
-            cornerRadius: { value: 3 },
-            fill: { field: "color" }
-          },
-          update: {
-            x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 14" },
-            y: { signal: "datum.legendY - 12" },
-            opacity: { signal: "width < 340 ? 1 : 0" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "eventLegend" },
-        encode: {
-          enter: {
-            text: { field: "label" },
-            font: { value: "Inter" },
-            fontSize: { value: 10.5 },
-            fill: { value: colors.text },
-            align: { value: "left" },
-            baseline: { value: "middle" },
-            limit: { signal: "legendCardWidth - 34" },
-            lineBreak: { value: "\\n" }
-          },
-          update: {
-            x: { signal: "datum.legendCenterX - legendCardWidth / 2 + 28" },
-            y: { field: "legendY" },
-            opacity: { signal: "width < 340 ? 1 : 0" }
-          }
-        }
-      },
-      {
-        type: "rule",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            stroke: { field: "color" },
-            strokeWidth: { value: 1.3 },
-            strokeOpacity: { value: 0.65 }
-          },
-          update: {
-            x: { field: "leaderX" },
-            y: { field: "leaderY" },
-            x2: { field: "x" },
-            y2: { field: "y" },
-            opacity: { value: 0 }
-          }
-        }
-      },
-      {
-        type: "rect",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            cornerRadius: { value: 8 },
-            fill: { field: "bg" },
-            stroke: { field: "color" },
-            strokeOpacity: { value: 0.18 }
-          },
-          update: {
-            x: { field: "cardX" },
-            y: { field: "cardY" },
-            width: { field: "cardW" },
-            height: { field: "cardH" },
-            opacity: { signal: "width < 340 ? 0 : 0.96" }
-          }
-        }
-      },
-      {
-        type: "symbol",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            shape: { value: "circle" },
-            size: { value: 650 },
-            fill: { value: "#ffffff" },
-            fillOpacity: { value: 0.68 },
-            stroke: { field: "color" },
-            strokeOpacity: { value: 0.18 }
-          },
-          update: {
-            x: { signal: "datum.cardX + 24" },
-            y: { signal: "datum.cardY + 24" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            text: { field: "icon" },
-            fontSize: { value: 18 },
-            align: { value: "center" },
-            baseline: { value: "middle" },
-            fill: { field: "color" }
-          },
-          update: {
-            x: { signal: "datum.cardX + 24" },
-            y: { signal: "datum.cardY + 24" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            text: { field: "title" },
-            font: { value: "Inter" },
-            fontSize: { value: 9.2 },
-            fontWeight: { value: 800 },
-            lineBreak: { value: "\\n" },
-            limit: { signal: "datum.cardW - 56" },
-            align: { value: "left" },
-            baseline: { value: "top" },
-            fill: { field: "color" }
-          },
-          update: {
-            x: { signal: "datum.cardX + 48" },
-            y: { signal: "datum.cardY + 12" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "eventCallouts" },
-        encode: {
-          enter: {
-            text: { field: "detail" },
-            font: { value: "Inter" },
-            fontSize: { value: 9.2 },
-            lineBreak: { value: "\\n" },
-            limit: { signal: "datum.cardW - 56" },
-            align: { value: "left" },
-            baseline: { value: "top" },
-            fill: { value: colors.text }
-          },
-          update: {
-            x: { signal: "datum.cardX + 48" },
-            y: { signal: "datum.cardY + (datum.title === 'JUNE\\nSCHOOL HOLIDAY\\nSURGE' ? 62 : 44)" },
-            opacity: { signal: "width < 340 ? 0 : 1" }
-          }
-        }
-      },
-      {
-        type: "text",
-        from: { data: "rings" },
-        encode: {
-          enter: {
-            text: { field: "value" },
-            font: { value: "Inter" },
-            fontSize: { value: 13 },
-            fill: { value: "#5b6d86" },
-            align: { value: "center" },
-            baseline: { value: "middle" }
-          },
-          update: {
-            x: { field: "labelX" },
-            y: { field: "labelY" }
-          }
-        }
-      },
-      {
-        type: "text",
-        encode: {
-          enter: {
-            x: { signal: "cx" },
-            y: { signal: "cy" },
-            text: { value: "Visitors\n(million)" },
-            lineBreak: { value: "\n" },
-            align: { value: "center" },
-            baseline: { value: "middle" },
-            font: { value: "Inter" },
-            fontSize: { value: 13 },
-            fontWeight: { value: 700 },
-            fill: { value: colors.text }
-          }
-        }
-      }
-    ],
-    config: {
-      background: "#ffffff"
-    }
+  const plotSize = isMobile
+    ? Math.min(Math.max(300, availableWidth - 32), 380)
+    : Math.min(Math.max(520, availableWidth - 170), 640);
+  const width = isMobile ? plotSize : Math.min(availableWidth, plotSize + 150);
+  const height = isMobile ? plotSize + 175 : plotSize + 52;
+  const cx = isMobile ? width / 2 : width / 2;
+  const cy = isMobile ? plotSize / 2 + 58 : plotSize / 2 + 32;
+  const innerRadius = 14;
+  const outerRadius = plotSize * 0.34;
+  const labelRadius = outerRadius + 48;
+  const xDomain = [0, width];
+  const yDomain = [height, 0];
+  const sharedPosition = {
+    x: { field: "x", type: "quantitative", scale: { domain: xDomain }, axis: null },
+    y: { field: "y", type: "quantitative", scale: { domain: yDomain }, axis: null }
   };
-}
+  const monthlyTransforms = [
+    { calculate: "toNumber(datum.Month_Num)", as: "Month_Order" },
+    { calculate: "['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][datum.Month_Order - 1]", as: "Month_Abbr" },
+    { calculate: `(datum.Month_Order - 1) / 12 * 2 * PI - PI / 2`, as: "angle" },
+    { calculate: `${cx} + ${labelRadius} * cos(datum.angle)`, as: "labelX" },
+    { calculate: `${cy} + ${labelRadius} * sin(datum.angle)`, as: "labelY" },
+    { calculate: `${cx} + (${labelRadius} + 34) * cos(datum.angle)`, as: "valueX" },
+    { calculate: `${cy} + (${labelRadius} + 34) * sin(datum.angle)`, as: "valueY" },
+    { calculate: "datum.Visitors_2024 / 1000000", as: "Visitors_2024_Million" },
+    { calculate: "format(datum.Visitors_2024_Million, '.1f') + 'M'", as: "Visitors_2024_Label" },
+    { calculate: "abs(cos(datum.angle)) < 0.15 ? 'center' : cos(datum.angle) > 0 ? 'left' : 'right'", as: "labelAlign" },
+    { calculate: "abs(sin(datum.angle)) < 0.15 ? 'middle' : sin(datum.angle) > 0 ? 'top' : 'bottom'", as: "labelBaseline" }
+  ];
+  const visitorTransforms = [
+    ...monthlyTransforms,
+    { fold: ["Visitors_2023", "Visitors_2024"], as: ["Year_Field", "Visitors"] },
+    { calculate: "datum.Year_Field === 'Visitors_2024' ? '2024' : '2023'", as: "Year_Label" },
+    { calculate: "datum.Visitors / 1000000", as: "Visitors_Million" },
+    { calculate: `${innerRadius} + min(datum.Visitors_Million, 4) / 4 * (${outerRadius} - ${innerRadius})`, as: "r" },
+    { calculate: `${cx} + datum.r * cos(datum.angle)`, as: "x" },
+    { calculate: `${cy} + datum.r * sin(datum.angle)`, as: "y" },
+    { calculate: "format(datum.Visitors_Million, '.2f') + 'M'", as: "Tooltip_Visitors" }
+  ];
 
-function transportSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: Math.min(520, chartWidth("#transport-chart", 520, 360)),
-    height: 300,
-    title: {
-      text: "Mode of Transport",
-      subtitle: "Land dominates foreign visitor arrivals in 2024",
-      fontSize: 24,
-      subtitleFontSize: 14
+    width,
+    height,
+    padding: { top: 12, right: isMobile ? 18 : 28, bottom: 18, left: isMobile ? 18 : 28 },
+    data: {
+      url: "data/foreign_visitors_monthly_2024_2023.csv",
+      format: { type: "csv" }
     },
-    data: { url: "data/mode_of_transport_2024_2023.csv" },
     layer: [
       {
-        mark: { type: "arc", innerRadius: 78, outerRadius: 132, stroke: "#ffffff", strokeWidth: 3 },
+        data: { values: [1, 2, 3, 4].map((value) => ({ value })) },
+        transform: [
+          { calculate: `${innerRadius} + datum.value / 4 * (${outerRadius} - ${innerRadius})`, as: "r" },
+          { calculate: `${cx}`, as: "x" },
+          { calculate: `${cy}`, as: "y" },
+          { calculate: "pow(datum.r * 2, 2)", as: "ringSize" },
+          { calculate: `datum.value === 4 ? ${cx} + 8 : ${cx} + 8`, as: "labelX" },
+          { calculate: `${cy} - datum.r + 4`, as: "labelY" }
+        ],
+        mark: { type: "point", filled: false, stroke: "#dbe6f2", strokeWidth: 1.4 },
         encoding: {
-          theta: { field: "Share_2024", type: "quantitative" },
-          order: { field: "Share_2024", sort: "descending" },
+          x: { field: "x", type: "quantitative", scale: { domain: xDomain }, axis: null },
+          y: { field: "y", type: "quantitative", scale: { domain: yDomain }, axis: null },
+          size: { field: "ringSize", type: "quantitative", scale: null },
+          tooltip: null
+        }
+      },
+      {
+        transform: [
+          ...monthlyTransforms,
+          { calculate: `${cx} + 8 * cos(datum.angle)`, as: "x" },
+          { calculate: `${cy} + 8 * sin(datum.angle)`, as: "y" },
+          { calculate: `${cx} + ${outerRadius} * cos(datum.angle)`, as: "x2" },
+          { calculate: `${cy} + ${outerRadius} * sin(datum.angle)`, as: "y2" }
+        ],
+        mark: { type: "rule", color: "#e8f0f8", strokeWidth: 1.2 },
+        encoding: {
+          ...sharedPosition,
+          x2: { field: "x2" },
+          y2: { field: "y2" },
+          tooltip: null
+        }
+      },
+      {
+        transform: visitorTransforms,
+        mark: { type: "line", interpolate: "linear-closed", strokeWidth: 4, strokeJoin: "round", opacity: 0.9 },
+        encoding: {
+          ...sharedPosition,
+          detail: { field: "Year_Label" },
+          order: { field: "Month_Order", type: "quantitative" },
           color: {
-            field: "Mode",
-            type: "nominal",
-            scale: {
-              domain: ["Land", "Air", "Sea", "Rail"],
-              range: ["#2F9559", "#267DB7", "#6B5BB8", "#E57B1F"]
-            },
-            legend: null
+            field: "Year_Label",
+            title: null,
+            scale: { domain: ["2023", "2024"], range: ["#c7d3e1", "#E85D04"] },
+            legend: { orient: "top", direction: "horizontal", labelFontSize: 18, labelFontWeight: 800, symbolType: "stroke", symbolStrokeWidth: 4 }
           },
+          opacity: { condition: { test: "datum.Year_Label === '2024'", value: 1 }, value: 0.9 },
           tooltip: [
-            { field: "Mode", title: "Mode" },
-            { field: "Visitors_2024", title: "Visitors_2024", format: "," },
-            { field: "Share_2024", title: "Share 2024", format: ".1f" }
+            { field: "Month", title: "Month" },
+            { field: "Year_Label", title: "Year" },
+            { field: "Visitors", title: "Visitors", format: ",.0f" },
+            { field: "Tooltip_Visitors", title: "Visitors (million)" }
           ]
         }
       },
       {
-        data: { values: [{ label: "Dominant Mode", mode: "Land", share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: -28, fontSize: 12, fontWeight: "bold", color: "#5d6878" },
-        encoding: { text: { field: "label" } }
+        transform: visitorTransforms,
+        mark: { type: "point", filled: true, size: 130, stroke: "#ffffff", strokeWidth: 1.8 },
+        encoding: {
+          ...sharedPosition,
+          color: { field: "Year_Label", scale: { domain: ["2023", "2024"], range: ["#aab8c8", "#E85D04"] }, legend: null },
+          tooltip: [
+            { field: "Month", title: "Month" },
+            { field: "Year_Label", title: "Year" },
+            { field: "Visitors", title: "Visitors", format: ",.0f" }
+          ]
+        }
       },
       {
-        data: { values: [{ mode: "Land" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 0, fontSize: 28, fontWeight: "bold", color: "#2F9559" },
-        encoding: { text: { field: "mode" } }
+        transform: monthlyTransforms,
+        mark: { type: "text", font: "Inter", fontSize: 18, fontWeight: 900, color: colors.text },
+        encoding: {
+          x: { field: "labelX", type: "quantitative", scale: { domain: xDomain }, axis: null },
+          y: { field: "labelY", type: "quantitative", scale: { domain: yDomain }, axis: null },
+          text: { field: "Month_Abbr" },
+          align: { field: "labelAlign" },
+          baseline: { field: "labelBaseline" },
+          tooltip: null
+        }
       },
       {
-        data: { values: [{ share: "66.1%" }] },
-        mark: { type: "text", align: "center", baseline: "middle", dy: 34, fontSize: 34, fontWeight: "bold", color: "#2F9559" },
-        encoding: { text: { field: "share" } }
-      }
+        transform: monthlyTransforms,
+        mark: { type: "text", font: "Inter", fontSize: 14, fontWeight: 900, color: "#E85D04" },
+        encoding: {
+          x: { field: "valueX", type: "quantitative", scale: { domain: xDomain }, axis: null },
+          y: { field: "valueY", type: "quantitative", scale: { domain: yDomain }, axis: null },
+          text: { field: "Visitors_2024_Label" },
+          align: { field: "labelAlign" },
+          baseline: { field: "labelBaseline" },
+          tooltip: null
+        }
+      },
+      {
+        data: { values: [{ label: "Visitors", y: cy - 8 }, { label: "(million)", y: cy + 17 }] },
+        mark: { type: "text", font: "Inter", fontSize: 18, fontWeight: 900, color: colors.text },
+        encoding: {
+          x: { datum: cx, type: "quantitative", scale: { domain: xDomain }, axis: null },
+          y: { field: "y", type: "quantitative", scale: { domain: yDomain }, axis: null },
+          text: { field: "label" },
+          tooltip: null
+        }
+      },
     ],
-    config: baseConfig()
+    config: { ...baseConfig(), view: { stroke: null } }
   };
 }
 
@@ -1391,82 +741,178 @@ const expenditureTiles = [
   }
 ];
 
-function expenditureIcon(type) {
-  const icons = {
-    bag: '<path d="M6 8h12l-1 12H7L6 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path>',
-    bed: '<path d="M3 11V6h7a3 3 0 0 1 3 3v2"></path><path d="M3 19v-8h18v8"></path><path d="M21 11v8"></path><path d="M7 11v8"></path>',
-    utensils: '<path d="M4 3v7"></path><path d="M8 3v7"></path><path d="M6 3v18"></path><path d="M14 3v18"></path><path d="M14 3a5 5 0 0 1 5 5v3h-5"></path>',
-    plane: '<path d="M2 16l20-9-9 20-2-8-9-3Z"></path><path d="M11 19l4-8"></path>',
-    train: '<path d="M6 3h12a2 2 0 0 1 2 2v9a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V5a2 2 0 0 1 2-2Z"></path><path d="M8 21l2-3"></path><path d="M16 21l-2-3"></path><path d="M8 8h8"></path><path d="M8 13h.01"></path><path d="M16 13h.01"></path>',
-    ticket: '<path d="M3 9V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a3 3 0 0 0 0 6v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a3 3 0 0 0 0-6Z"></path><path d="M13 5v14"></path>',
-    flag: '<path d="M5 21V4"></path><path d="M5 4h12l-1.5 4L17 12H5"></path>',
-    medical: '<path d="M12 5v14"></path><path d="M5 12h14"></path><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"></path>',
-    fuel: '<path d="M5 21V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v17"></path><path d="M3 21h14"></path><path d="M8 7h4"></path><path d="M15 8h2l3 3v8a2 2 0 0 1-4 0v-5"></path>'
+function expenditureSpec() {
+  const width = chartWidth("#expenditure-chart", 780, 650);
+  const height = 590;
+  const shellX1 = 6;
+  const shellX2 = width - 6;
+  const shellY1 = 70;
+  const shellY2 = 540;
+  const shellW = shellX2 - shellX1;
+  const gridPad = 16;
+  const gx = shellX1 + gridPad;
+  const gy = shellY1 + 64;
+  const gw = shellW - gridPad * 2;
+  const gh = shellY2 - gy - 24;
+  const gap = 0;
+  const col = gw / 12;
+  const row = gh / 6;
+  const tileColor = {
+    shopping: "#2346d8",
+    accommodation: "#7667ff",
+    food: "#2e8b57",
+    "international-airfares": "#f06a2a",
+    "local-transportation": "#35a7a0",
+    entertainment: "#c33f85",
+    "organised-tour": "#7b67b4",
+    medical: "#43b57d",
+    "domestic-airfares": "#6fa8dc",
+    fuel: "#f2b705"
   };
+  const layout = [
+    { className: "shopping", c: 0, r: 0, cs: 5.2, rs: 2.7, size: "large", label: "Shopping" },
+    { className: "accommodation", c: 5.2, r: 0, cs: 3.4, rs: 2.7, size: "large", label: "Accommodation" },
+    { className: "food", c: 8.6, r: 0, cs: 3.4, rs: 2.7, size: "large", label: "Food & Bev." },
+    { className: "international-airfares", c: 0, r: 2.7, cs: 4, rs: 1.6, size: "medium", label: "Airfares" },
+    { className: "local-transportation", c: 4, r: 2.7, cs: 3.3, rs: 1.6, size: "medium", label: "Local Transport" },
+    { className: "entertainment", c: 7.3, r: 2.7, cs: 2.2, rs: 1.6, size: "compact", label: "Entertainment" },
+    { className: "organised-tour", c: 9.5, r: 2.7, cs: 2.5, rs: 1.6, size: "compact", label: "Tour" },
+    { className: "medical", c: 0, r: 4.3, cs: 3, rs: 1.3, size: "compact", label: "Medical" },
+    { className: "domestic-airfares", c: 3, r: 4.3, cs: 3.7, rs: 1.3, size: "compact", label: "Domestic Air" },
+    { className: "fuel", c: 6.7, r: 4.3, cs: 5.3, rs: 1.3, size: "compact", label: "Fuel" }
+  ];
+  const values = layout.map((slot) => {
+    const tile = expenditureTiles.find((item) => item.className === slot.className);
+    const x1 = gx + slot.c * col + gap / 2;
+    const x2 = gx + (slot.c + slot.cs) * col - gap / 2;
+    const y1 = gy + slot.r * row + gap / 2;
+    const y2 = gy + (slot.r + slot.rs) * row - gap / 2;
+    return {
+      ...tile,
+      ...slot,
+      x1,
+      x2,
+      y1,
+      y2,
+      cx: (x1 + x2) / 2,
+      cy: (y1 + y2) / 2,
+      labelX: x1 + 16,
+      labelY: y2 - 32,
+      shareY: y2 - 10,
+      imageX: (x1 + x2) / 2,
+      imageY: (y1 + y2) / 2,
+      imageW: Math.max(70, x2 - x1),
+      imageH: Math.max(52, y2 - y1),
+      fill: tileColor[slot.className],
+      Category_Label: slot.label,
+      isLarge: slot.size === "large",
+      isCompact: slot.size === "compact"
+    };
+  });
+  const largeValues = values.filter((tile) => tile.isLarge);
+  const otherValues = values.filter((tile) => !tile.isLarge);
+  const xScale = { domain: [0, width] };
+  const yScale = { domain: [height, 0] };
 
-  return `<svg viewBox="0 0 24 24" focusable="false">${icons[type]}</svg>`;
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width,
+    height,
+    layer: [
+      {
+        data: { values: [{ x1: shellX1 + shellW * 0.36, x2: shellX1 + shellW * 0.64, y1: 18, y2: 94 }] },
+        mark: { type: "rect", cornerRadius: 24, fill: null, stroke: "#07175f", strokeWidth: 7 },
+        encoding: { x: { field: "x1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "x2" }, y: { field: "y1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "y2" }, tooltip: null }
+      },
+      {
+        data: { values: [{ x1: shellX1, x2: shellX2, y1: shellY1, y2: shellY2 }] },
+        mark: { type: "rect", cornerRadius: 28, color: "#f7faff", stroke: "#07175f", strokeWidth: 5 },
+        encoding: { x: { field: "x1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "x2" }, y: { field: "y1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "y2" }, tooltip: null }
+      },
+      {
+        data: { values: [
+          { x1: shellX1 + 30, x2: shellX1 + 64, y1: shellY1 + 22, y2: shellY1 + 48 },
+          { x1: width / 2 - 17, x2: width / 2 + 17, y1: shellY1 + 22, y2: shellY1 + 48 },
+          { x1: shellX2 - 64, x2: shellX2 - 30, y1: shellY1 + 22, y2: shellY1 + 48 }
+        ] },
+        mark: { type: "rect", cornerRadius: 8, color: "#07175f" },
+        encoding: { x: { field: "x1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "x2" }, y: { field: "y1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "y2" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "rect", cornerRadius: 10, opacity: 0.92 },
+        encoding: {
+          x: { field: "x1", type: "quantitative", scale: xScale, axis: null },
+          x2: { field: "x2" },
+          y: { field: "y1", type: "quantitative", scale: yScale, axis: null },
+          y2: { field: "y2" },
+          color: { field: "fill", scale: null, legend: null },
+          tooltip: [
+            { field: "category", title: "Category" },
+            { field: "share", title: "Share" }
+          ]
+        }
+      },
+      ...values.map((tile) => ({
+        data: { values: [tile] },
+        mark: { type: "image", width: tile.imageW, height: tile.imageH, aspect: false, opacity: 0.42 },
+        encoding: {
+          x: { field: "imageX", type: "quantitative", scale: xScale, axis: null },
+          y: { field: "imageY", type: "quantitative", scale: yScale, axis: null },
+          url: { field: "image" },
+          tooltip: null
+        }
+      })),
+      {
+        data: { values: largeValues },
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 15, color: "#ffffff", limit: 135 },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "labelY", type: "quantitative", scale: yScale, axis: null }, text: { field: "Category_Label" }, tooltip: null }
+      },
+      {
+        data: { values: largeValues },
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Bebas Neue", fontWeight: 900, fontSize: 31, color: "#ffffff" },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, tooltip: null }
+      },
+      {
+        data: { values: otherValues },
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 11, color: "#ffffff", limit: 95 },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "labelY", type: "quantitative", scale: yScale, axis: null }, text: { field: "Category_Label" }, tooltip: null }
+      },
+      {
+        data: { values: otherValues },
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Bebas Neue", fontWeight: 900, fontSize: 24, color: "#ffffff" },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, tooltip: null }
+      },
+      {
+        data: { values: [{ x1: shellX2 - 130, x2: shellX2 - 26, y1: shellY1 + 14, y2: shellY1 + 60, label: "TOTAL", value: "100%" }] },
+        mark: { type: "rect", cornerRadius: 14, color: "#ffffff", opacity: 0.92, stroke: "#dce6f3", strokeWidth: 1.2 },
+        encoding: { x: { field: "x1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "x2" }, y: { field: "y1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "y2" }, tooltip: null }
+      },
+      {
+        data: { values: [{ x: shellX2 - 78, y: shellY1 + 29, text: "TOTAL" }] },
+        mark: { type: "text", align: "center", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 12, color: "#07175f" },
+        encoding: { x: { field: "x", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "text" }, tooltip: null }
+      },
+      {
+        data: { values: [{ x: shellX2 - 78, y: shellY1 + 49, text: "100%" }] },
+        mark: { type: "text", align: "center", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 24, color: "#07175f" },
+        encoding: { x: { field: "x", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "text" }, tooltip: null }
+      }
+    ],
+    config: { ...baseConfig(), view: { stroke: null } }
+  };
 }
-
-function renderSuitcaseExpenditure() {
-  const chart = document.querySelector("#expenditure-chart");
-  if (!chart) return;
-
-  chart.innerHTML = `
-    <div class="suitcase-infographic" role="img" aria-label="Suitcase treemap showing 2024 international visitor expenditure shares">
-      <div class="expenditure-header">
-        <span class="expenditure-title-icon" aria-hidden="true">${expenditureIcon("bag")}</span>
-        <div>
-          <h3>WHERE TOURISTS SPEND THEIR MONEY</h3>
-          <p>Share of 2024 international visitor expenditure</p>
-        </div>
-      </div>
-      <div class="suitcase-shell">
-        <div class="suitcase-handle" aria-hidden="true"></div>
-        <div class="suitcase-clasp left" aria-hidden="true"></div>
-        <div class="suitcase-clasp middle" aria-hidden="true"></div>
-        <div class="suitcase-clasp right" aria-hidden="true"></div>
-        <div class="suitcase-total-tag" aria-hidden="true">
-          <span>${expenditureIcon("plane")}</span>
-          <strong>TOTAL</strong>
-          <b>100%</b>
-        </div>
-        <div class="suitcase-foot left" aria-hidden="true"></div>
-        <div class="suitcase-foot right" aria-hidden="true"></div>
-        <div class="suitcase-grid">
-          ${expenditureTiles.map((tile) => `
-            <article class="suitcase-tile ${tile.className}${tile.compact ? " is-compact" : ""}" style="--tile-image: url('${tile.image}')" title="${tile.category} ${tile.share}">
-              <span class="tile-icon" aria-hidden="true">${expenditureIcon(tile.icon)}</span>
-              <div class="tile-copy">
-                <strong>${tile.category}</strong>
-                <span>${tile.share}</span>
-              </div>
-            </article>
-          `).join("")}
-        </div>
-      </div>
-      <div class="expenditure-icon-row" aria-label="Expenditure categories">
-        ${expenditureTiles.map((tile) => `
-          <span class="expenditure-icon-pill ${tile.className}">
-            <i aria-hidden="true">${expenditureIcon(tile.icon)}</i>
-            <b>${tile.legendLabel || tile.category}</b>
-          </span>
-        `).join("")}
-      </div>
-    </div>
-  `;
-}
-
 
 function domesticKeyIndicatorsSpec() {
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    width: chartWidth("#domestic-key-indicators-chart", 760, 650),
-    height: 320,
+    width: chartWidth("#domestic-key-indicators-chart", 820, 680),
+    height: 380,
     title: {
       text: "Domestic Tourism Key Indicators",
       subtitle: "Indexed to 2017 = 100 to compare indicators with different units",
       fontSize: 24,
-      subtitleFontSize: 14
+      subtitleFontSize: 15
     },
     data: { url: "data/domestic_tourism_key_indicators_2017_2024.csv" },
     params: [
@@ -1570,43 +1016,111 @@ const domesticStateRankings = [
   }
 ];
 
-function renderDomesticStateVisitorsRanking() {
-  const chart = document.querySelector("#domestic-state-visitors-chart");
-  if (!chart) return;
-
+function domesticStateVisitorsSpec() {
+  const width = chartWidth("#domestic-state-visitors-chart", 820, 650);
+  const height = 540;
   const maxVisitors = Math.max(...domesticStateRankings.map((row) => row.visitors));
-  const rows = domesticStateRankings.map((row) => {
-    const width = ((row.visitors / maxVisitors) * 100).toFixed(1);
-    return `
-      <article class="domestic-ranking-row" style="--rank-color: ${row.accent}; --bar-width: ${width}%;">
-        <div class="domestic-rank-number">${row.rank}</div>
-        <div class="domestic-rank-copy">
-          <strong>${row.state}</strong>
-          <span>${row.destination}</span>
-        </div>
-        <div class="domestic-photo-track">
-          <div class="domestic-photo-bar" role="img" aria-label="${row.state}, ${row.destination}: ${row.visitors.toFixed(1)} million domestic visitors" style="background-image: url('${row.image}');">
-            <div class="domestic-photo-value">
-              <strong>${row.visitors.toFixed(1)}<small>M</small></strong>
-              <span>visitors</span>
-            </div>
-          </div>
-        </div>
-      </article>
-    `;
-  }).join("");
+  const rowTop = 118;
+  const rowGap = 88;
+  const rankX = 42;
+  const copyX = 118;
+  const photoX = 300;
+  const maxPhotoW = width - photoX - 24;
+  const rowH = 68;
+  const values = domesticStateRankings.map((row, index) => {
+    const y = rowTop + index * rowGap;
+    const photoW = Math.max(285, (row.visitors / maxVisitors) * maxPhotoW);
+    return {
+      ...row,
+      y,
+      rowY1: y - rowH / 2,
+      rowY2: y + rowH / 2,
+      photoX1: photoX,
+      photoX2: photoX + photoW,
+      photoCX: photoX + photoW / 2,
+      photoW,
+      valueX: photoX + photoW - 18,
+      stateY: y - 10,
+      destY: y + 14,
+      Visitors_Label: `${row.visitors.toFixed(1)}M`
+    };
+  });
+  const xScale = { domain: [0, width] };
+  const yScale = { domain: [height, 0] };
 
-  chart.innerHTML = `
-    <section class="domestic-photo-ranking" aria-label="Top 5 domestic tourism states in 2024">
-      <header class="domestic-ranking-header">
-        <h3>TOP 5 DOMESTIC TOURISM STATES IN 2024</h3>
-        <p>By number of domestic visitors (million)</p>
-      </header>
-      <div class="domestic-ranking-list">
-        ${rows}
-      </div>
-    </section>
-  `;
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width,
+    height,
+    layer: [
+      {
+        data: { values: [{ x: 0, y: 30, text: "TOP 5 DOMESTIC TOURISM STATES IN 2024" }] },
+        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 24, color: "#07175f" },
+        encoding: { x: { field: "x", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "text" }, tooltip: null }
+      },
+      {
+        data: { values: [{ x: 0, y: 62, text: "By number of domestic visitors (million)" }] },
+        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 600, fontSize: 15, color: "#4e5e78" },
+        encoding: { x: { field: "x", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "text" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "rect", cornerRadius: 16, color: "#f7fbff", stroke: "#dbe7f4", strokeWidth: 1 },
+        encoding: { x: { datum: 0, type: "quantitative", scale: xScale, axis: null }, x2: { datum: width }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "text", align: "left", baseline: "middle", font: "Bebas Neue", fontWeight: 900, fontSize: 48 },
+        encoding: { x: { datum: rankX, type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "rank" }, color: { field: "accent", scale: null, legend: null }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "rule", stroke: "#c9d6e6", strokeWidth: 1 },
+        encoding: { x: { datum: copyX - 18, type: "quantitative", scale: xScale, axis: null }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 17, color: "#07175f", limit: 190 },
+        encoding: { x: { datum: copyX, type: "quantitative", scale: xScale, axis: null }, y: { field: "stateY", type: "quantitative", scale: yScale, axis: null }, text: { field: "state" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 700, fontSize: 13, color: "#52647d", limit: 170 },
+        encoding: { x: { datum: copyX, type: "quantitative", scale: xScale, axis: null }, y: { field: "destY", type: "quantitative", scale: yScale, axis: null }, text: { field: "destination" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "rect", cornerRadius: 18, opacity: 0.16 },
+        encoding: { x: { field: "photoX1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "photoX2" }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, color: { field: "accent", scale: null, legend: null }, tooltip: null }
+      },
+      ...values.map((row) => ({
+        data: { values: [row] },
+        mark: { type: "image", width: row.photoW, height: rowH, aspect: false, opacity: 0.86 },
+        encoding: {
+          x: { field: "photoCX", type: "quantitative", scale: xScale, axis: null },
+          y: { field: "y", type: "quantitative", scale: yScale, axis: null },
+          url: { field: "image" },
+          tooltip: null
+        }
+      })),
+      {
+        data: { values },
+        mark: { type: "rect", cornerRadius: 18, opacity: 0.52 },
+        encoding: { x: { field: "photoX1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "photoX2" }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, color: { field: "accent", scale: null, legend: null }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "text", align: "right", baseline: "middle", font: "Bebas Neue", fontWeight: 900, fontSize: 36, color: "#ffffff" },
+        encoding: { x: { field: "valueX", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "Visitors_Label" }, tooltip: null }
+      },
+      {
+        data: { values },
+        mark: { type: "text", align: "right", baseline: "middle", dx: -2, dy: 20, font: "Inter", fontWeight: 800, fontSize: 11, color: "#ffffff" },
+        encoding: { x: { field: "valueX", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { value: "visitors" }, tooltip: null }
+      }
+    ],
+    config: { ...baseConfig(), view: { stroke: null } }
+  };
 }
 
 function domesticPurposeSpec() {
@@ -1861,203 +1375,83 @@ function labelForPurpose(purpose) {
 
 
 
-async function renderDomesticTripPurposeFlower() {
-  const container = document.querySelector("#domestic-purpose-chart");
-  if (!container) return;
-
-  const response = await fetch("data/domestic_trip_purpose_2024.csv");
-  const rows = parseCsvRows(await response.text())
-    .map((row) => ({ ...row, Share_Pct: Number(row.Share_Pct) }))
-    .filter((row) => Number.isFinite(row.Share_Pct));
-
-  rows.push({ Purpose: "Others / Not stated", Share_Pct: 3.8 });
-
-  const width = Math.max(1120, chartWidth("#domestic-purpose-chart", 1180, 720));
-  const height = 840;
-
-  const cx = width * 0.78;
-  const cy = 440;
-
-  const maxShare = Math.max(...rows.map((row) => row.Share_Pct));
-
-  const colorsByPurpose = {
-    "Visiting relatives & friends": "#F05A7A",
-    Shopping: "#F26B2A",
-    "Holiday/ leisure/ relaxation": "#F2B705",
-    "Incentive travel/ others": "#A8C51F",
-    "Entertainment/ attending special event/ sports": "#48B86E",
-    "Medical treatment/ wellness": "#3BB8AE",
-    "Religious worship/ visit places of worship": "#6FA8DC",
-    "Official business/ business/ education": "#7A61C9",
-    "Others / Not stated": "#9B75C4"
-  };
-
-  const iconByPurpose = {
-    "Visiting relatives & friends": "family",
-    Shopping: "bag",
-    "Holiday/ leisure/ relaxation": "sun",
-    "Incentive travel/ others": "ticket",
-    "Entertainment/ attending special event/ sports": "masks",
-    "Medical treatment/ wellness": "medical",
-    "Religious worship/ visit places of worship": "worship",
-    "Official business/ business/ education": "briefcase",
-    "Others / Not stated": "dots"
-  };
-
-  const shortLabelByPurpose = {
-    "Visiting relatives & friends": ["Visiting relatives", "& friends"],
-    Shopping: ["Shopping"],
-    "Holiday/ leisure/ relaxation": ["Holiday / Leisure"],
-    "Incentive travel/ others": ["Incentive travel"],
-    "Entertainment/ attending special event/ sports": ["Entertainment"],
-    "Medical treatment/ wellness": ["Medical / Wellness"],
-    "Religious worship/ visit places of worship": ["Religious visit"],
-    "Official business/ business/ education": ["Business"],
-    "Others / Not stated": ["Others"]
-  };
-
-  const rankedRows = [...rows].sort((a, b) => b.Share_Pct - a.Share_Pct);
-
-  const startAngle = -90;
+function domesticPurposeArcSpec() {
+  const width = chartWidth("#domestic-purpose-chart", 760, 620);
+  const height = 600;
+  const data = [
+    { Purpose: "Visiting relatives & friends", Share_Pct: 34.6, Rank: 1, Color: "#F05A7A" },
+    { Purpose: "Shopping", Share_Pct: 27.6, Rank: 2, Color: "#F26B2A" },
+    { Purpose: "Holiday/ leisure/ relaxation", Share_Pct: 14.6, Rank: 3, Color: "#F2B705" },
+    { Purpose: "Incentive travel/ others", Share_Pct: 10.7, Rank: 4, Color: "#A8C51F" },
+    { Purpose: "Entertainment/ attending special event/ sports", Share_Pct: 5.7, Rank: 5, Color: "#48B86E" },
+    { Purpose: "Medical treatment/ wellness", Share_Pct: 4.5, Rank: 6, Color: "#3BB8AE" },
+    { Purpose: "Others / Not stated", Share_Pct: 3.8, Rank: 7, Color: "#9B75C4" },
+    { Purpose: "Religious worship/ visit places of worship", Share_Pct: 1.5, Rank: 8, Color: "#6FA8DC" },
+    { Purpose: "Official business/ business/ education", Share_Pct: 0.8, Rank: 9, Color: "#7A61C9" }
+  ];
+  const maxShare = 34.6;
   const maxArc = 300;
-  const trackWidth = 15;
-  const trackGap = 17;
-  const innerRadius = 72;
+  const ringWidth = 18;
+  const ringGap = 22;
+  const innerRadius = 86;
+  const arcTransforms = [
+    { calculate: `${innerRadius} + (10 - datum.Rank) * ${ringGap}`, as: "radius" },
+    { calculate: `datum.radius - ${ringWidth / 2}`, as: "radiusInner" },
+    { calculate: `datum.radius + ${ringWidth / 2}`, as: "radiusOuter" },
+    { calculate: `(datum.Share_Pct / ${maxShare}) * ${maxArc}`, as: "arcEnd" }
+  ];
 
-  const labelX = 385;
-  const textX = 435;
-  const valueX = 625;
-  const firstLabelY = 215;
-  const labelGap = 57;
-
-  const arcPath = (cx, cy, radius, startDeg, endDeg) => {
-    const start = polarPoint(cx, cy, radius, startDeg);
-    const end = polarPoint(cx, cy, radius, endDeg);
-    const largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
-    return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} A ${radius} ${radius} 0 ${largeArc} 1 ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+  return {
+    $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    width,
+    height,
+    data: { values: data },
+    layer: [
+      {
+        transform: arcTransforms,
+        mark: { type: "arc", color: "#F1F5F9", cornerRadius: 9 },
+        encoding: {
+          theta: { datum: maxArc, type: "quantitative", scale: { domain: [0, 360], range: [0, 6.2832] } },
+          theta2: { datum: 0 },
+          radius: { field: "radiusOuter", type: "quantitative", scale: null },
+          radius2: { field: "radiusInner", type: "quantitative", scale: null },
+          tooltip: null
+        }
+      },
+      {
+        transform: arcTransforms,
+        mark: { type: "arc", cornerRadius: 9, opacity: 0.72 },
+        encoding: {
+          theta: { field: "arcEnd", type: "quantitative", scale: { domain: [0, 360], range: [0, 6.2832] } },
+          theta2: { datum: 0 },
+          radius: { field: "radiusOuter", type: "quantitative", scale: null },
+          radius2: { field: "radiusInner", type: "quantitative", scale: null },
+          color: { field: "Color", scale: null, legend: null },
+          tooltip: [
+            { field: "Purpose", title: "Purpose" },
+            { field: "Share_Pct", title: "Share", format: ".1f" }
+          ]
+        }
+      },
+      {
+        data: { values: [
+          { label: "100%", y: height / 2 + 6, size: 44 },
+          { label: "Domestic Trips", y: height / 2 + 48, size: 14 },
+          { label: "in 2024", y: height / 2 + 66, size: 14 }
+        ] },
+        mark: { type: "text", align: "center", baseline: "middle", font: "Inter", fontWeight: 900, color: colors.text },
+        encoding: {
+          x: { datum: width / 2, type: "quantitative", scale: { domain: [0, width] }, axis: null },
+          y: { field: "y", type: "quantitative", scale: { domain: [height, 0] }, axis: null },
+          text: { field: "label" },
+          size: { field: "size", type: "quantitative", scale: null },
+          tooltip: null
+        }
+      }
+    ],
+    config: { ...baseConfig(), view: { stroke: null } }
   };
-
-  const labelMarkup = rankedRows.map((row, index) => {
-    const color = colorsByPurpose[row.Purpose] || colors.teal;
-    const y = firstLabelY + index * labelGap;
-    const labelLines = shortLabelByPurpose[row.Purpose] || labelForPurpose(row.Purpose);
-
-    return `
-      <g>
-        <circle cx="${labelX}" cy="${y - 8}" r="22" fill="${color}" opacity="0.9"></circle>
-        <g transform="translate(${labelX}, ${y - 8}) scale(0.6)" style="--icon-color:#ffffff">
-          ${purposeIconMarkup(iconByPurpose[row.Purpose])}
-        </g>
-
-        <text x="${textX}" y="${y - 15}" class="flower-label" text-anchor="start"
-          style="font-size:15px; font-weight:900;">
-          ${labelLines.map((line, lineIndex) => `
-            <tspan x="${textX}" dy="${lineIndex === 0 ? 0 : 16}">${line}</tspan>
-          `).join("")}
-        </text>
-
-        <text x="${valueX}" y="${y + 1}" text-anchor="end"
-          style="font-family:'Bebas Neue', sans-serif; font-size:28px; font-weight:900; fill:${color};">
-          ${row.Share_Pct.toFixed(1)}%
-        </text>
-      </g>
-    `;
-  }).join("");
-
-  const guideMarkup = rankedRows.map((_, index) => {
-    const radius = innerRadius + (rankedRows.length - index) * trackGap;
-    return `
-      <path d="${arcPath(cx, cy, radius, startAngle, startAngle + maxArc)}"
-        fill="none"
-        stroke="#DDE6F0"
-        stroke-width="1"
-        stroke-dasharray="3 5"
-        opacity="0.6"></path>
-    `;
-  }).join("");
-
-  const trackMarkup = rankedRows.map((row, index) => {
-    const color = colorsByPurpose[row.Purpose] || colors.teal;
-    const radius = innerRadius + (rankedRows.length - index) * trackGap;
-    const endAngle = startAngle + (row.Share_Pct / maxShare) * maxArc;
-    const endPoint = polarPoint(cx, cy, radius, endAngle);
-
-    return `
-      <path d="${arcPath(cx, cy, radius, startAngle, startAngle + maxArc)}"
-        fill="none"
-        stroke="#F1F5F9"
-        stroke-width="${trackWidth}"
-        stroke-linecap="round"></path>
-
-      <path d="${arcPath(cx, cy, radius, startAngle, endAngle)}"
-        fill="none"
-        stroke="${color}"
-        stroke-width="${trackWidth}"
-        stroke-linecap="round"
-        opacity="0.72">
-        <title>${row.Purpose}: ${row.Share_Pct.toFixed(1)}%</title>
-      </path>
-
-      <circle cx="${endPoint.x.toFixed(1)}" cy="${endPoint.y.toFixed(1)}" r="6.8"
-        fill="${color}" stroke="#ffffff" stroke-width="3"></circle>
-    `;
-  }).join("");
-
-  container.innerHTML = `
-    <svg class="flower-chart-svg" viewBox="0 0 ${width} ${height}" role="img"
-      aria-label="Purpose of domestic trips in 2024">
-      <rect class="flower-figure-pill" x="8" y="8" width="128" height="34" rx="17"></rect>
-      <text class="flower-figure-label" x="72" y="31" text-anchor="middle">FIGURE 09</text>
-
-      <text x="8" y="100"
-        style="font-family:'Inter', sans-serif; font-size:38px; font-weight:500; fill:#152238;">
-        Domestic trips are mostly
-      </text>
-      <text x="8" y="148"
-        style="font-family:'Inter', sans-serif; font-size:38px; font-weight:500; fill:#152238;">
-        social and shopping-led
-      </text>
-
-      <text x="8" y="205"
-        style="font-family:'Inter', sans-serif; font-size:20px; font-weight:500; fill:#5A6B84;">
-        <tspan x="8" dy="0">Domestic travel is mainly driven by</tspan>
-        <tspan x="8" dy="30">social visits and shopping-related</tspan>
-        <tspan x="8" dy="30">activities in 2024.</tspan>
-      </text>
-
-      ${labelMarkup}
-
-      <g>
-        ${guideMarkup}
-        ${trackMarkup}
-
-        <circle cx="${cx}" cy="${cy}" r="58" fill="#ffffff" stroke="#e8eff8" stroke-width="3"
-          filter="drop-shadow(0 6px 12px rgba(21, 34, 56, 0.12))"></circle>
-
-        <g class="flower-center-icon" transform="translate(${cx - 24}, ${cy - 46}) scale(0.72)">
-          <circle cx="30" cy="15" r="11"></circle>
-          <circle cx="10" cy="24" r="9"></circle>
-          <circle cx="50" cy="24" r="9"></circle>
-          <path d="M16 60v-10c0-11 7-18 14-18s14 7 14 18v10"></path>
-          <path d="M0 60v-8c0-9 5-15 11-15"></path>
-          <path d="M60 60v-8c0-9-5-15-11-15"></path>
-        </g>
-
-        <text x="${cx}" y="${cy + 20}" text-anchor="middle"
-          style="font-family:'Bebas Neue', sans-serif; font-size:40px; font-weight:900; fill:#152238;">
-          100%
-        </text>
-
-        <text x="${cx}" y="${cy + 50}" text-anchor="middle"
-          style="font-family:'Inter', sans-serif; font-size:13px; font-weight:850; fill:#152238;">
-          <tspan x="${cx}" dy="0">Domestic Trips</tspan>
-          <tspan x="${cx}" dy="17">in 2024</tspan>
-        </text>
-      </g>
-    </svg>
-  `;
 }
-
 
 
 
@@ -2117,16 +1511,27 @@ function domesticODSpec() {
 }
 
 function receiptsScatterSpec() {
-  const width = chartWidth("#receipts-scatter-chart", 1280, 900);
-
+  const width = chartWidth("#receipts-scatter-chart", 820, 680);
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+
     width,
-    height: 390,
-    padding: { left: 190, right: 90, top: 8, bottom: 42 },
-    data: { url: "data/visitor_receipts_by_country_2024_2023.csv" },
+    height: 420,
+
+    padding: {
+      left: 30,
+      right: 30,
+      top: 10,
+      bottom: 42
+    },
+
+    data: {
+      url: "data/visitor_receipts_by_country_2024_2023.csv"
+    },
+
     transform: [
       { calculate: "toNumber(datum.Rank)", as: "Receipt_Rank" },
+
       {
         lookup: "Country",
         from: {
@@ -2135,144 +1540,184 @@ function receiptsScatterSpec() {
           fields: ["Rank", "Flag"]
         }
       },
+
       { filter: "datum.Receipt_Rank <= 12" },
-      { calculate: "isValid(datum.Rank) ? toNumber(datum.Rank) : null", as: "Arrival_Rank" },
-      { calculate: "datum.Receipts_2024_RM_Mil / 1000", as: "Receipts_RM_Bil" },
+
+      {
+        calculate: "isValid(datum.Rank) ? toNumber(datum.Rank) : null",
+        as: "Arrival_Rank"
+      },
+
+      {
+        calculate: "datum.Receipts_2024_RM_Mil / 1000",
+        as: "Receipts_RM_Bil"
+      },
+
       { calculate: "0", as: "Zero" },
-      { calculate: "'RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'", as: "Receipt_Label" },
-      { calculate: "isValid(datum.Flag) ? datum.Flag + '  ' + datum.Country : datum.Country", as: "Market_Label" },
-      { calculate: "isValid(datum.Arrival_Rank) ? 'arrival rank #' + datum.Arrival_Rank : 'not in top arrivals'", as: "Arrival_Label" }
+
+      {
+        calculate:
+          "'RM' + format(datum.Receipts_RM_Bil, '.1f') + 'B'",
+        as: "Receipt_Label"
+      },
+
+      {
+        calculate:
+          "isValid(datum.Flag) ? datum.Flag + '  ' + datum.Country : datum.Country",
+        as: "Market_Label"
+      }
     ],
+
     layer: [
       {
-        mark: { type: "rule", strokeWidth: 4, opacity: 0.88 },
+        mark: {
+          type: "rule",
+          strokeWidth: 6
+        },
+
         encoding: {
           x: {
             field: "Zero",
             type: "quantitative",
-            title: "Total tourism receipts (RM billion)",
-            scale: { domain: [0, 30] },
+            scale: {
+              domain: [0, 30]
+            },
             axis: {
-              values: [0, 5, 10, 15, 20, 25, 30],
+              title: "Tourism Receipts (RM Billion)",
               grid: true,
-              gridColor: "rgba(120,150,190,0.20)",
-              domain: false,
-              tickColor: "#ccd8e6",
-              labelColor: "#34445c",
-              labelFontWeight: 700,
-              titleColor: "#34445c",
-              titleFontWeight: 800
+              labelFontSize: 11,
+              titleFontSize: 12
             }
           },
-          x2: { field: "Receipts_RM_Bil" },
+
+          x2: {
+            field: "Receipts_RM_Bil"
+          },
+
           y: {
             field: "Market_Label",
             type: "nominal",
-            sort: { field: "Receipt_Rank", order: "ascending" },
-            title: null,
+            sort: {
+              field: "Receipt_Rank",
+              order: "ascending"
+            },
+
             axis: {
-              labelFontSize: 14,
-              labelFontWeight: 850,
-              labelColor: "#152238",
-              domain: false,
-              ticks: false,
-              labelLimit: 180
+              labelFontSize: 13,
+              labelFontWeight: 700,
+              labelLimit: 210,
+              title: null
             }
           },
+
           color: {
             condition: [
-              { test: "datum.Country === 'Singapore'", value: "#0B2A6F" },
-              { test: "datum.Country === 'China'", value: "#263FE0" }
+              {
+                test: "datum.Country==='Singapore'",
+                value: "#0B2A6F"
+              },
+              {
+                test: "datum.Country==='China'",
+                value: "#3B5BFF"
+              }
             ],
-            value: "#C7D5F0"
+            value: "#C9D7F2"
           }
         }
       },
+
       {
         mark: {
           type: "circle",
-          stroke: "#ffffff",
+          stroke: "white",
           strokeWidth: 3
         },
+
         encoding: {
-          x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
+          x: {
+            field: "Receipts_RM_Bil",
+            type: "quantitative"
+          },
+
           y: {
             field: "Market_Label",
             type: "nominal",
-            sort: { field: "Receipt_Rank", order: "ascending" }
+            sort: {
+              field: "Receipt_Rank",
+              order: "ascending"
+            }
           },
+
           size: {
             condition: [
-              { test: "datum.Country === 'Singapore'", value: 1150 },
-              { test: "datum.Country === 'China'", value: 1000 }
+              {
+                test: "datum.Country==='Singapore'",
+              value: 980
+              },
+              {
+                test: "datum.Country==='China'",
+              value: 860
+              }
             ],
             value: 520
           },
+
           color: {
             condition: [
-              { test: "datum.Country === 'Singapore'", value: "#0B2A6F" },
-              { test: "datum.Country === 'China'", value: "#263FE0" }
+              {
+                test: "datum.Country==='Singapore'",
+                value: "#0B2A6F"
+              },
+              {
+                test: "datum.Country==='China'",
+                value: "#3B5BFF"
+              }
             ],
             value: "#9FB6DF"
-          },
-          tooltip: [
-            { field: "Country", title: "Country" },
-            { field: "Receipt_Rank", title: "Receipt rank" },
-            { field: "Arrival_Rank", title: "Arrival rank" },
-            { field: "Receipts_RM_Bil", title: "Receipts (RM bil.)", format: ".1f" }
-          ]
+          }
         }
       },
+
       {
         mark: {
           type: "text",
+          dx: 18,
           align: "left",
           baseline: "middle",
-          dx: 13,
-          fontSize: 14,
-          fontWeight: 900,
-          color: "#152238"
+          fontSize: 13,
+          fontWeight: 900
         },
+
         encoding: {
-          x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
+          x: {
+            field: "Receipts_RM_Bil",
+            type: "quantitative"
+          },
+
           y: {
             field: "Market_Label",
             type: "nominal",
-            sort: { field: "Receipt_Rank", order: "ascending" }
+            sort: {
+              field: "Receipt_Rank",
+              order: "ascending"
+            }
           },
-          text: { field: "Receipt_Label" }
-        }
-      },
-      {
-        transform: [{ filter: "datum.Country === 'Singapore' || datum.Country === 'China'" }],
-        mark: {
-          type: "text",
-          align: "left",
-          baseline: "middle",
-          dx: 75,
-          fontSize: 11.5,
-          fontWeight: 800,
-          color: "#5b6d86"
-        },
-        encoding: {
-          x: { field: "Receipts_RM_Bil", type: "quantitative", scale: { domain: [0, 30] } },
-          y: {
-            field: "Market_Label",
-            type: "nominal",
-            sort: { field: "Receipt_Rank", order: "ascending" }
-          },
-          text: { field: "Arrival_Label" }
+
+          text: {
+            field: "Receipt_Label"
+          }
         }
       }
     ],
+
     config: baseConfig()
   };
 }
 
 function stateGuestsSpec() {
-  const width = chartWidth("#state-guests-chart", 720, 700);
+  const width = chartWidth("#state-guests-chart", 860, 720);
   const halfWidth = Math.floor((width - 4) / 2);
-  const mapHeight = 350;
+  const mapHeight = 420;
   const peninsularCodes = ["KDH", "KTN", "PRK", "PNG", "KUL", "NSN", "MLK", "PLS", "PHG", "TRG", "PJY", "SGR", "JHR"];
 
   const growthMapLayer = (region, showLegend) => ({
@@ -2281,42 +1726,48 @@ function stateGuestsSpec() {
     projection: {
       type: "mercator",
       center: region === "Peninsular" ? [101.65, 4.05] : [115.1, 4.0],
-      scale: region === "Peninsular" ? 3300 : 2050,
-      translate: [region === "Peninsular" ? halfWidth / 2 - 36 : halfWidth / 2 + 36, mapHeight / 2]
+      scale: region === "Peninsular" ? 2850 : 1850,
+      translate: [region === "Peninsular" ? halfWidth / 2 - 6 : halfWidth / 2 + 22, mapHeight / 2]
     },
-    data: { url: "data/malaysia.state.geojson", format: { type: "json", property: "features" } },
-    transform: [
+    layer: [
       {
-        lookup: "properties.state",
-        from: {
-          data: { url: "data/international_arrivals_by_state_2024.csv" },
-          key: "state_code",
-          fields: ["state", "international_2024", "international_growth_pct"]
+        data: { url: "data/malaysia.state.geojson", format: { type: "json", property: "features" } },
+        transform: [
+          {
+            lookup: "properties.state",
+            from: {
+              data: { url: "data/international_arrivals_by_state_2024.csv" },
+              key: "state_code",
+              fields: ["state", "international_2024", "international_growth_pct"]
+            }
+          },
+          {
+            filter: region === "Peninsular"
+              ? `indexof(${JSON.stringify(peninsularCodes)}, datum.properties.state) >= 0`
+              : `indexof(${JSON.stringify(peninsularCodes)}, datum.properties.state) < 0`
+          },
+          { calculate: "toNumber(datum.international_growth_pct)", as: "Growth" },
+          { calculate: "toNumber(datum.international_2024)", as: "Foreign_2024" }
+        ],
+        mark: { type: "geoshape", stroke: "#ffffff", strokeWidth: 1.1 },
+        encoding: {
+          color: {
+            field: "Growth",
+            type: "quantitative",
+            title: "Growth 2024/2023 (%)",
+            scale: { domain: [-35, 0, 75], range: ["#D84C4C", "#F5D98B", "#2E8B57"] },
+            legend: showLegend ? { orient: "bottom", direction: "horizontal", gradientLength: Math.min(520, width - 80), format: ".0f" } : null
+          },
+          tooltip: [
+            { field: "state", title: "State" },
+            { field: "Foreign_2024", title: "Foreign hotel guests 2024", format: "," },
+            { field: "Growth", title: "Growth %", format: ".1f" }
+          ]
         }
       },
-      {
-        filter: region === "Peninsular"
-          ? `indexof(${JSON.stringify(peninsularCodes)}, datum.properties.state) >= 0`
-          : `indexof(${JSON.stringify(peninsularCodes)}, datum.properties.state) < 0`
-      },
-      { calculate: "toNumber(datum.international_growth_pct)", as: "Growth" },
-      { calculate: "toNumber(datum.international_2024)", as: "Foreign_2024" }
-    ],
-    mark: { type: "geoshape", stroke: "#ffffff", strokeWidth: 1.1 },
-    encoding: {
-      color: {
-        field: "Growth",
-        type: "quantitative",
-        title: "Growth 2024/2023 (%)",
-        scale: { domain: [-35, 0, 75], range: ["#D84C4C", "#F5D98B", "#2E8B57"] },
-        legend: showLegend ? { orient: "bottom", direction: "horizontal", gradientLength: Math.min(440, width - 100), format: ".0f" } : null
-      },
-      tooltip: [
-        { field: "state", title: "State" },
-        { field: "Foreign_2024", title: "Foreign hotel guests 2024", format: "," },
-        { field: "Growth", title: "Growth %", format: ".1f" }
-      ]
-    }
+      labelLayer(region, true),
+      labelLayer(region, false)
+    ]
   });
 
   return {
@@ -2336,10 +1787,13 @@ function stateGuestsSpec() {
 
 const charts = [
   ["#monthly-trend-chart", monthlyTrendSpec],
+  ["#domestic-purpose-chart", domesticPurposeArcSpec],
   ["#domestic-key-indicators-chart", domesticKeyIndicatorsSpec],
   ["#source-markets-chart", sourceMarketsSpec],
   ["#receipts-scatter-chart", receiptsScatterSpec],
+  ["#domestic-state-visitors-chart", domesticStateVisitorsSpec],
   ["#arrivals-map", mapSpec],
+  ["#expenditure-chart", expenditureSpec],
   ["#domestic-od-chart", domesticODSpec],
   ["#state-guests-chart", stateGuestsSpec]
 ];
@@ -2347,10 +1801,6 @@ const charts = [
 async function renderAll() {
   try {
     applyFigureNarratives();
-    renderDomesticStateVisitorsRanking();
-    renderSuitcaseExpenditure();
-    await renderDomesticTripPurposeFlower();
-
     if (!window.vega || !window.vegaLite || !window.vegaEmbed) {
       showStatus("Vega libraries did not load. Please check the internet connection and refresh the page.");
       return;
