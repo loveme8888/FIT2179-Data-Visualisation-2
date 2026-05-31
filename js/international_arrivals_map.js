@@ -1065,6 +1065,8 @@ function domesticStateVisitorsSpec() {
     return {
       ...row,
       y,
+      rowX1: 0,
+      rowX2: photoX + photoW,
       rowY1: y - rowH / 2,
       rowY2: y + rowH / 2,
       photoX1: photoX,
@@ -1092,7 +1094,7 @@ function domesticStateVisitorsSpec() {
       {
         data: { values },
         mark: { type: "rect", cornerRadius: 16, color: "#f7fbff", stroke: "#dbe7f4", strokeWidth: 1 },
-        encoding: { x: { datum: 0, type: "quantitative", scale: xScale, axis: null }, x2: { field: "photoX2" }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, tooltip: null }
+        encoding: { x: { field: "rowX1", type: "quantitative", scale: xScale, axis: null }, x2: { field: "rowX2" }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, tooltip: null }
       },
       {
         data: { values },
