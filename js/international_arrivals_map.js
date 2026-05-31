@@ -187,13 +187,13 @@ function baseConfig() {
     background: "#ffffff",
     font: "Inter",
     title: {
-      font: "Bebas Neue",
+      font: "Inter",
       color: colors.text,
       subtitleFont: "Inter",
       subtitleColor: colors.muted,
       anchor: "start",
       fontSize: 24,
-      fontWeight: 400,
+      fontWeight: 900,
       subtitleFontSize: 15,
       subtitleFontWeight: 600,
       offset: 10
@@ -293,6 +293,12 @@ function mapSpec() {
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+    title: {
+      text: "Foreign Hotel Guests by State, 2024",
+      subtitle: "Hotel guests in millions; Peninsular Malaysia and Borneo shown separately",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
     hconcat: [guestMapLayer("Peninsular", true), guestMapLayer("Borneo", false)],
     spacing: 18,
     resolve: { scale: { color: "shared" } },
@@ -314,7 +320,7 @@ function labelLayer(region, halo) {
       type: "text",
       align: "center",
       baseline: "middle",
-      font: "Arial",
+      font: "Inter",
       fontSize: 9.5,
       fontWeight: "bold",
       lineBreak: "\n",
@@ -561,6 +567,12 @@ function monthlyTrendSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
+    title: {
+      text: "Monthly Foreign Arrivals, 2023 vs 2024",
+      subtitle: "Visitors in millions by month",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
     padding: { top: 12, right: isMobile ? 18 : 28, bottom: 18, left: isMobile ? 18 : 28 },
     data: {
       url: "data/foreign_visitors_monthly_2024_2023.csv",
@@ -831,6 +843,12 @@ function expenditureSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
+    title: {
+      text: "International Visitor Expenditure by Category, 2024",
+      subtitle: "Share of total visitor spending",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
     layer: [
       {
         data: { values: [{ x1: shellX1 + shellW * 0.36, x2: shellX1 + shellW * 0.64, y1: 18, y2: 94 }] },
@@ -883,7 +901,7 @@ function expenditureSpec() {
       },
       {
         data: { values: largeValues },
-        mark: { type: "text", align: "left", baseline: "bottom", font: "Bebas Neue", fontWeight: 900, fontSize: 31, color: "#ffffff" },
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 31, color: "#ffffff" },
         encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, tooltip: null }
       },
       {
@@ -893,7 +911,7 @@ function expenditureSpec() {
       },
       {
         data: { values: otherValues },
-        mark: { type: "text", align: "left", baseline: "bottom", font: "Bebas Neue", fontWeight: 900, fontSize: 24, color: "#ffffff" },
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 24, color: "#ffffff" },
         encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, tooltip: null }
       },
       {
@@ -1082,7 +1100,7 @@ function domesticStateVisitorsSpec() {
       },
       {
         data: { values },
-        mark: { type: "text", align: "left", baseline: "middle", font: "Bebas Neue", fontWeight: 900, fontSize: 48 },
+        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 48 },
         encoding: { x: { datum: rankX, type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "rank" }, color: { field: "accent", scale: null, legend: null }, tooltip: null }
       },
       {
@@ -1122,7 +1140,7 @@ function domesticStateVisitorsSpec() {
       },
       {
         data: { values },
-        mark: { type: "text", align: "right", baseline: "middle", font: "Bebas Neue", fontWeight: 900, fontSize: 36, color: "#ffffff" },
+        mark: { type: "text", align: "right", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 36, color: "#ffffff" },
         encoding: { x: { field: "valueX", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "Visitors_Label" }, tooltip: null }
       },
       {
@@ -1165,6 +1183,12 @@ function domesticPurposeArcSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
+    title: {
+      text: "Domestic Trip Purpose, 2024",
+      subtitle: "Share of domestic trips by main purpose",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
     data: { values: data },
     layer: [
       {
@@ -1258,6 +1282,12 @@ function receiptsScatterSpec() {
 
     width,
     height: 420,
+    title: {
+      text: "Tourism Receipts by Source Market, 2024",
+      subtitle: "Top receipt markets shown in RM billion",
+      fontSize: 24,
+      subtitleFontSize: 14
+    },
 
     padding: {
       left: 30,

@@ -26,7 +26,7 @@ body {
   overflow-x: hidden;
   background: linear-gradient(180deg, #f4fbff 0%, #eaf5fb 48%, #edf6fb 100%);
   color: var(--text);
-  font-family: "Inter", "Source Sans Pro", Arial, sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .hero {
@@ -41,10 +41,10 @@ body {
 }
 
 .top-index {
-  position: absolute;
-  bottom: 28px;
+  position: fixed;
+  top: 22px;
   left: 50%;
-  z-index: 3;
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -156,6 +156,7 @@ body {
   position: relative;
   width: min(1120px, calc(100vw - 72px));
   margin: 0 auto;
+  padding-top: 88px;
   padding-bottom: 80px;
   z-index: 1;
 }
@@ -172,10 +173,9 @@ body {
 h1 {
   margin: 0;
   color: var(--navy);
-  font-family: "Bebas Neue", "Oswald", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: clamp(48px, 5vw, 72px);
-  font-weight: 400;
-  letter-spacing: 0.03em;
+  font-weight: 900;
   line-height: 0.95;
 }
 
@@ -221,10 +221,9 @@ h1 {
 
 .big-picture h2 {
   margin: 0 0 14px;
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 42px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
@@ -318,10 +317,9 @@ h1 {
 .section-heading h2 {
   margin: 0;
   color: var(--navy);
-  font-family: "Bebas Neue", "Oswald", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: clamp(30px, 3vw, 42px);
-  font-weight: 400;
-  letter-spacing: 0.02em;
+  font-weight: 900;
   line-height: 0.95;
 }
 
@@ -348,8 +346,9 @@ h1 {
 .text-block h3 {
   margin: 0 0 5px;
   color: var(--navy);
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Inter", sans-serif;
   font-size: 18px;
+  font-weight: 900;
   line-height: 1.1;
 }
 
@@ -645,8 +644,9 @@ h1 {
 
 .purpose-legend-row strong {
   color: var(--purpose-color);
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 22px;
+  font-weight: 900;
   line-height: 1;
   white-space: nowrap;
 }
@@ -874,6 +874,20 @@ h1 {
   font-weight: 500;
 }
 
+.source-note a,
+.data-provenance a,
+.site-footer a {
+  color: var(--accent-blue);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.source-note a:hover,
+.data-provenance a:hover,
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
 .insight-box {
   display: none;
   grid-template-columns: 42px minmax(0, 1fr);
@@ -913,8 +927,9 @@ h1 {
 .data-provenance h2 {
   margin: 0 0 10px;
   color: var(--navy);
-  font-family: "Oswald", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 30px;
+  font-weight: 900;
 }
 
 .data-provenance p {
@@ -943,8 +958,9 @@ code {
 
 .tm-logo {
   color: #0b5e8e;
-  font-family: "Oswald", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 26px;
+  font-weight: 900;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -997,7 +1013,7 @@ code {
 
 @media (max-width: 760px) {
   .top-index {
-    bottom: 16px;
+    top: 12px;
     width: min(100vw - 28px, 720px);
     align-items: flex-start;
     flex-direction: column;
@@ -1033,6 +1049,7 @@ code {
   }
 
   .hero-content {
+    padding-top: 132px;
     padding-bottom: 150px;
   }
 
