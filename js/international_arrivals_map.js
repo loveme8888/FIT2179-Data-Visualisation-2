@@ -227,6 +227,23 @@ function baseConfig() {
   };
 }
 
+function chartTitle(text, subtitle) {
+  return {
+    text,
+    subtitle,
+    anchor: "start",
+    font: "Inter",
+    fontSize: 24,
+    fontWeight: 900,
+    color: "#07175f",
+    subtitleFont: "Inter",
+    subtitleFontSize: 14,
+    subtitleFontWeight: 700,
+    subtitleColor: "#3d4966",
+    offset: 12
+  };
+}
+
 function mapSpec() {
   const width = chartWidth("#arrivals-map", 820, 680);
   const height = 520;
@@ -293,12 +310,10 @@ function mapSpec() {
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    title: {
-      text: "Foreign Hotel Guests by State, 2024",
-      subtitle: "Hotel guests in millions; Peninsular Malaysia and Borneo shown separately",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "Foreign Hotel Guests by State, 2024",
+      "Hotel guests in millions; Peninsular Malaysia and Borneo shown separately"
+    ),
     hconcat: [guestMapLayer("Peninsular", true), guestMapLayer("Borneo", false)],
     spacing: 18,
     resolve: { scale: { color: "shared" } },
@@ -367,20 +382,10 @@ function sourceMarketsSpec() {
       { calculate: "datum.Arrivals_2024 / 1000000", as: "Arrivals_Million" },
       { calculate: "format(datum.Arrivals_Million, '.1f')", as: "Arrivals_Label" }
     ],
-    title: {
-      text: "TOP 10 SOURCE MARKETS BY ARRIVALS IN 2024",
-      subtitle: "(million)",
-      anchor: "start",
-      font: "Inter",
-      fontSize: 20,
-      fontWeight: 900,
-      color: "#07175f",
-      subtitleFont: "Inter",
-      subtitleFontSize: 15,
-      subtitleFontWeight: 700,
-      subtitleColor: "#3d4966",
-      offset: 14
-    },
+    title: chartTitle(
+      "Top 10 Source Markets by Arrivals in 2024",
+      "International arrivals in millions"
+    ),
     hconcat: [
       {
         width: rankWidth,
@@ -567,12 +572,10 @@ function monthlyTrendSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
-    title: {
-      text: "Monthly Foreign Arrivals, 2023 vs 2024",
-      subtitle: "Visitors in millions by month",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "Monthly Foreign Arrivals, 2023 vs 2024",
+      "Visitors in millions by month"
+    ),
     padding: { top: 12, right: isMobile ? 18 : 28, bottom: 18, left: isMobile ? 18 : 28 },
     data: {
       url: "data/foreign_visitors_monthly_2024_2023.csv",
@@ -843,12 +846,10 @@ function expenditureSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
-    title: {
-      text: "International Visitor Expenditure by Category, 2024",
-      subtitle: "Share of total visitor spending",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "International Visitor Expenditure by Category, 2024",
+      "Share of total visitor spending"
+    ),
     layer: [
       {
         data: { values: [{ x1: shellX1 + shellW * 0.36, x2: shellX1 + shellW * 0.64, y1: 18, y2: 94 }] },
@@ -939,12 +940,10 @@ function domesticKeyIndicatorsSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#domestic-key-indicators-chart", 820, 680),
     height: 380,
-    title: {
-      text: "Domestic Tourism Key Indicators",
-      subtitle: "Indexed to 2017 = 100 to compare indicators with different units",
-      fontSize: 24,
-      subtitleFontSize: 15
-    },
+    title: chartTitle(
+      "Domestic Tourism Key Indicators",
+      "Indexed to 2017 = 100 to compare indicators with different units"
+    ),
     data: { url: "data/domestic_tourism_key_indicators_2017_2024.csv" },
     params: [
       {
@@ -1049,8 +1048,8 @@ const domesticStateRankings = [
 
 function domesticStateVisitorsSpec() {
   const width = chartWidth("#domestic-state-visitors-chart", 820, 650);
-  const height = 540;
-  const rowTop = 118;
+  const height = 470;
+  const rowTop = 78;
   const rowGap = 88;
   const rankX = 42;
   const copyX = 118;
@@ -1082,17 +1081,11 @@ function domesticStateVisitorsSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
+    title: chartTitle(
+      "Top 5 Domestic Tourism States in 2024",
+      "By number of domestic visitors in millions"
+    ),
     layer: [
-      {
-        data: { values: [{ x: 0, y: 30, text: "TOP 5 DOMESTIC TOURISM STATES IN 2024" }] },
-        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 900, fontSize: 24, color: "#07175f" },
-        encoding: { x: { field: "x", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "text" }, tooltip: null }
-      },
-      {
-        data: { values: [{ x: 0, y: 62, text: "By number of domestic visitors (million)" }] },
-        mark: { type: "text", align: "left", baseline: "middle", font: "Inter", fontWeight: 600, fontSize: 15, color: "#4e5e78" },
-        encoding: { x: { field: "x", type: "quantitative", scale: xScale, axis: null }, y: { field: "y", type: "quantitative", scale: yScale, axis: null }, text: { field: "text" }, tooltip: null }
-      },
       {
         data: { values },
         mark: { type: "rect", cornerRadius: 16, color: "#f7fbff", stroke: "#dbe7f4", strokeWidth: 1 },
@@ -1183,12 +1176,10 @@ function domesticPurposeArcSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width,
     height,
-    title: {
-      text: "Domestic Trip Purpose, 2024",
-      subtitle: "Share of domestic trips by main purpose",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "Domestic Trip Purpose, 2024",
+      "Share of domestic trips by main purpose"
+    ),
     data: { values: data },
     layer: [
       {
@@ -1245,12 +1236,10 @@ function domesticODSpec() {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: chartWidth("#domestic-od-chart", 760, 650),
     height: 430,
-    title: {
-      text: "Domestic Tourist Origin-Destination Flow",
-      subtitle: "State of origin by state visited, 2024 ('000 tourists)",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "Domestic Tourist Origin-Destination Flow",
+      "State of origin by state visited, 2024 ('000 tourists)"
+    ),
     data: { url: "data/domestic_tourists_origin_destination_2024.csv" },
     transform: [
       { filter: "datum.Is_Origin_Total == 'FALSE' && datum.Is_Destination_Total == 'FALSE'" }
@@ -1282,12 +1271,10 @@ function receiptsScatterSpec() {
 
     width,
     height: 420,
-    title: {
-      text: "Tourism Receipts by Source Market, 2024",
-      subtitle: "Top receipt markets shown in RM billion",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "Tourism Receipts by Source Market, 2024",
+      "Top receipt markets shown in RM billion"
+    ),
 
     padding: {
       left: 30,
@@ -1543,12 +1530,10 @@ function stateGuestsSpec() {
 
   return {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-    title: {
-      text: "Tourism Growth by State",
-      subtitle: "Growth in foreign hotel guests from 2023 to 2024",
-      fontSize: 24,
-      subtitleFontSize: 14
-    },
+    title: chartTitle(
+      "Tourism Growth by State",
+      "Growth in foreign hotel guests from 2023 to 2024"
+    ),
     hconcat: [growthMapLayer("Peninsular", true), growthMapLayer("Borneo", false)],
     spacing: 4,
     resolve: { scale: { color: "shared" } },
