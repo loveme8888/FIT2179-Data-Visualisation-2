@@ -12,8 +12,6 @@ CSV files in this folder were transcribed or extracted from the supplied source 
 | `domestic_tourism_key_indicators_2017_2024.csv` | [Domestic Tourism Survey 2024: Publication Tables](https://www.dosm.gov.my/portal-main/release-content/domestic-tourism-survey-2024) | Table 1 |
 | `domestic_tourists_origin_destination_2024.csv` | [Domestic Tourism Survey 2024: Publication Tables](https://www.dosm.gov.my/portal-main/release-content/domestic-tourism-survey-2024) | Table 10 |
 
-Additional reference: [Tourism Malaysia Annual Report 2023](https://www.tourism.gov.my/files/uploads/annual_report/annual-report-2023.pdf).
-
 ## Figure Source Mapping
 
 | Figure | Source |

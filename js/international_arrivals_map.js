@@ -825,8 +825,8 @@ function expenditureSpec() {
       cx: (x1 + x2) / 2,
       cy: (y1 + y2) / 2,
       labelX: x1 + 16,
-      labelY: y2 - 32,
-      shareY: y2 - 10,
+      labelY: y2 - (slot.size === "large" ? 44 : 28),
+      shareY: y2 - (slot.size === "large" ? 12 : 8),
       imageX: (x1 + x2) / 2,
       imageY: (y1 + y2) / 2,
       imageW: Math.max(70, x2 - x1),
@@ -834,7 +834,9 @@ function expenditureSpec() {
       fill: tileColor[slot.className],
       Category_Label: slot.label,
       isLarge: slot.size === "large",
-      isCompact: slot.size === "compact"
+      isCompact: slot.size === "compact",
+      labelFontSize: slot.size === "large" ? 14 : 11,
+      shareFontSize: slot.size === "large" ? 26 : 20
     };
   });
   const largeValues = values.filter((tile) => tile.isLarge);
@@ -897,23 +899,23 @@ function expenditureSpec() {
       })),
       {
         data: { values: largeValues },
-        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 15, color: "#ffffff", limit: 135 },
-        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "labelY", type: "quantitative", scale: yScale, axis: null }, text: { field: "Category_Label" }, tooltip: null }
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, color: "#ffffff", limit: 145 },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "labelY", type: "quantitative", scale: yScale, axis: null }, text: { field: "Category_Label" }, size: { field: "labelFontSize", type: "quantitative", scale: null }, tooltip: null }
       },
       {
         data: { values: largeValues },
-        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 31, color: "#ffffff" },
-        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, tooltip: null }
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, color: "#ffffff" },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, size: { field: "shareFontSize", type: "quantitative", scale: null }, tooltip: null }
       },
       {
         data: { values: otherValues },
-        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 11, color: "#ffffff", limit: 95 },
-        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "labelY", type: "quantitative", scale: yScale, axis: null }, text: { field: "Category_Label" }, tooltip: null }
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, color: "#ffffff", limit: 92 },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "labelY", type: "quantitative", scale: yScale, axis: null }, text: { field: "Category_Label" }, size: { field: "labelFontSize", type: "quantitative", scale: null }, tooltip: null }
       },
       {
         data: { values: otherValues },
-        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, fontSize: 24, color: "#ffffff" },
-        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, tooltip: null }
+        mark: { type: "text", align: "left", baseline: "bottom", font: "Inter", fontWeight: 900, color: "#ffffff" },
+        encoding: { x: { field: "labelX", type: "quantitative", scale: xScale, axis: null }, y: { field: "shareY", type: "quantitative", scale: yScale, axis: null }, text: { field: "share" }, size: { field: "shareFontSize", type: "quantitative", scale: null }, tooltip: null }
       },
       {
         data: { values: [{ x1: shellX2 - 130, x2: shellX2 - 26, y1: shellY1 + 14, y2: shellY1 + 60, label: "TOTAL", value: "100%" }] },
@@ -1090,7 +1092,7 @@ function domesticStateVisitorsSpec() {
       {
         data: { values },
         mark: { type: "rect", cornerRadius: 16, color: "#f7fbff", stroke: "#dbe7f4", strokeWidth: 1 },
-        encoding: { x: { datum: 0, type: "quantitative", scale: xScale, axis: null }, x2: { datum: width }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, tooltip: null }
+        encoding: { x: { datum: 0, type: "quantitative", scale: xScale, axis: null }, x2: { field: "photoX2" }, y: { field: "rowY1", type: "quantitative", scale: yScale, axis: null }, y2: { field: "rowY2" }, tooltip: null }
       },
       {
         data: { values },
