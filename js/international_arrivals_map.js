@@ -781,10 +781,10 @@ function expenditureSpec() {
   const gx = shellX1 + gridPad;
   const gy = shellY1 + 64;
   const gw = shellW - gridPad * 2;
-  const gh = shellY2 - gy - 24;
+  const gh = shellY2 - gy - gridPad;
   const gap = 0;
   const col = gw / 12;
-  const row = gh / 6;
+  const row = gh / 5.6;
   const tileColor = {
     shopping: "#2346d8",
     accommodation: "#7667ff",
@@ -1049,6 +1049,7 @@ const domesticStateRankings = [
 function domesticStateVisitorsSpec() {
   const width = chartWidth("#domestic-state-visitors-chart", 820, 650);
   const height = 470;
+  const maxVisitors = Math.max(...domesticStateRankings.map((row) => row.visitors));
   const rowTop = 78;
   const rowGap = 88;
   const rankX = 42;
@@ -1058,7 +1059,7 @@ function domesticStateVisitorsSpec() {
   const rowH = 68;
   const values = domesticStateRankings.map((row, index) => {
     const y = rowTop + index * rowGap;
-    const photoW = maxPhotoW;
+    const photoW = Math.max(250, (row.visitors / maxVisitors) * maxPhotoW);
     return {
       ...row,
       y,
